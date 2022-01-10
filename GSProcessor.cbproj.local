@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2020/09/10 07:03:58.000.525,=C:\Users\azimo\OneDrive\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
+    <Transaction>2020/09/10 07:03:59.000.903,=C:\Users\azimo\OneDrive\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
+    <Transaction>2020/09/10 07:06:44.000.912,E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\MainFormU.cpp=C:\Users\azimo\OneDrive\Documents\Embarcadero\Studio\Projects\Unit1.cpp</Transaction>
+    <Transaction>2020/09/10 07:06:44.000.912,E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\MainFormU.h=C:\Users\azimo\OneDrive\Documents\Embarcadero\Studio\Projects\Unit1.h</Transaction>
+    <Transaction>2020/09/10 07:06:44.000.912,E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\MainFormU.dfm=C:\Users\azimo\OneDrive\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2020/09/10 07:07:01.000.909,E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\ProcessASWPCH.h=C:\Users\azimo\OneDrive\Documents\Embarcadero\Studio\Projects\Project1PCH1.h</Transaction>
+    <Transaction>2020/09/10 07:07:15.000.383,E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\ProcessASW.cbproj=C:\Users\azimo\OneDrive\Documents\Embarcadero\Studio\Projects\Project1.cbproj</Transaction>
+    <Transaction>2020/09/13 14:50:19.000.416,=E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\Unit1.cpp</Transaction>
+    <Transaction>2020/09/13 14:53:53.000.462,E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\Unit1.dfm=E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\SettingsFormU.dfm</Transaction>
+    <Transaction>2020/09/13 14:53:53.000.462,E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\Unit1.cpp=E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\SettingsFormU.cpp</Transaction>
+    <Transaction>2020/09/13 14:53:53.000.462,E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\Unit1.h=E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\SettingsFormU.h</Transaction>
+    <Transaction>2020/09/13 15:58:41.000.791,=E:\Projects\Embarcadero Projects\RAD Studio\Projects\ASWBe\Spectrum.hpp</Transaction>
+    <Transaction>2020/09/19 08:57:19.000.928,=E:\Projects\SpcProcess\Main.cpp</Transaction>
+    <Transaction>2020/09/19 08:57:50.000.769,E:\Projects\SpcProcess\Main.cpp=</Transaction>
+    <Transaction>2021/04/11 10:28:49.000.129,=E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\Unit1.cpp</Transaction>
+    <Transaction>2021/04/11 10:29:21.000.388,E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\Unit1.cpp=E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\ShiftingFormU.cpp</Transaction>
+    <Transaction>2021/04/11 10:29:21.000.388,E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\Unit1.dfm=E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\ShiftingFormU.dfm</Transaction>
+    <Transaction>2021/04/11 10:29:21.000.388,E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\Unit1.h=E:\Projects\Embarcadero Projects\RAD Studio\Projects\ProcessASW\ShiftingFormU.h</Transaction>
+    <Transaction>2021/04/15 06:23:20.000.771,E:\Projects\Embarcadero Projects\RAD Studio\Projects\ASWBe\Spectrum.hpp=</Transaction>
+    <Transaction>2021/10/26 07:11:02.000.567,=D:\Projects\ProcessASW\Unit1.cpp</Transaction>
+    <Transaction>2021/10/26 07:12:00.000.490,D:\Projects\ProcessASW\BatchProcessingThreadU.cpp=D:\Projects\ProcessASW\Unit1.cpp</Transaction>
+    <Transaction>2021/10/26 07:12:00.000.490,D:\Projects\ProcessASW\BatchProcessingThreadU.h=D:\Projects\ProcessASW\Unit1.h</Transaction>
+    <Transaction>2021/10/31 14:36:38.000.602,=D:\Projects\ProcessASW\Common.cpp</Transaction>
+    <Transaction>2021/11/11 07:37:47.000.051,=D:\Projects\ProcessASW\Unit1.cpp</Transaction>
+    <Transaction>2021/11/11 07:40:22.000.073,D:\Projects\ProcessASW\BatchProcessingResultsFormU.cpp=D:\Projects\ProcessASW\Unit1.cpp</Transaction>
+    <Transaction>2021/11/11 07:40:22.000.073,D:\Projects\ProcessASW\BatchProcessingResultsFormU.h=D:\Projects\ProcessASW\Unit1.h</Transaction>
+    <Transaction>2021/11/11 07:40:22.000.073,D:\Projects\ProcessASW\BatchProcessingResultsFormU.dfm=D:\Projects\ProcessASW\Unit1.dfm</Transaction>
+    <Transaction>2022/01/09 16:39:26.000.184,D:\Projects\ProcessASW\GSPProcessor.cbproj=D:\Projects\ProcessASW\ProcessASW.cbproj</Transaction>
+    <Transaction>2022/01/09 16:39:56.000.710,D:\Projects\ProcessASW\GSPProcessorPCH.h=D:\Projects\ProcessASW\ProcessASWPCH.h</Transaction>
+    <Transaction>2022/01/09 19:55:02.000.823,D:\Projects\ProcessASW\GSProcessor.cbproj=D:\Projects\ProcessASW\GSPProcessor.cbproj</Transaction>
+    <Transaction>2022/01/09 19:55:10.000.595,D:\Projects\ProcessASW\GSrocessor.cbproj=D:\Projects\ProcessASW\GSProcessor.cbproj</Transaction>
+    <Transaction>2022/01/09 19:55:21.000.186,D:\Projects\ProcessASW\GSProcessorPCH.h=D:\Projects\ProcessASW\GSPProcessorPCH.h</Transaction>
+    <Transaction>2022/01/09 19:56:53.000.299,D:\Projects\ProcessASW\GSProcessor.cbproj=D:\Projects\ProcessASW\GSrocessor.cbproj</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="GSProcessor.cpp"/>
+    <File Path="GSProcessorPCH.h"/>
+    <File Path="SettingsFormU.cpp"/>
+    <File Path="SettingsFormU.cpp"/>
+    <File Path="SettingsFormU.dfm"/>
+    <File Path="SettingsFormU.h"/>
+    <File Path="ShiftingFormU.cpp"/>
+    <File Path="ShiftingFormU.cpp"/>
+    <File Path="ShiftingFormU.dfm"/>
+    <File Path="ShiftingFormU.h"/>
+    <File Path="BatchProcessingResultsFormU.cpp"/>
+    <File Path="BatchProcessingResultsFormU.cpp"/>
+    <File Path="BatchProcessingResultsFormU.dfm"/>
+    <File Path="BatchProcessingResultsFormU.h"/>
+    <File Path="BatchProcessingThreadU.cpp"/>
+    <File Path="BatchProcessingThreadU.cpp"/>
+    <File Path="BatchProcessingThreadU.h"/>
+    <File Path="Common.cpp"/>
+    <File Path="Common.cpp"/>
+    <File Path="Common.h"/>
+    <File Path="MainFormU.cpp"/>
+    <File Path="MainFormU.cpp"/>
+    <File Path="MainFormU.dfm"/>
+    <File Path="MainFormU.h"/>
+  </ProjectSortOrder>
+</BorlandProject>
