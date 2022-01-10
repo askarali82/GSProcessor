@@ -37,3 +37,16 @@ __history/*
 __recovery/*
 Win32/*
 *.stat
+ASWBe/*
+CopyCommand.cbproj
+CopyCommand.cbproj.local
+CopyCommand.res
+GS Projects.groupproj
+GS Projects.groupproj.local
+main.cpp
+Marinelli.xlsx
+Siljish.cbproj
+Siljish.cbproj.local
+Siljish.cpp
+Siljish.res
+SiljishPCH.h
