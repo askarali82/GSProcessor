@@ -8,6 +8,7 @@
 #include <memory>
 #include <atomic>
 #include <cmath>
+#include <vector>
 #include <windows.h>
 #include "Spectrum.hpp"
 //---------------------------------------------------------------------------
@@ -88,6 +89,11 @@ public:
 	}
 
     static String GetDialogBoxFilterForSpectraFiles();
+
+    static double CalcBe7Effectivity(const double Eff1, const double Eff2, const double Eff3, const double SmpDensity);
+
+    static std::vector<String> CreateStringVectorFromDelimitedStr(
+        const String &Str, const wchar_t Delimiter, const bool NonEmpty = true, const wchar_t QuoteChar = L'\0');
 };
 //---------------------------------------------------------------------------
 #endif

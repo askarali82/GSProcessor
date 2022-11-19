@@ -57,7 +57,7 @@ void TSettingsForm::LoadEnergyRanges()
 		BeEnergy1Edit->Text = IniFile->ReadFloat(L"EnergyRanges", BeEnergy1Edit->Name, 430);
 		BeEnergy2Edit->Text = IniFile->ReadFloat(L"EnergyRanges", BeEnergy2Edit->Name, 525);
 
-		Be7PhotopeakEffEdit->Text = IniFile->ReadFloat(L"Be7", Be7PhotopeakEffEdit->Name, 0);
+		Be7PhotopeakEffEdit->Text = IniFile->ReadString(L"Be7", Be7PhotopeakEffEdit->Name, L"");
 	}
     catch (Exception &)
 	{
@@ -79,7 +79,7 @@ void TSettingsForm::SaveEnergyRanges()
 		IniFile->WriteFloat(L"EnergyRanges", BeEnergy1Edit->Name, Sysutils::StrToFloatDef(BeEnergy1Edit->Text, 0));
 		IniFile->WriteFloat(L"EnergyRanges", BeEnergy2Edit->Name, Sysutils::StrToFloatDef(BeEnergy2Edit->Text, 0));
 
-		IniFile->WriteFloat(L"Be7", Be7PhotopeakEffEdit->Name, Sysutils::StrToFloatDef(Be7PhotopeakEffEdit->Text, 0));
+		IniFile->WriteString(L"Be7", Be7PhotopeakEffEdit->Name, Be7PhotopeakEffEdit->Text);
 	}
     catch (Exception &)
     {
@@ -582,6 +582,7 @@ void TSettingsForm::ChangeUILanguage()
 		Label9->Caption = L"keV dan";
 		Label32->Caption = L"keV gacha";
 		Label2->Caption = L"Fotocho'qqi effektivligi, %";
+        Be7PhotopeakEffEdit->Hint = L"Uch xil zichliklar uchun. Har birini nuqta-vergul (;) bilan ajrating.";
 
 		SaveButton->Caption = L"&Saqlash";
 		CloseButton->Caption = L"&Yopish";
@@ -616,6 +617,7 @@ void TSettingsForm::ChangeUILanguage()
 		Label9->Caption = L"From keV";
 		Label32->Caption = L"To keV";
 		Label2->Caption = L"Photopeak efficiency, %";
+        Be7PhotopeakEffEdit->Hint = L"For three densities. Separate them by semicolon (;).";
 
 		SaveButton->Caption = L"&Save";
 		CloseButton->Caption = L"&Close";

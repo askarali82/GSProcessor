@@ -122,14 +122,13 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <LinkPackageStatics>rtl.lib;vcl.lib;Tee.lib;vclimg.lib</LinkPackageStatics>
         <VerInfo_Locale>1091</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=Gamma spektrlarni tahlil qilish;FileVersion=3.1.1.0;InternalName=$(MSBuildProjectName);LegalCopyright=Yadro Fizikasi Laboratoriyasi, Samarqand Davlat Universiteti;LegalTrademarks=;OriginalFilename=$(MSBuildProjectName).exe;ProgramID=;ProductName=$(MSBuildProjectName);ProductVersion=3.1.1;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=Gamma spektrlarni tahlil qilish;FileVersion=3.3.0.0;InternalName=$(MSBuildProjectName);LegalCopyright=Yadro Fizikasi Laboratoriyasi, Samarqand Davlat Universiteti;LegalTrademarks=;OriginalFilename=$(MSBuildProjectName).exe;ProgramID=;ProductName=$(MSBuildProjectName);ProductVersion=3.3.0.0;Comments=</VerInfo_Keys>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <FinalOutputDir>.\bin</FinalOutputDir>
         <IntermediateOutputDir>.\bin</IntermediateOutputDir>
         <PostBuildEvent><![CDATA[D:\Projects\ProcessASW\bin\CopyCommand.exe]]></PostBuildEvent>
         <PostBuildEventCancelOnError>false</PostBuildEventCancelOnError>
-        <VerInfo_MinorVer>1</VerInfo_MinorVer>
-        <VerInfo_Release>1</VerInfo_Release>
+        <VerInfo_MinorVer>3</VerInfo_MinorVer>
     </PropertyGroup>
     <ItemGroup>
         <CppCompile Include="BatchProcessingResultsFormU.cpp">
@@ -171,10 +170,10 @@
             <DependentOn>ShiftingFormU.h</DependentOn>
             <BuildOrder>5</BuildOrder>
         </CppCompile>
+        <FormResources Include="MainFormU.dfm"/>
         <FormResources Include="SettingsFormU.dfm"/>
         <FormResources Include="ShiftingFormU.dfm"/>
         <FormResources Include="BatchProcessingResultsFormU.dfm"/>
-        <FormResources Include="MainFormU.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

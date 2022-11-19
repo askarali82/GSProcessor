@@ -1202,8 +1202,11 @@ object SettingsForm: TSettingsForm
   object Be7PhotopeakEffEdit: TEdit
     Left = 268
     Top = 669
-    Width = 58
+    Width = 90
     Height = 21
+    Hint = '3 xil zichliklar uchun. Har birini nuqta-vergul bilan ajrating.'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 76
   end
   object OpenDialog: TOpenDialog

@@ -117,3 +117,52 @@ String Utils::GetDialogBoxFilterForSpectraFiles()
 	}
     return Result;
 }
+//---------------------------------------------------------------------------
+double Utils::CalcBe7Effectivity(const double Eff1, const double Eff2, const double Eff3, const double SmpDensity)
+{
+    // D1 = 274, D2 = 908, D3 = 1658
+    double Result = 0;
+    try
+    {
+        if (SmpDensity <= 908)
+        {
+            const double K1 = ((908 - SmpDensity) / (908 - 274));
+            const double K2 = 1 - K1;
+            Result = Eff2 * K2;
+            Result += Eff1 * K1;
+        }
+        else
+        {
+            const double K1 = ((1658 - SmpDensity) / (1658 - 908));
+            const double K2 = 1 - K1;
+            Result = Eff3 * K2;
+            Result += Eff2 * K1;
+        }
+    }
+    catch (Exception &)
+    {
+        Result = 0;
+    }
+    return Result;
+}
+//---------------------------------------------------------------------------
+std::vector<String> Utils::CreateStringVectorFromDelimitedStr(
+    const String &Str, const wchar_t Delimiter, const bool NonEmpty, const wchar_t QuoteChar)
+{
+	std::vector<String> Result;
+    std::auto_ptr<TStringList> StrList(new TStringList());
+    StrList->Delimiter = Delimiter;
+    StrList->QuoteChar = QuoteChar;
+    StrList->StrictDelimiter = true;
+    StrList->DelimitedText = Str;
+    for (int i = 0; i < StrList->Count; i++)
+    {
+        if (StrList->Strings[i].IsEmpty() && NonEmpty)
+        {
+            continue;
+        }
+        Result.push_back(StrList->Strings[i]);
+    }
+	return Result;
+}
+

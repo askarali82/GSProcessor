@@ -100,7 +100,7 @@ void __fastcall TBatchProcessingThread::Execute()
 		Be7IsCalculated =
 			BaseData.BeEn1 > 0 && BaseData.BeEn2 > 0 &&
 			BaseData.BeEn2 > BaseData.BeEn1 &&
-			BaseData.BePhotopeakEff > 0;
+			BaseData.BePhotopeakEff1 > 0 && BaseData.BePhotopeakEff2 > 0 && BaseData.BePhotopeakEff3 > 0;
 
 		for (int i = 0; !Terminated && i < FileNames->Count; i++)
 		{
@@ -402,8 +402,13 @@ void TBatchProcessingThread::CalculateActivities(
 		3 * System::Sqrt(BkgKCount) * (KActivity / (KCount * (Spectrum.Duration / KSpc.Duration) * Weight));
 	const double MDACs =
 		3 * System::Sqrt(BkgCsCount) * (CsActivity / (CsCount * (Spectrum.Duration / CsSpc.Duration) * Weight));
-	const double BeCoeff = Be7IsCalculated ? (0.104 * BaseData.BePhotopeakEff * Spectrum.Duration) : 0;
+    const double BePhotopeakEff = Be7IsCalculated ?
+        Utils::CalcBe7Effectivity(BaseData.BePhotopeakEff1, BaseData.BePhotopeakEff2, BaseData.BePhotopeakEff3, Spectrum.DensityInGramPerLitre) :
+        0;
+	const double BeCoeff = Be7IsCalculated ? (0.104 * BePhotopeakEff * Spectrum.Duration) : 0;
 	const double MDABe = Be7IsCalculated ? (3 * System::Sqrt(BkgBeCount)) / (BeCoeff * Weight) : 0;
+
+    LOG(L"BePhotopeakEff = " + String(BePhotopeakEff) + L" for density " + String(Spectrum.DensityInGramPerLitre));
 
 
 

@@ -64,7 +64,7 @@ __published:
 	TLabel *ThLabel;
 	TLabel *ThSmpLabel;
     TLabel *Label7;
-    TLabel *Label8;
+    TLabel *ThCoeffLabel;
 	TLabel *SmpThPhotoPeakLabel;
 	TLabel *SmpThErrorLabel;
 	TLabel *SmpThActLabel;
@@ -85,7 +85,7 @@ __published:
 	TLabel *RaLabel;
 	TLabel *RaSmpLabel;
     TLabel *Label18;
-    TLabel *Label19;
+    TLabel *RaCoeffLabel;
 	TLabel *SmpRaPhotoPeakLabel;
 	TLabel *SmpRaErrorLabel;
 	TLabel *SmpRaActLabel;
@@ -106,7 +106,7 @@ __published:
 	TLabel *KLabel;
 	TLabel *KSmpLabel;
     TLabel *Label29;
-    TLabel *Label30;
+    TLabel *KCoeffLabel;
 	TLabel *SmpKPhotoPeakLabel;
 	TLabel *SmpKErrorLabel;
 	TLabel *SmpKActLabel;
@@ -127,7 +127,7 @@ __published:
 	TLabel *CsLabel;
 	TLabel *CsSmpLabel;
     TLabel *Label40;
-    TLabel *Label41;
+    TLabel *CsCoeffLabel;
 	TLabel *SmpCsPhotoPeakLabel;
 	TLabel *SmpCsErrorLabel;
 	TLabel *SmpCsActLabel;
@@ -260,9 +260,17 @@ __published:
 	TToolButton *BatchProcessButton;
 	TToolButton *ShiftingButton;
 	TToolButton *StandardSamplesButton;
-	TToolButton *HelpButton;
 	TAction *LanguageAction;
 	TSpeedButton *SpeedButton1;
+    TToolButton *HelpButton;
+    TSpeedButton *ThUpButton;
+    TSpeedButton *ThDownButton;
+    TSpeedButton *RaDownButton;
+    TSpeedButton *RaUpButton;
+    TSpeedButton *KDownButton;
+    TSpeedButton *KUpButton;
+    TSpeedButton *CsDownButton;
+    TSpeedButton *CsUpButton;
     void __fastcall FormResize(TObject *Sender);
     void __fastcall StandardSamplesButtonClick(TObject *Sender);
     void __fastcall SpectraLoadTimerTimer(TObject *Sender);
@@ -288,6 +296,14 @@ __published:
 	void __fastcall OpenButtonClick(TObject *Sender);
 	void __fastcall SaveSpectraButtonClick(TObject *Sender);
 	void __fastcall BatchProcessButtonClick(TObject *Sender);
+    void __fastcall ThCoeffLabelClick(TObject *Sender);
+    void __fastcall RaCoeffLabelClick(TObject *Sender);
+    void __fastcall KCoeffLabelClick(TObject *Sender);
+    void __fastcall CsCoeffLabelClick(TObject *Sender);
+    void __fastcall OnEditUpButtonClick(TObject *Sender);
+    void __fastcall OnKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+    void __fastcall OnEditDownButtonClick(TObject *Sender);
+
 
 private:
     const String AppName;
@@ -344,7 +360,9 @@ private:
 	double BeEn1 = 0;
 	double BeEn2 = 0;
 
-    double BePhotopeakEff;
+    double BePhotopeakEff1;
+    double BePhotopeakEff2;
+    double BePhotopeakEff3;
 
 	//Search peaks
 	double MinPeakWidth;

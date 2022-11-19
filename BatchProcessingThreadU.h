@@ -36,7 +36,9 @@ struct TData
 	double BeEn1;
 	double BeEn2;
 
-    double BePhotopeakEff;
+    double BePhotopeakEff1;
+    double BePhotopeakEff2;
+    double BePhotopeakEff3;
 
 	//Search peaks
 	double MinPeakWidth;
