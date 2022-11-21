@@ -303,6 +303,7 @@ __published:
     void __fastcall OnEditUpButtonClick(TObject *Sender);
     void __fastcall OnKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
     void __fastcall OnEditDownButtonClick(TObject *Sender);
+    void __fastcall SampleChartDblClick(TObject *Sender);
 
 
 private:
@@ -420,6 +421,7 @@ public:
 		const String &RaC,
 		const String &KC,
 		const String &CsC);
+    void SetSampleSpectrum(const TSpectrum &ShiftedSpc, const String &Ch1Str, const String &Ch2Str);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TMainForm *MainForm;

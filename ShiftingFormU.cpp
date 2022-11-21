@@ -5,6 +5,10 @@
 #include "ShiftingFormU.h"
 #include <Clipbrd.hpp>
 #include "Common.h"
+
+#ifndef SEPARATEAPP
+#include "MainFormU.h"
+#endif
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -107,14 +111,6 @@ void __fastcall TShiftingForm::Spectrum1ButtonClick(TObject *Sender)
 	SmpChan2Edit->Text = L"";
 	Spectrum1_MI->Checked = true;
 	Spectrum1->Visible = true;
-
-	const auto &Peaks = Spc.FindPeaks(100);
-	String PeaksInfo;
-	for (const auto &P : Peaks)
-	{
-		PeaksInfo = PeaksInfo.IsEmpty() ? P.ToString() : PeaksInfo + L"\r\n" + P.ToString();
-	}
-	LOG(L"\r\n" + PeaksInfo);
 }
 //---------------------------------------------------------------------------
 void __fastcall TShiftingForm::Spectrum2ButtonClick(TObject *Sender)
@@ -140,14 +136,6 @@ void __fastcall TShiftingForm::Spectrum2ButtonClick(TObject *Sender)
 	const String &Ext = Strutils::RightStr(Sample2FileName, 4).LowerCase();
 	SaveToASWMI->Visible = Ext == L".asw";
 	SaveToGSPMI->Visible = Ext == L".gsp";
-
-	const auto &Peaks = Spc.FindPeaks(100);
-	String PeaksInfo;
-	for (const auto &P : Peaks)
-	{
-		PeaksInfo = PeaksInfo.IsEmpty() ? P.ToString() : PeaksInfo + L"\r\n" + P.ToString();
-	}
-	LOG(L"\r\n" + PeaksInfo);
 }
 //---------------------------------------------------------------------------
 void TShiftingForm::DrawSpectrum(const TSpectrum &Spc, TLineSeries *LineSeries)
@@ -155,7 +143,7 @@ void TShiftingForm::DrawSpectrum(const TSpectrum &Spc, TLineSeries *LineSeries)
 	LineSeries->Clear();
 	for (size_t i = 0; i < Spc.Counts.size(); i++)
 	{
-		LineSeries->AddXY(i, Spc.Counts[i]);
+		LineSeries->AddXY(i, Spc.Counts[i] < 0 ? 0 : Spc.Counts[i]);
 	}
 }
 //---------------------------------------------------------------------------
@@ -299,6 +287,10 @@ void TShiftingForm::Shift()
             this->ShiftedSample2 = ShiftedSample2;
 			DrawSpectrum(this->ShiftedSample2, Spectrum2);
         }
+    }
+    else
+    {
+        LOG("ERROR! Parameters are not valid to perform shifting.");
     }
 }
 //---------------------------------------------------------------------------
@@ -660,4 +652,59 @@ void TShiftingForm::ChangeUILanguage()
 	}
 }
 //---------------------------------------------------------------------------
+void TShiftingForm::Load(
+    const TSpectrum &Spc1,
+    const TSpectrum &Spc2,
+    const double En1,
+    const double En2,
+    const double Spc1Ch1,
+    const double Spc1Ch2,
+    const double Spc2Ch1,
+    const double Spc2Ch2)
+{
+    Sample1 = Spc1;
+    DrawSpectrum(Sample1, Spectrum1);
+	Spectrum1_MI->Checked = true;
+	Spectrum1->Visible = true;
 
+    Sample2 = Spc2;
+    ShiftedSample2 = Sample2;
+    DrawSpectrum(Sample2, Spectrum2);
+	Spectrum2_MI->Checked = true;
+	Spectrum2->Visible = true;
+
+    Energy1Edit->Text = En1;
+    Energy2Edit->Text = En2;
+	SrcChan1Edit->Text = Spc1Ch1;
+    SrcChan2Edit->Text = Spc1Ch2;
+    SmpChan1Edit->Text = Spc2Ch1;
+	SmpChan2Edit->Text = Spc2Ch2;
+
+    Shift();
+}
+//---------------------------------------------------------------------------
+void __fastcall TShiftingForm::SaveSpectrum2Click(TObject *Sender)
+{
+#ifndef SEPARATEAPP
+    MainForm->SetSampleSpectrum(ShiftedSample2, SmpChan1Edit->Text, SmpChan2Edit->Text);
+    Close();
+#endif
+}
+//---------------------------------------------------------------------------
+void TShiftingForm::Reset()
+{
+    Sample1 = TSpectrum();
+    Spectrum1->Clear();
+	Sample2 = TSpectrum();
+    Spectrum2->Clear();
+    ShiftedSample2 = TSpectrum();
+	Sample1FileName = L"";
+	Sample2FileName = L"";
+    Energy1Edit->Text = L"";
+    Energy2Edit->Text = L"";
+    SrcChan2Edit->Text = L"";
+    SrcChan1Edit->Text = L"";
+    SmpChan2Edit->Text = L"";
+    SmpChan1Edit->Text = L"";
+    ChangeUILanguage();
+}

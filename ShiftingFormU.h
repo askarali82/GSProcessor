@@ -101,6 +101,7 @@ __published:	// IDE-managed Components
     void __fastcall SaveCountsMIClick(TObject *Sender);
     void __fastcall SaveEnergiesAndCountsMIClick(TObject *Sender);
 	void __fastcall SaveToGSPMIClick(TObject *Sender);
+    void __fastcall SaveSpectrum2Click(TObject *Sender);
 
 protected:
     void __fastcall CreateParams(TCreateParams &Params);
@@ -116,6 +117,7 @@ private:
 	String EnergyStr;
 	String Count1Str;
 	String Count2Str;
+
 	String GetVersionString(const String &DefaultVal = L"") const;
 	void DrawSpectrum(const TSpectrum &Spc, TLineSeries *LineSeries);
 	void Shift();
@@ -125,6 +127,16 @@ private:
 public:
 	__fastcall TShiftingForm(TComponent* Owner);
     void ChangeUILanguage();
+    void Load(
+        const TSpectrum &Spc1,
+        const TSpectrum &Spc2,
+        const double En1,
+        const double En2,
+        const double Spc1Ch1,
+        const double Spc1Ch2,
+        const double Spc2Ch1,
+        const double Spc2Ch2);
+    void Reset();
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TShiftingForm *ShiftingForm;

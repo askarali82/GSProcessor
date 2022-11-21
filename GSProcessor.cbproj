@@ -125,7 +125,7 @@
         <VerInfo_Keys>CompanyName=;FileDescription=Gamma spektrlarni tahlil qilish;FileVersion=3.3.0.0;InternalName=$(MSBuildProjectName);LegalCopyright=Yadro Fizikasi Laboratoriyasi, Samarqand Davlat Universiteti;LegalTrademarks=;OriginalFilename=$(MSBuildProjectName).exe;ProgramID=;ProductName=$(MSBuildProjectName);ProductVersion=3.3.0.0;Comments=</VerInfo_Keys>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <FinalOutputDir>.\bin</FinalOutputDir>
-        <IntermediateOutputDir>.\bin</IntermediateOutputDir>
+        <IntermediateOutputDir>.\GSPTemp</IntermediateOutputDir>
         <PostBuildEvent><![CDATA[D:\Projects\ProcessASW\bin\CopyCommand.exe]]></PostBuildEvent>
         <PostBuildEventCancelOnError>false</PostBuildEventCancelOnError>
         <VerInfo_MinorVer>3</VerInfo_MinorVer>
@@ -763,7 +763,7 @@
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>D:\Projects\ProcessASW\bin\CopyCommand.exe</PostBuildEvent>
+        <PostBuildEvent><![CDATA[D:\Projects\ProcessASW\bin\CopyCommand.exe]]></PostBuildEvent>
         <PostBuildEventIgnoreExitCode>True</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>

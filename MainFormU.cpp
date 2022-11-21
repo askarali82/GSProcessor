@@ -651,11 +651,9 @@ void TMainForm::DecomposeSampleSpectrum()
             BelowMDA = L"<MDA";
         }
 
-
         const auto OrigCount = OrigSampleSpc.CalculateTotalCount();
         const auto LastCount = SampleSpc.CalculateTotalCount();
         const auto CountError = std::abs(LastCount - OrigCount) / OrigCount;
-
 
         DrawSpectrum(SampleSpc, SampleSpectrum);
         CalculateCountsInStdSamples();
@@ -1036,7 +1034,13 @@ void __fastcall TMainForm::HelpButtonClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::ShiftingButtonClick(TObject *Sender)
 {
-     ShiftingForm->Show();
+    if (ShiftingForm->SaveSpectrum2->OnClick != 0)
+    {
+        ShiftingForm->Reset();
+    }
+    ShiftingForm->SaveSpectrum2->OnClick = 0;
+    ShiftingForm->SaveSpectrum2->DropdownMenu = ShiftingForm->SaveButtonPopupMenu;
+    ShiftingForm->Show();
 }
 //---------------------------------------------------------------------------
 bool TMainForm::ShiftSrc()
@@ -1526,8 +1530,18 @@ void TMainForm::CalcCentersOfPeak()
         {
             return;
         }
-        SmpChan1Edit->Text = Math::Ceil((Ths[1].Energy1 - OrigSampleSpc.B) / OrigSampleSpc.K);
-        SmpChan2Edit->Text = Math::Ceil((Ths[1].Energy2 - OrigSampleSpc.B) / OrigSampleSpc.K);
+        SmpChan1Edit->OnChange = 0;
+        SmpChan2Edit->OnChange = 0;
+        try
+        {
+            SmpChan1Edit->Text = Math::Ceil((Ths[1].Energy1 - OrigSampleSpc.B) / OrigSampleSpc.K);
+            SmpChan2Edit->Text = Math::Ceil((Ths[1].Energy2 - OrigSampleSpc.B) / OrigSampleSpc.K);
+        }
+        __finally
+        {
+            SmpChan1Edit->OnChange = OnShiftingDataChange;
+            SmpChan2Edit->OnChange = OnShiftingDataChange;
+        }
     }
     catch (Exception &)
     {
@@ -1559,6 +1573,7 @@ bool TMainForm::OpenSampleSpectrum(const String &FileName)
         SameText(SampleSpc.WeightUnit, L"kg") ? (SampleSpc.Weight * 1000) : SampleSpc.Weight;
     SampleMass->Text = Utils::RoundFloatValue(Weight);
     SampleDensity->Text = Utils::RoundFloatValue(SampleSpc.DensityInGramPerLitre);
+    CalcCentersOfPeak();
     ShiftSrc();
     CreateVirtualSpectra();
     if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
@@ -1566,7 +1581,6 @@ bool TMainForm::OpenSampleSpectrum(const String &FileName)
     {
         DecomposeSampleSpectrum();
     }
-    CalcCentersOfPeak();
     Caption = AppName + L" - " + FileName;
     return true;
 }
@@ -2410,4 +2424,45 @@ void __fastcall TMainForm::OnEditDownButtonClick(TObject *Sender)
     }
 }
 //---------------------------------------------------------------------------
-
+void __fastcall TMainForm::SampleChartDblClick(TObject *Sender)
+{
+    if (!SampleSpc.IsValid() || SampleSpectrum->Count() == 0)
+    {
+        return;
+    }
+    ShiftingForm->SaveSpectrum2->OnClick = ShiftingForm->SaveSpectrum2Click;
+    ShiftingForm->SaveSpectrum2->DropdownMenu = 0;
+    ShiftingForm->Load(
+        ThSpc.IsValid() ? ThSpc : Ths[1],
+        OrigSampleSpc,
+        Sysutils::StrToFloatDef(Energy1Edit->Text, 0),
+        Sysutils::StrToFloatDef(Energy2Edit->Text, 0),
+        Sysutils::StrToFloatDef(ThChan1Edit->Text, 0),
+        Sysutils::StrToFloatDef(ThChan2Edit->Text, 0),
+        Sysutils::StrToFloatDef(SmpChan1Edit->Text, 0),
+        Sysutils::StrToFloatDef(SmpChan2Edit->Text, 0));
+    ShiftingForm->Show();
+}
+//---------------------------------------------------------------------------
+void TMainForm::SetSampleSpectrum(const TSpectrum &ShiftedSpc, const String &Ch1Str, const String &Ch2Str)
+{
+    try
+    {
+        SampleSpc = ShiftedSpc;
+        SmpChan1Edit->OnChange = 0;
+        SmpChan2Edit->OnChange = 0;
+        SmpChan1Edit->Text = Ch1Str;
+        SmpChan2Edit->Text = Ch2Str;
+        SmpChan1Edit->OnChange = OnShiftingDataChange;
+        SmpChan2Edit->OnChange = OnShiftingDataChange;
+        if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
+            RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
+        {
+            DecomposeSampleSpectrum();
+        }
+    }
+    catch (const Exception &E)
+    {
+        LOGEXCEPTION(E);
+    }
+}

@@ -245,6 +245,7 @@ object MainForm: TMainForm
       TabStop = False
       TabOrder = 4
       Anchors = [akLeft, akTop, akRight, akBottom]
+      OnDblClick = SampleChartDblClick
       OnMouseMove = OnChartMouseMove
       DefaultCanvas = 'TGDIPlusCanvas'
       PrintMargins = (
