@@ -145,11 +145,11 @@ void __fastcall TMainForm::FormResize(TObject *Sender)
     FinalSpcChart->Left = 0;
     FinalSpcChart->Top = SampleInfoPanel->Top + SampleInfoPanel->Height + 2;
     FinalSpcChart->Width = SampleInfoPanel->Left + SampleInfoPanel->Width;
-    FinalSpcChart->Height = FinalSpcChart->Width / 2;
-    if ((FinalSpcChart->Top + FinalSpcChart->Height) > StatusBar->Top)
+    FinalSpcChart->Height = StatusBar->Top - FinalSpcChart->Top - 2;//FinalSpcChart->Width / 2;
+    /*if ((FinalSpcChart->Top + FinalSpcChart->Height) > StatusBar->Top)
     {
         FinalSpcChart->Height = StatusBar->Top - FinalSpcChart->Top - 1;
-    }
+    }*/
     Application->ProcessMessages();
 
     SamplePanel->Height = H;
@@ -202,7 +202,7 @@ TData TMainForm::GetData() const
         String StdSamplesSpectraError = L"Etalon namunalar spektrlarida xatolik bor.";
         if (LangID == 1)
         {
-            StdSamplesSpectraError = L"There are errors in standard samples spectra.";
+            StdSamplesSpectraError = L"There are errors in reference samples spectra.";
         }
         throw Exception(StdSamplesSpectraError);
     }
@@ -589,7 +589,7 @@ void TMainForm::CreateVirtualSpectra()
         String ErrorMsg = L"Bir yoki undan ortiq etalon va/yoki fon namunalari spektrlari topilmadi.";
         if (LangID == 1)
         {
-            ErrorMsg = L"One or more standard and/or background samples spectra not found.";
+            ErrorMsg = L"One or more reference and/or background samples spectra not found.";
         }
         Application->MessageBox(ErrorMsg.c_str(), ErrorTitle.c_str(), MB_OK | MB_ICONERROR);
     }
@@ -784,7 +784,7 @@ void TMainForm::DecomposeSampleSpectrum()
         SampleCsError->Text = Activity >= MDACs ? Utils::RoundFloatValue(Activity * CsError, 2, false) : String();
 
         DrawSpectrum(Sample_M_Cs, FinalSpectrum);
-
+        BeActivityPerKgOrSq->Tag = 1;
         if (MDABe > 0)
         {
             const double DensityInGramPerLitre = Sysutils::StrToFloatDef(SampleDensity->Text, 0);
@@ -795,15 +795,14 @@ void TMainForm::DecomposeSampleSpectrum()
             BeSum->Text = Utils::RoundFloatValue(Count);
             const double Weight = SameText(SampleSpc.WeightUnit, L"kg") ? (SampleSpc.Weight * 1000) : SampleSpc.Weight;
             Activity = Count / (0.104 * SampleSpc.Duration * BePhotopeakEff * (Weight / 1000));
-            BeActivityPerKg->Text = Activity >= MDABe ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
+            BeActivityPerKgOrSq->Text = Activity >= MDABe ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
+            BeActivityPerKilogram = BeActivityPerKgOrSq->Text;
             const double TotalMass = Sysutils::StrToFloatDef(SampleOrigMass->Text, 0) * 0.001;
             const double Square = Sysutils::StrToFloatDef(SampleSquare->Text, 0) * 0.0001;
             if (TotalMass > 0 && Square > 0)
             {
                 Activity *= (TotalMass / Square);
-                BeActivityPerSq->Text = Utils::RoundFloatValue(Activity, 2, false);
-                //const double MDABeM2 = MDABe * (TotalMass / Square);
-                //BeMDA->Text = Utils::RoundFloatValue(MDABe);
+                BeActivityPerSquare = Utils::RoundFloatValue(Activity, 2, false);
             }
 
             const double BeError1 =
@@ -814,8 +813,9 @@ void TMainForm::DecomposeSampleSpectrum()
         else
         {
             BeSum->Text = L"";
-            BeActivityPerKg->Text = L"";
-            BeActivityPerSq->Text = L"";
+            BeActivityPerKgOrSq->Text = L"";
+            BeActivityPerKilogram = L"";
+            BeActivityPerSquare = L"";
             SampleBeError->Text = L"";
         }
     }
@@ -2018,7 +2018,7 @@ void TMainForm::ChangeUILanguage()
         StandardSamplesButton->Caption = L"Etalon namunalar";
         HelpButton->Caption = L"Dastur haqida";
 
-        ThLabel->Caption = L"Etalon namuna";
+        ThLabel->Caption = L"Etalon namunada";
         RaLabel->Caption = ThLabel->Caption;
         KLabel->Caption = ThLabel->Caption;
         CsLabel->Caption = ThLabel->Caption;
@@ -2028,7 +2028,7 @@ void TMainForm::ChangeUILanguage()
         KDurLabel->Caption = ThDurLabel->Caption;
         CsDurLabel->Caption = ThDurLabel->Caption;
 
-        ThPhotoPeakLabel->Caption = L"Fotocho'qqi:";
+        ThPhotoPeakLabel->Caption = L"Fotocho'qqi, Se:";
         RaPhotoPeakLabel->Caption = ThPhotoPeakLabel->Caption;
         KPhotoPeakLabel->Caption = ThPhotoPeakLabel->Caption;
         CsPhotoPeakLabel->Caption = ThPhotoPeakLabel->Caption;
@@ -2043,15 +2043,25 @@ void TMainForm::ChangeUILanguage()
         KMDALabel->Caption = ThMDALabel->Caption;
         CsMDALabel->Caption = ThMDALabel->Caption;
 
-        ThSmpLabel->Caption = L"Namuna";
+        ThSmpLabel->Caption = L"O'rganilayotgan namunada";
         RaSmpLabel->Caption = ThSmpLabel->Caption;
         KSmpLabel->Caption = ThSmpLabel->Caption;
         CsSmpLabel->Caption = ThSmpLabel->Caption;
+        BeSmpLabel->Caption = ThSmpLabel->Caption;
 
-        SmpThPhotoPeakLabel->Caption = L"Fotocho'qqi:";
+        SmpThPhotoPeakLabel->Caption = L"Fotocho'qqi, Sn:";
         SmpRaPhotoPeakLabel->Caption = SmpThPhotoPeakLabel->Caption;
         SmpKPhotoPeakLabel->Caption = SmpThPhotoPeakLabel->Caption;
         SmpCsPhotoPeakLabel->Caption = SmpThPhotoPeakLabel->Caption;
+
+        ThCoeffCalcLabel->Caption = L"Sn / Se:";
+        ThCoeffLabel->Caption = ThCoeffCalcLabel->Caption;
+        RaCoeffCalcLabel->Caption = ThCoeffCalcLabel->Caption;
+        RaCoeffLabel->Caption = ThCoeffCalcLabel->Caption;
+        KCoeffCalcLabel->Caption = ThCoeffCalcLabel->Caption;
+        KCoeffLabel->Caption = ThCoeffCalcLabel->Caption;
+        CsCoeffCalcLabel->Caption = ThCoeffCalcLabel->Caption;
+        CsCoeffLabel->Caption = ThCoeffCalcLabel->Caption;
 
         SmpThActLabel->Caption = L"Aktivligi (Bk/kg):";
         SmpRaActLabel->Caption = SmpThActLabel->Caption;
@@ -2064,11 +2074,17 @@ void TMainForm::ChangeUILanguage()
         SmpCsErrorLabel->Caption = SmpThErrorLabel->Caption;
 
         BePhotoPeakLabel->Caption = L"Fotocho'qqi:";
-        BeActLabel1->Caption = L"Aktivligi (Bk/kg):";
-        BeActLabel2->Caption = L"Aktivligi (Bk/m^2):";
+        if (BeActivityPerKgOrSq->Tag)
+        {
+            BeActLabel->Caption = L"Aktivligi (Bk/kg):";
+        }
+        else
+        {
+            BeActLabel->Caption = L"Aktivligi (Bk/m^2):";
+        }
         BeMDALabel->Caption = L"AMA (Bk/kg):";
         BeErrorLabel->Caption = L"Xatolik (%):";
-        SmpLabel->Caption = L"Namuna xususiyatlari";
+        SmpLabel->Caption = L"Namuna o'lchamlari";
         SmpDurLabel->Caption = L"O'lch. vaqti (sek):";
         SmpMassLabel->Caption = L"Massasi (Gr):";
         SmpDensityLabel->Caption = L"Zichligi (Gr/L):";
@@ -2118,13 +2134,9 @@ void TMainForm::ChangeUILanguage()
         {
             SampleCsActivity->Text = AMA;
         }
-        if (BeActivityPerKg->Text == MDA)
+        if (BeActivityPerKgOrSq->Text == MDA)
         {
-            BeActivityPerKg->Text = AMA;
-        }
-        if (BeActivityPerSq->Text == MDA)
-        {
-            BeActivityPerSq->Text = AMA;
+            BeActivityPerKgOrSq->Text = AMA;
         }
     }
     else if (LangID == 1)
@@ -2147,10 +2159,10 @@ void TMainForm::ChangeUILanguage()
         SelectDirectoryAction->Caption = L"Select directory";
 
         ShiftingButton->Caption = L"Shifting";
-        StandardSamplesButton->Caption = L"Standard samples";
+        StandardSamplesButton->Caption = L"Reference samples";
         HelpButton->Caption = L"About";
 
-        ThLabel->Caption = L"Standard sample";
+        ThLabel->Caption = L"In reference sample";
         RaLabel->Caption = ThLabel->Caption;
         KLabel->Caption = ThLabel->Caption;
         CsLabel->Caption = ThLabel->Caption;
@@ -2160,7 +2172,7 @@ void TMainForm::ChangeUILanguage()
         KDurLabel->Caption = ThDurLabel->Caption;
         CsDurLabel->Caption = ThDurLabel->Caption;
 
-        ThPhotoPeakLabel->Caption = L"Photopeak:";
+        ThPhotoPeakLabel->Caption = L"Photopeak, Sr:";
         RaPhotoPeakLabel->Caption = ThPhotoPeakLabel->Caption;
         KPhotoPeakLabel->Caption = ThPhotoPeakLabel->Caption;
         CsPhotoPeakLabel->Caption = ThPhotoPeakLabel->Caption;
@@ -2175,15 +2187,25 @@ void TMainForm::ChangeUILanguage()
         KMDALabel->Caption = ThMDALabel->Caption;
         CsMDALabel->Caption = ThMDALabel->Caption;
 
-        ThSmpLabel->Caption = L"Sample";
+        ThSmpLabel->Caption = L"In studying sample";
         RaSmpLabel->Caption = ThSmpLabel->Caption;
         KSmpLabel->Caption = ThSmpLabel->Caption;
         CsSmpLabel->Caption = ThSmpLabel->Caption;
+        BeSmpLabel->Caption = ThSmpLabel->Caption;
 
-        SmpThPhotoPeakLabel->Caption = L"Photopeak:";
+        SmpThPhotoPeakLabel->Caption = L"Photopeak, Ss:";
         SmpRaPhotoPeakLabel->Caption = SmpThPhotoPeakLabel->Caption;
         SmpKPhotoPeakLabel->Caption = SmpThPhotoPeakLabel->Caption;
         SmpCsPhotoPeakLabel->Caption = SmpThPhotoPeakLabel->Caption;
+
+        ThCoeffCalcLabel->Caption = L"Ss / Sr:";
+        ThCoeffLabel->Caption = ThCoeffCalcLabel->Caption;
+        RaCoeffCalcLabel->Caption = ThCoeffCalcLabel->Caption;
+        RaCoeffLabel->Caption = ThCoeffCalcLabel->Caption;
+        KCoeffCalcLabel->Caption = ThCoeffCalcLabel->Caption;
+        KCoeffLabel->Caption = ThCoeffCalcLabel->Caption;
+        CsCoeffCalcLabel->Caption = ThCoeffCalcLabel->Caption;
+        CsCoeffLabel->Caption = ThCoeffCalcLabel->Caption;
 
         SmpThActLabel->Caption = L"Activity (Bq/kg):";
         SmpRaActLabel->Caption = SmpThActLabel->Caption;
@@ -2196,8 +2218,14 @@ void TMainForm::ChangeUILanguage()
         SmpCsErrorLabel->Caption = SmpThErrorLabel->Caption;
 
         BePhotoPeakLabel->Caption = L"Photopeak:";
-        BeActLabel1->Caption = L"Activity (Bq):";
-        BeActLabel2->Caption = L"Activity (Bq/m^2):";
+        if (BeActivityPerKgOrSq->Tag)
+        {
+            BeActLabel->Caption = L"Activity (Bq/kg):";
+        }
+        else
+        {
+            BeActLabel->Caption = L"Activity (Bq/m^2):";
+        }
         BeMDALabel->Caption = L"MDA (Bq/kg):";
         BeErrorLabel->Caption = L"Error (%):";
         SmpLabel->Caption = L"Sample parameters";
@@ -2250,13 +2278,9 @@ void TMainForm::ChangeUILanguage()
         {
             SampleCsActivity->Text = MDA;
         }
-        if (BeActivityPerKg->Text == AMA)
+        if (BeActivityPerKgOrSq->Text == AMA)
         {
-            BeActivityPerKg->Text = MDA;
-        }
-        if (BeActivityPerSq->Text == AMA)
-        {
-            BeActivityPerSq->Text = MDA;
+            BeActivityPerKgOrSq->Text = MDA;
         }
     }
     else
@@ -2266,7 +2290,7 @@ void TMainForm::ChangeUILanguage()
 
     BrowseInfo.lpszTitle = DirSelectionString.c_str();
 
-    ThLabel->Left = (ThInfoPanel->Width - ThLabel->Width) / 2;
+    /*ThLabel->Left = (ThInfoPanel->Width - ThLabel->Width) / 2;
     RaLabel->Left = (RaInfoPanel->Width - RaLabel->Width) / 2;
     KLabel->Left = (KInfoPanel->Width - KLabel->Width) / 2;
     CsLabel->Left = (CsInfoPanel->Width - CsLabel->Width) / 2;
@@ -2276,7 +2300,7 @@ void TMainForm::ChangeUILanguage()
     KSmpLabel->Left = (KInfoPanel->Width - KSmpLabel->Width) / 2;
     CsSmpLabel->Left = (CsInfoPanel->Width - CsSmpLabel->Width) / 2;
 
-    SmpLabel->Left = (SampleInfoPanel->Width - SmpLabel->Width) / 2;
+    SmpLabel->Left = (SampleInfoPanel->Width - SmpLabel->Width) / 2;*/
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::LanguageActionExecute(TObject *Sender)
@@ -2302,7 +2326,7 @@ void __fastcall TMainForm::LanguageActionExecute(TObject *Sender)
     SettingsFile->WriteInteger(L"UILanguage", L"LangID", LID);
 }
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::ThCoeffLabelClick(TObject *Sender)
+void __fastcall TMainForm::ThCoeffCalcLabelClick(TObject *Sender)
 {
     const int P = ThSnSe1->Text.Pos(L".");
     String Value = ThSnSe1->Text;
@@ -2316,7 +2340,7 @@ void __fastcall TMainForm::ThCoeffLabelClick(TObject *Sender)
     OnParamChange(ThSnSe2);
 }
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::RaCoeffLabelClick(TObject *Sender)
+void __fastcall TMainForm::RaCoeffCalcLabelClick(TObject *Sender)
 {
     const int P = RaSnSe1->Text.Pos(L".");
     String Value = RaSnSe1->Text;
@@ -2330,7 +2354,7 @@ void __fastcall TMainForm::RaCoeffLabelClick(TObject *Sender)
     OnParamChange(RaSnSe2);
 }
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::KCoeffLabelClick(TObject *Sender)
+void __fastcall TMainForm::KCoeffCalcLabelClick(TObject *Sender)
 {
     const int P = KSnSe1->Text.Pos(L".");
     String Value = KSnSe1->Text;
@@ -2344,7 +2368,7 @@ void __fastcall TMainForm::KCoeffLabelClick(TObject *Sender)
     OnParamChange(KSnSe2);
 }
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::CsCoeffLabelClick(TObject *Sender)
+void __fastcall TMainForm::CsCoeffCalcLabelClick(TObject *Sender)
 {
     const int P = CsSnSe1->Text.Pos(L".");
     String Value = CsSnSe1->Text;
@@ -2466,3 +2490,34 @@ void TMainForm::SetSampleSpectrum(const TSpectrum &ShiftedSpc, const String &Ch1
         LOGEXCEPTION(E);
     }
 }
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::BeActLabelClick(TObject *Sender)
+{
+    BeActivityPerKgOrSq->Tag = !BeActivityPerKgOrSq->Tag;
+    if (BeActivityPerKgOrSq->Tag)
+    {
+        BeActivityPerKgOrSq->Text = BeActivityPerKilogram;
+        if (LangID == 0)
+        {
+            BeActLabel->Caption = L"Aktivligi (Bk/kg):";
+        }
+        else
+        {
+            BeActLabel->Caption = L"Activity (Bq/kg):";
+        }
+    }
+    else
+    {
+        BeActivityPerKgOrSq->Text = BeActivityPerSquare;
+        if (LangID == 0)
+        {
+            BeActLabel->Caption = L"Aktivligi (Bk/m^2):";
+        }
+        else
+        {
+            BeActLabel->Caption = L"Activity (Bq/m^2):";
+        }
+    }
+}
+//---------------------------------------------------------------------------
+

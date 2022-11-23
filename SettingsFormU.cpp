@@ -558,7 +558,7 @@ void TSettingsForm::ChangeUILanguage()
 
 		Title1Label->Caption = L"Zichligi 200 Gr/L dan 500 Gr/L gacha bo'lgan namunalar.";
 		Label40->Caption = L"Namuna";
-		Label7->Caption = L"Aktivligi (Bk) va qayd qilingan sanasi";
+		Label7->Caption = L"Aktivligi (Bk), xatoligi (%) va qayd qilingan sanasi";
 		Label35->Caption = L"Spektr o'lchangan kun";
 		Label34->Caption = L"Spektr faylining nomi";
 		Label29->Caption = L"Tabiiy fon";
@@ -589,11 +589,11 @@ void TSettingsForm::ChangeUILanguage()
 	}
 	else if (LangID == 1)
 	{
-		Caption = L"Standard and background samples";
+		Caption = L"Reference and background samples";
 
 		Title1Label->Caption = L"Samples with density of 200 Gr / L to 500 Gr / L.";
 		Label40->Caption = L"Sample";
-		Label7->Caption = L"Activity (Bq) and registered date";
+		Label7->Caption = L"Activity (Bq), error (%) and registered date";
 		Label35->Caption = L"Date the spectrum measured";
 		Label34->Caption = L"Name of the spectrum file";
 		Label29->Caption = L"Background";

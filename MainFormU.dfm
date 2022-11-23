@@ -1,7 +1,7 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
-  Caption = 'ProcessASW'
+  Caption = 'GSProcessor'
   ClientHeight = 749
   ClientWidth = 1400
   Color = clBtnFace
@@ -2050,10 +2050,10 @@ object MainForm: TMainForm
     Top = 40
     Width = 155
     Height = 278
+    Alignment = taLeftJustify
     BevelKind = bkFlat
     BevelOuter = bvNone
     BorderWidth = 2
-    Caption = 'Th-232'
     DoubleBuffered = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -2083,9 +2083,9 @@ object MainForm: TMainForm
     object ThPhotoPeakLabel: TLabel
       Left = 2
       Top = 65
-      Width = 59
+      Width = 78
       Height = 13
-      Caption = 'Fotocho'#39'qqi:'
+      Caption = 'Fotocho'#39'qqi, Se:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -2108,50 +2108,48 @@ object MainForm: TMainForm
     end
     object ThMDALabel: TLabel
       Left = 2
-      Top = 113
+      Top = 205
       Width = 63
       Height = 13
       Caption = 'AMA (Bk/kg):'
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
+      Font.Color = clGreen
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
     end
     object ThLabel: TLabel
-      Left = 44
+      Left = 2
       Top = 23
-      Width = 62
+      Width = 85
       Height = 11
       Alignment = taCenter
-      Anchors = [akLeft, akTop, akRight]
-      Caption = 'Etalon namuna'
+      Caption = 'Etalon namunada'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
       ParentFont = False
     end
     object ThSmpLabel: TLabel
-      Left = 54
-      Top = 141
-      Width = 35
+      Left = 2
+      Top = 115
+      Width = 133
       Height = 11
       Alignment = taCenter
-      Anchors = [akLeft, akTop, akRight]
-      Caption = 'Namuna'
+      Caption = 'O'#39'rganilayotgan namunada'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
       ParentFont = False
     end
-    object Label7: TLabel
+    object ThCoeffLabel: TLabel
       Left = 2
-      Top = 205
+      Top = 181
       Width = 38
       Height = 13
       Caption = 'Sn / Se:'
@@ -2162,9 +2160,9 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
     end
-    object ThCoeffLabel: TLabel
+    object ThCoeffCalcLabel: TLabel
       Left = 2
-      Top = 181
+      Top = 157
       Width = 43
       Height = 13
       Cursor = crHandPoint
@@ -2175,14 +2173,14 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold, fsUnderline]
       ParentFont = False
-      OnClick = ThCoeffLabelClick
+      OnClick = ThCoeffCalcLabelClick
     end
     object SmpThPhotoPeakLabel: TLabel
       Left = 2
-      Top = 157
-      Width = 59
+      Top = 133
+      Width = 78
       Height = 13
-      Caption = 'Fotocho'#39'qqi:'
+      Caption = 'Fotocho'#39'qqi, Sn:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -2218,7 +2216,7 @@ object MainForm: TMainForm
     end
     object ThUpButton: TSpeedButton
       Left = 59
-      Top = 202
+      Top = 178
       Width = 21
       Height = 21
       Anchors = [akTop, akRight]
@@ -2255,7 +2253,7 @@ object MainForm: TMainForm
     end
     object ThDownButton: TSpeedButton
       Left = 80
-      Top = 202
+      Top = 178
       Width = 21
       Height = 21
       Anchors = [akTop, akRight]
@@ -2289,6 +2287,23 @@ object MainForm: TMainForm
         0000}
       ParentFont = False
       OnClick = OnEditDownButtonClick
+    end
+    object Label1: TLabel
+      Left = 2
+      Top = 2
+      Width = 147
+      Height = 16
+      Align = alTop
+      Alignment = taCenter
+      Caption = 'Th-232'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ExplicitLeft = 12
+      ExplicitWidth = 45
     end
     object ThTime: TEdit
       Left = 89
@@ -2343,7 +2358,7 @@ object MainForm: TMainForm
     end
     object ThMDA: TEdit
       Left = 89
-      Top = 110
+      Top = 202
       Width = 61
       Height = 21
       TabStop = False
@@ -2356,7 +2371,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       ReadOnly = True
-      TabOrder = 3
+      TabOrder = 6
     end
     object SampleThActivity: TEdit
       Left = 89
@@ -2373,11 +2388,11 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       ReadOnly = True
-      TabOrder = 4
+      TabOrder = 7
     end
     object ThSnSe2: TEdit
       Left = 102
-      Top = 202
+      Top = 178
       Width = 48
       Height = 21
       Anchors = [akTop, akRight]
@@ -2394,23 +2409,6 @@ object MainForm: TMainForm
     end
     object ThSnSe1: TEdit
       Left = 89
-      Top = 178
-      Width = 61
-      Height = 21
-      TabStop = False
-      Anchors = [akTop, akRight]
-      Color = clBtnFace
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ReadOnly = True
-      TabOrder = 6
-    end
-    object SampleThSum: TEdit
-      Left = 89
       Top = 154
       Width = 61
       Height = 21
@@ -2424,7 +2422,24 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       ReadOnly = True
-      TabOrder = 7
+      TabOrder = 4
+    end
+    object SampleThSum: TEdit
+      Left = 89
+      Top = 130
+      Width = 61
+      Height = 21
+      TabStop = False
+      Anchors = [akTop, akRight]
+      Color = clBtnFace
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ReadOnly = True
+      TabOrder = 3
     end
     object SampleThError: TEdit
       Left = 89
@@ -2449,10 +2464,10 @@ object MainForm: TMainForm
     Top = 40
     Width = 155
     Height = 278
+    Alignment = taLeftJustify
     BevelKind = bkFlat
     BevelOuter = bvNone
     BorderWidth = 2
-    Caption = 'Ra-226'
     DoubleBuffered = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -2482,9 +2497,9 @@ object MainForm: TMainForm
     object RaPhotoPeakLabel: TLabel
       Left = 2
       Top = 65
-      Width = 59
+      Width = 78
       Height = 13
-      Caption = 'Fotocho'#39'qqi:'
+      Caption = 'Fotocho'#39'qqi, Se:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -2507,50 +2522,48 @@ object MainForm: TMainForm
     end
     object RaMDALabel: TLabel
       Left = 2
-      Top = 113
+      Top = 205
       Width = 63
       Height = 13
       Caption = 'AMA (Bk/kg):'
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
+      Font.Color = clGreen
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
     end
     object RaLabel: TLabel
-      Left = 44
+      Left = 2
       Top = 23
-      Width = 62
+      Width = 85
       Height = 11
       Alignment = taCenter
-      Anchors = [akLeft, akTop, akRight]
-      Caption = 'Etalon namuna'
+      Caption = 'Etalon namunada'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
       ParentFont = False
     end
     object RaSmpLabel: TLabel
-      Left = 54
-      Top = 141
-      Width = 35
+      Left = 2
+      Top = 115
+      Width = 133
       Height = 11
       Alignment = taCenter
-      Anchors = [akLeft, akTop, akRight]
-      Caption = 'Namuna'
+      Caption = 'O'#39'rganilayotgan namunada'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
       ParentFont = False
     end
-    object Label18: TLabel
+    object RaCoeffLabel: TLabel
       Left = 2
-      Top = 205
+      Top = 181
       Width = 38
       Height = 13
       Caption = 'Sn / Se:'
@@ -2561,9 +2574,9 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
     end
-    object RaCoeffLabel: TLabel
+    object RaCoeffCalcLabel: TLabel
       Left = 2
-      Top = 181
+      Top = 157
       Width = 43
       Height = 13
       Cursor = crHandPoint
@@ -2574,14 +2587,14 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold, fsUnderline]
       ParentFont = False
-      OnClick = RaCoeffLabelClick
+      OnClick = RaCoeffCalcLabelClick
     end
     object SmpRaPhotoPeakLabel: TLabel
       Left = 2
-      Top = 157
-      Width = 59
+      Top = 133
+      Width = 78
       Height = 13
-      Caption = 'Fotocho'#39'qqi:'
+      Caption = 'Fotocho'#39'qqi, Sn:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -2617,7 +2630,7 @@ object MainForm: TMainForm
     end
     object RaDownButton: TSpeedButton
       Left = 80
-      Top = 202
+      Top = 178
       Width = 21
       Height = 21
       Anchors = [akTop, akRight]
@@ -2654,7 +2667,7 @@ object MainForm: TMainForm
     end
     object RaUpButton: TSpeedButton
       Left = 59
-      Top = 202
+      Top = 178
       Width = 21
       Height = 21
       Anchors = [akTop, akRight]
@@ -2688,6 +2701,23 @@ object MainForm: TMainForm
         0000}
       ParentFont = False
       OnClick = OnEditUpButtonClick
+    end
+    object Label2: TLabel
+      Left = 2
+      Top = 2
+      Width = 147
+      Height = 16
+      Align = alTop
+      Alignment = taCenter
+      Caption = 'Ra-226'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ExplicitLeft = 12
+      ExplicitWidth = 47
     end
     object RaTime: TEdit
       Left = 89
@@ -2742,7 +2772,7 @@ object MainForm: TMainForm
     end
     object RaMDA: TEdit
       Left = 89
-      Top = 110
+      Top = 202
       Width = 61
       Height = 21
       TabStop = False
@@ -2755,7 +2785,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       ReadOnly = True
-      TabOrder = 3
+      TabOrder = 6
     end
     object SampleRaActivity: TEdit
       Left = 89
@@ -2772,11 +2802,11 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       ReadOnly = True
-      TabOrder = 4
+      TabOrder = 7
     end
     object RaSnSe2: TEdit
       Left = 102
-      Top = 202
+      Top = 178
       Width = 48
       Height = 21
       Anchors = [akTop, akRight]
@@ -2793,23 +2823,6 @@ object MainForm: TMainForm
     end
     object RaSnSe1: TEdit
       Left = 89
-      Top = 178
-      Width = 61
-      Height = 21
-      TabStop = False
-      Anchors = [akTop, akRight]
-      Color = clBtnFace
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ReadOnly = True
-      TabOrder = 6
-    end
-    object SampleRaSum: TEdit
-      Left = 89
       Top = 154
       Width = 61
       Height = 21
@@ -2823,7 +2836,24 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       ReadOnly = True
-      TabOrder = 7
+      TabOrder = 4
+    end
+    object SampleRaSum: TEdit
+      Left = 89
+      Top = 130
+      Width = 61
+      Height = 21
+      TabStop = False
+      Anchors = [akTop, akRight]
+      Color = clBtnFace
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ReadOnly = True
+      TabOrder = 3
     end
     object SampleRaError: TEdit
       Left = 89
@@ -2848,10 +2878,10 @@ object MainForm: TMainForm
     Top = 40
     Width = 155
     Height = 278
+    Alignment = taLeftJustify
     BevelKind = bkFlat
     BevelOuter = bvNone
     BorderWidth = 2
-    Caption = 'K-40'
     DoubleBuffered = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -2881,9 +2911,9 @@ object MainForm: TMainForm
     object KPhotoPeakLabel: TLabel
       Left = 2
       Top = 65
-      Width = 59
+      Width = 78
       Height = 13
-      Caption = 'Fotocho'#39'qqi:'
+      Caption = 'Fotocho'#39'qqi, Se:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -2906,50 +2936,48 @@ object MainForm: TMainForm
     end
     object KMDALabel: TLabel
       Left = 2
-      Top = 113
+      Top = 205
       Width = 63
       Height = 13
       Caption = 'AMA (Bk/kg):'
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
+      Font.Color = clGreen
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
     end
     object KLabel: TLabel
-      Left = 45
+      Left = 2
       Top = 23
-      Width = 62
+      Width = 85
       Height = 11
       Alignment = taCenter
-      Anchors = [akLeft, akTop, akRight]
-      Caption = 'Etalon namuna'
+      Caption = 'Etalon namunada'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
       ParentFont = False
     end
     object KSmpLabel: TLabel
-      Left = 55
-      Top = 141
-      Width = 35
+      Left = 2
+      Top = 115
+      Width = 133
       Height = 11
       Alignment = taCenter
-      Anchors = [akLeft, akTop, akRight]
-      Caption = 'Namuna'
+      Caption = 'O'#39'rganilayotgan namunada'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
       ParentFont = False
     end
-    object Label29: TLabel
+    object KCoeffLabel: TLabel
       Left = 2
-      Top = 205
+      Top = 181
       Width = 38
       Height = 13
       Caption = 'Sn / Se:'
@@ -2960,9 +2988,9 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
     end
-    object KCoeffLabel: TLabel
+    object KCoeffCalcLabel: TLabel
       Left = 2
-      Top = 181
+      Top = 157
       Width = 43
       Height = 13
       Cursor = crHandPoint
@@ -2973,14 +3001,14 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold, fsUnderline]
       ParentFont = False
-      OnClick = KCoeffLabelClick
+      OnClick = KCoeffCalcLabelClick
     end
     object SmpKPhotoPeakLabel: TLabel
       Left = 2
-      Top = 157
-      Width = 59
+      Top = 133
+      Width = 78
       Height = 13
-      Caption = 'Fotocho'#39'qqi:'
+      Caption = 'Fotocho'#39'qqi, Sn:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -3016,7 +3044,7 @@ object MainForm: TMainForm
     end
     object KDownButton: TSpeedButton
       Left = 80
-      Top = 202
+      Top = 178
       Width = 21
       Height = 21
       Anchors = [akTop, akRight]
@@ -3053,7 +3081,7 @@ object MainForm: TMainForm
     end
     object KUpButton: TSpeedButton
       Left = 59
-      Top = 202
+      Top = 178
       Width = 21
       Height = 21
       Anchors = [akTop, akRight]
@@ -3087,6 +3115,23 @@ object MainForm: TMainForm
         0000}
       ParentFont = False
       OnClick = OnEditUpButtonClick
+    end
+    object Label3: TLabel
+      Left = 2
+      Top = 2
+      Width = 147
+      Height = 16
+      Align = alTop
+      Alignment = taCenter
+      Caption = 'K-40'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ExplicitLeft = 12
+      ExplicitWidth = 30
     end
     object KTime: TEdit
       Left = 89
@@ -3141,7 +3186,7 @@ object MainForm: TMainForm
     end
     object KMDA: TEdit
       Left = 89
-      Top = 110
+      Top = 202
       Width = 61
       Height = 21
       TabStop = False
@@ -3175,7 +3220,7 @@ object MainForm: TMainForm
     end
     object KSnSe2: TEdit
       Left = 102
-      Top = 202
+      Top = 178
       Width = 48
       Height = 21
       Anchors = [akTop, akRight]
@@ -3192,7 +3237,7 @@ object MainForm: TMainForm
     end
     object KSnSe1: TEdit
       Left = 89
-      Top = 178
+      Top = 154
       Width = 61
       Height = 21
       TabStop = False
@@ -3209,7 +3254,7 @@ object MainForm: TMainForm
     end
     object SampleKSum: TEdit
       Left = 89
-      Top = 154
+      Top = 130
       Width = 61
       Height = 21
       TabStop = False
@@ -3247,10 +3292,10 @@ object MainForm: TMainForm
     Top = 40
     Width = 155
     Height = 278
+    Alignment = taLeftJustify
     BevelKind = bkFlat
     BevelOuter = bvNone
     BorderWidth = 2
-    Caption = 'Cs-137'
     DoubleBuffered = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -3280,9 +3325,9 @@ object MainForm: TMainForm
     object CsPhotoPeakLabel: TLabel
       Left = 2
       Top = 65
-      Width = 59
+      Width = 78
       Height = 13
-      Caption = 'Fotocho'#39'qqi:'
+      Caption = 'Fotocho'#39'qqi, Se:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -3305,50 +3350,48 @@ object MainForm: TMainForm
     end
     object CsMDALabel: TLabel
       Left = 2
-      Top = 113
+      Top = 205
       Width = 63
       Height = 13
       Caption = 'AMA (Bk/kg):'
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
+      Font.Color = clGreen
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
     end
     object CsLabel: TLabel
-      Left = 44
+      Left = 2
       Top = 23
-      Width = 62
+      Width = 85
       Height = 11
       Alignment = taCenter
-      Anchors = [akLeft, akTop, akRight]
-      Caption = 'Etalon namuna'
+      Caption = 'Etalon namunada'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
       ParentFont = False
     end
     object CsSmpLabel: TLabel
-      Left = 54
-      Top = 141
-      Width = 35
+      Left = 2
+      Top = 115
+      Width = 133
       Height = 11
       Alignment = taCenter
-      Anchors = [akLeft, akTop, akRight]
-      Caption = 'Namuna'
+      Caption = 'O'#39'rganilayotgan namunada'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
       ParentFont = False
     end
-    object Label40: TLabel
+    object CsCoeffLabel: TLabel
       Left = 2
-      Top = 205
+      Top = 181
       Width = 38
       Height = 13
       Caption = 'Sn / Se:'
@@ -3359,9 +3402,9 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
     end
-    object CsCoeffLabel: TLabel
+    object CsCoeffCalcLabel: TLabel
       Left = 2
-      Top = 181
+      Top = 157
       Width = 43
       Height = 13
       Cursor = crHandPoint
@@ -3372,14 +3415,14 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold, fsUnderline]
       ParentFont = False
-      OnClick = CsCoeffLabelClick
+      OnClick = CsCoeffCalcLabelClick
     end
     object SmpCsPhotoPeakLabel: TLabel
       Left = 2
-      Top = 157
-      Width = 59
+      Top = 133
+      Width = 78
       Height = 13
-      Caption = 'Fotocho'#39'qqi:'
+      Caption = 'Fotocho'#39'qqi, Sn:'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlue
       Font.Height = -11
@@ -3415,7 +3458,7 @@ object MainForm: TMainForm
     end
     object CsDownButton: TSpeedButton
       Left = 80
-      Top = 202
+      Top = 178
       Width = 21
       Height = 21
       Anchors = [akTop, akRight]
@@ -3452,7 +3495,7 @@ object MainForm: TMainForm
     end
     object CsUpButton: TSpeedButton
       Left = 59
-      Top = 202
+      Top = 178
       Width = 21
       Height = 21
       Anchors = [akTop, akRight]
@@ -3486,6 +3529,23 @@ object MainForm: TMainForm
         0000}
       ParentFont = False
       OnClick = OnEditUpButtonClick
+    end
+    object Label4: TLabel
+      Left = 2
+      Top = 2
+      Width = 147
+      Height = 16
+      Align = alTop
+      Alignment = taCenter
+      Caption = 'Cs-137'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ExplicitLeft = 12
+      ExplicitWidth = 45
     end
     object CsTime: TEdit
       Left = 89
@@ -3540,7 +3600,7 @@ object MainForm: TMainForm
     end
     object CsMDA: TEdit
       Left = 89
-      Top = 110
+      Top = 202
       Width = 61
       Height = 21
       TabStop = False
@@ -3553,7 +3613,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       ReadOnly = True
-      TabOrder = 3
+      TabOrder = 6
     end
     object SampleCsActivity: TEdit
       Left = 89
@@ -3570,11 +3630,11 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       ReadOnly = True
-      TabOrder = 4
+      TabOrder = 7
     end
     object CsSnSe2: TEdit
       Left = 102
-      Top = 202
+      Top = 178
       Width = 48
       Height = 21
       Anchors = [akTop, akRight]
@@ -3591,23 +3651,6 @@ object MainForm: TMainForm
     end
     object CsSnSe1: TEdit
       Left = 89
-      Top = 178
-      Width = 61
-      Height = 21
-      TabStop = False
-      Anchors = [akTop, akRight]
-      Color = clBtnFace
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ReadOnly = True
-      TabOrder = 6
-    end
-    object SampleCsSum: TEdit
-      Left = 89
       Top = 154
       Width = 61
       Height = 21
@@ -3621,7 +3664,24 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       ReadOnly = True
-      TabOrder = 7
+      TabOrder = 4
+    end
+    object SampleCsSum: TEdit
+      Left = 89
+      Top = 130
+      Width = 61
+      Height = 21
+      TabStop = False
+      Anchors = [akTop, akRight]
+      Color = clBtnFace
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ReadOnly = True
+      TabOrder = 3
     end
     object SampleCsError: TEdit
       Left = 89
@@ -3646,10 +3706,10 @@ object MainForm: TMainForm
     Top = 40
     Width = 158
     Height = 278
+    Alignment = taLeftJustify
     BevelKind = bkFlat
     BevelOuter = bvNone
     BorderWidth = 2
-    Caption = 'Be-7'
     DoubleBuffered = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -3664,8 +3724,8 @@ object MainForm: TMainForm
       154
       274)
     object BePhotoPeakLabel: TLabel
-      Left = 1
-      Top = 21
+      Left = 2
+      Top = 41
       Width = 59
       Height = 13
       Caption = 'Fotocho'#39'qqi:'
@@ -3676,12 +3736,27 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
     end
-    object BeActLabel1: TLabel
-      Left = 1
-      Top = 45
+    object BeActLabel: TLabel
+      Left = 2
+      Top = 89
       Width = 77
       Height = 13
+      Cursor = crHandPoint
       Caption = 'Aktivligi (Bk/kg):'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGreen
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsUnderline]
+      ParentFont = False
+      OnClick = BeActLabelClick
+    end
+    object BeMDALabel: TLabel
+      Left = 2
+      Top = 65
+      Width = 63
+      Height = 13
+      Caption = 'AMA (Bk/kg):'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clGreen
       Font.Height = -11
@@ -3689,21 +3764,8 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
     end
-    object BeMDALabel: TLabel
-      Left = 1
-      Top = 93
-      Width = 63
-      Height = 13
-      Caption = 'AMA (Bk/kg):'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
     object SmpDensityLabel: TLabel
-      Left = 1
+      Left = 2
       Top = 205
       Width = 66
       Height = 13
@@ -3716,8 +3778,8 @@ object MainForm: TMainForm
       ParentFont = False
     end
     object BeErrorLabel: TLabel
-      Left = 1
-      Top = 117
+      Left = 2
+      Top = 112
       Width = 57
       Height = 13
       Caption = 'Xatolik (%):'
@@ -3728,21 +3790,8 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
     end
-    object BeActLabel2: TLabel
-      Left = 1
-      Top = 69
-      Width = 88
-      Height = 13
-      Caption = 'Aktivligi (Bk/m^2):'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clGreen
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-    end
     object SmpTotalMassLabel: TLabel
-      Left = 1
+      Left = 2
       Top = 229
       Width = 85
       Height = 13
@@ -3755,7 +3804,7 @@ object MainForm: TMainForm
       ParentFont = False
     end
     object SmpSquareLabel: TLabel
-      Left = 1
+      Left = 2
       Top = 253
       Width = 73
       Height = 13
@@ -3768,22 +3817,21 @@ object MainForm: TMainForm
       ParentFont = False
     end
     object SmpLabel: TLabel
-      Left = 24
-      Top = 141
-      Width = 88
+      Left = 2
+      Top = 138
+      Width = 97
       Height = 11
       Alignment = taCenter
-      Anchors = [akLeft, akTop, akRight]
-      Caption = 'Namuna xususiyatlari'
+      Caption = 'Namuna o'#39'lchamlari'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -9
       Font.Name = 'Tahoma'
-      Font.Style = []
+      Font.Style = [fsBold]
       ParentFont = False
     end
     object SmpMassLabel: TLabel
-      Left = 1
+      Left = 2
       Top = 180
       Width = 63
       Height = 13
@@ -3796,7 +3844,7 @@ object MainForm: TMainForm
       ParentFont = False
     end
     object SmpDurLabel: TLabel
-      Left = 1
+      Left = 2
       Top = 157
       Width = 85
       Height = 13
@@ -3808,17 +3856,40 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
     end
-    object Bevel1: TBevel
-      Left = -3
-      Top = 138
-      Width = 160
-      Height = 8
-      Anchors = [akLeft, akTop, akRight]
-      Shape = bsTopLine
+    object Label5: TLabel
+      Left = 2
+      Top = 2
+      Width = 150
+      Height = 16
+      Align = alTop
+      Alignment = taCenter
+      Caption = 'Be-7'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      ExplicitLeft = 12
+      ExplicitWidth = 30
+    end
+    object BeSmpLabel: TLabel
+      Left = 2
+      Top = 23
+      Width = 133
+      Height = 11
+      Alignment = taCenter
+      Caption = 'O'#39'rganilayotgan namunada'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -9
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
     end
     object BeSum: TEdit
       Left = 92
-      Top = 18
+      Top = 38
       Width = 61
       Height = 21
       TabStop = False
@@ -3833,9 +3904,10 @@ object MainForm: TMainForm
       ReadOnly = True
       TabOrder = 0
     end
-    object BeActivityPerKg: TEdit
+    object BeActivityPerKgOrSq: TEdit
+      Tag = 1
       Left = 92
-      Top = 42
+      Top = 86
       Width = 61
       Height = 21
       TabStop = False
@@ -3852,7 +3924,7 @@ object MainForm: TMainForm
     end
     object BeMDA: TEdit
       Left = 92
-      Top = 90
+      Top = 62
       Width = 61
       Height = 21
       TabStop = False
@@ -3885,7 +3957,7 @@ object MainForm: TMainForm
     end
     object SampleBeError: TEdit
       Left = 92
-      Top = 114
+      Top = 109
       Width = 61
       Height = 21
       TabStop = False
@@ -3900,23 +3972,6 @@ object MainForm: TMainForm
       ReadOnly = True
       TabOrder = 4
     end
-    object BeActivityPerSq: TEdit
-      Left = 92
-      Top = 66
-      Width = 61
-      Height = 21
-      TabStop = False
-      Anchors = [akTop, akRight]
-      Color = clBtnFace
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      ReadOnly = True
-      TabOrder = 5
-    end
     object SampleOrigMass: TEdit
       Left = 92
       Top = 226
@@ -3929,7 +3984,7 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 6
+      TabOrder = 5
       OnChange = OnParamChange
       OnClick = ParamEditClick
     end
@@ -3945,7 +4000,7 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      TabOrder = 7
+      TabOrder = 6
       OnChange = OnParamChange
       OnClick = ParamEditClick
     end
@@ -3964,7 +4019,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       ReadOnly = True
-      TabOrder = 8
+      TabOrder = 7
     end
     object SampleTime: TEdit
       Left = 92
@@ -3981,7 +4036,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       ReadOnly = True
-      TabOrder = 9
+      TabOrder = 8
     end
   end
   object StatusBar: TStatusBar

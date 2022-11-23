@@ -148,6 +148,18 @@ __published:
 	TLabel *Label1;
 	TLabel *Label2;
 	TEdit *Be7PhotopeakEffEdit;
+    TEdit *Edit1;
+    TEdit *Edit2;
+    TEdit *Edit3;
+    TEdit *Edit4;
+    TEdit *Edit5;
+    TEdit *Edit6;
+    TEdit *Edit7;
+    TEdit *Edit8;
+    TEdit *Edit9;
+    TEdit *Edit10;
+    TEdit *Edit11;
+    TEdit *Edit12;
     void __fastcall SaveButtonClick(TObject *Sender);
     void __fastcall BrowseButtonClick(TObject *Sender);
     void __fastcall FormPaint(TObject *Sender);

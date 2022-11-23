@@ -63,8 +63,8 @@ __published:
 	TLabel *ThMDALabel;
 	TLabel *ThLabel;
 	TLabel *ThSmpLabel;
-    TLabel *Label7;
     TLabel *ThCoeffLabel;
+    TLabel *ThCoeffCalcLabel;
 	TLabel *SmpThPhotoPeakLabel;
 	TLabel *SmpThErrorLabel;
 	TLabel *SmpThActLabel;
@@ -84,8 +84,8 @@ __published:
 	TLabel *RaMDALabel;
 	TLabel *RaLabel;
 	TLabel *RaSmpLabel;
-    TLabel *Label18;
     TLabel *RaCoeffLabel;
+    TLabel *RaCoeffCalcLabel;
 	TLabel *SmpRaPhotoPeakLabel;
 	TLabel *SmpRaErrorLabel;
 	TLabel *SmpRaActLabel;
@@ -105,8 +105,8 @@ __published:
 	TLabel *KMDALabel;
 	TLabel *KLabel;
 	TLabel *KSmpLabel;
-    TLabel *Label29;
     TLabel *KCoeffLabel;
+    TLabel *KCoeffCalcLabel;
 	TLabel *SmpKPhotoPeakLabel;
 	TLabel *SmpKErrorLabel;
 	TLabel *SmpKActLabel;
@@ -126,8 +126,8 @@ __published:
 	TLabel *CsMDALabel;
 	TLabel *CsLabel;
 	TLabel *CsSmpLabel;
-    TLabel *Label40;
     TLabel *CsCoeffLabel;
+    TLabel *CsCoeffCalcLabel;
 	TLabel *SmpCsPhotoPeakLabel;
 	TLabel *SmpCsErrorLabel;
 	TLabel *SmpCsActLabel;
@@ -142,17 +142,15 @@ __published:
     TEdit *SampleCsError;
     TPanel *SampleInfoPanel;
 	TLabel *BePhotoPeakLabel;
-	TLabel *BeActLabel1;
+    TLabel *BeActLabel;
 	TLabel *BeMDALabel;
 	TLabel *SmpDensityLabel;
     TEdit *BeSum;
-    TEdit *BeActivityPerKg;
+    TEdit *BeActivityPerKgOrSq;
     TEdit *BeMDA;
     TEdit *SampleDensity;
     TEdit *SampleBeError;
 	TLabel *BeErrorLabel;
-    TEdit *BeActivityPerSq;
-	TLabel *BeActLabel2;
     TEdit *SampleOrigMass;
 	TLabel *SmpTotalMassLabel;
     TEdit *SampleSquare;
@@ -163,7 +161,6 @@ __published:
 	TLabel *SmpMassLabel;
     TEdit *SampleTime;
 	TLabel *SmpDurLabel;
-    TBevel *Bevel1;
     TTimer *SpectraLoadTimer;
     TStatusBar *StatusBar;
     TImageList *ImageList;
@@ -271,6 +268,12 @@ __published:
     TSpeedButton *KUpButton;
     TSpeedButton *CsDownButton;
     TSpeedButton *CsUpButton;
+    TLabel *Label1;
+    TLabel *Label2;
+    TLabel *Label3;
+    TLabel *Label4;
+    TLabel *Label5;
+    TLabel *BeSmpLabel;
     void __fastcall FormResize(TObject *Sender);
     void __fastcall StandardSamplesButtonClick(TObject *Sender);
     void __fastcall SpectraLoadTimerTimer(TObject *Sender);
@@ -296,14 +299,15 @@ __published:
 	void __fastcall OpenButtonClick(TObject *Sender);
 	void __fastcall SaveSpectraButtonClick(TObject *Sender);
 	void __fastcall BatchProcessButtonClick(TObject *Sender);
-    void __fastcall ThCoeffLabelClick(TObject *Sender);
-    void __fastcall RaCoeffLabelClick(TObject *Sender);
-    void __fastcall KCoeffLabelClick(TObject *Sender);
-    void __fastcall CsCoeffLabelClick(TObject *Sender);
+    void __fastcall ThCoeffCalcLabelClick(TObject *Sender);
+    void __fastcall RaCoeffCalcLabelClick(TObject *Sender);
+    void __fastcall KCoeffCalcLabelClick(TObject *Sender);
+    void __fastcall CsCoeffCalcLabelClick(TObject *Sender);
     void __fastcall OnEditUpButtonClick(TObject *Sender);
     void __fastcall OnKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
     void __fastcall OnEditDownButtonClick(TObject *Sender);
     void __fastcall SampleChartDblClick(TObject *Sender);
+    void __fastcall BeActLabelClick(TObject *Sender);
 
 
 private:
@@ -386,6 +390,8 @@ private:
 	// Strings
 	String ErrorTitle;
 	String DirSelectionString;
+    String BeActivityPerKilogram;
+    String BeActivityPerSquare;
 
 
 	void InitStdSamples(TSettingsForm *Form);

@@ -4,7 +4,7 @@ object SettingsForm: TSettingsForm
   BorderStyle = bsDialog
   Caption = 'Etalon va fon namunalari'
   ClientHeight = 707
-  ClientWidth = 844
+  ClientWidth = 896
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,7 +17,7 @@ object SettingsForm: TSettingsForm
   PixelsPerInch = 96
   TextHeight = 13
   object Title1Label: TLabel
-    Left = 156
+    Left = 196
     Top = 10
     Width = 315
     Height = 13
@@ -32,9 +32,9 @@ object SettingsForm: TSettingsForm
   object Label7: TLabel
     Left = 105
     Top = 33
-    Width = 172
+    Width = 235
     Height = 13
-    Caption = 'Aktivligi (Bk) va qayd qilingan sanasi'
+    Caption = 'Aktivligi (Bk), xatoligi (%) va qayd qilingan sanasi'
   end
   object Label34: TLabel
     Left = 487
@@ -162,7 +162,7 @@ object SettingsForm: TSettingsForm
     ParentFont = False
   end
   object Label14: TLabel
-    Left = 487
+    Left = 527
     Top = 207
     Width = 99
     Height = 13
@@ -171,19 +171,19 @@ object SettingsForm: TSettingsForm
   object Label16: TLabel
     Left = 105
     Top = 207
-    Width = 172
+    Width = 235
     Height = 13
-    Caption = 'Aktivligi (Bk) va qayd qilingan sanasi'
+    Caption = 'Aktivligi (Bk), xatoligi (%) va qayd qilingan sanasi'
   end
   object Label19: TLabel
     Left = 105
     Top = 381
-    Width = 172
+    Width = 235
     Height = 13
-    Caption = 'Aktivligi (Bk) va qayd qilingan sanasi'
+    Caption = 'Aktivligi (Bk), xatoligi (%) va qayd qilingan sanasi'
   end
   object Label21: TLabel
-    Left = 487
+    Left = 527
     Top = 381
     Width = 99
     Height = 13
@@ -288,7 +288,7 @@ object SettingsForm: TSettingsForm
     ParentFont = False
   end
   object Title2Label: TLabel
-    Left = 156
+    Left = 196
     Top = 183
     Width = 322
     Height = 13
@@ -301,7 +301,7 @@ object SettingsForm: TSettingsForm
     ParentFont = False
   end
   object Title3Label: TLabel
-    Left = 156
+    Left = 196
     Top = 358
     Width = 329
     Height = 13
@@ -485,21 +485,21 @@ object SettingsForm: TSettingsForm
     Visible = False
   end
   object Label35: TLabel
-    Left = 327
+    Left = 367
     Top = 33
     Width = 105
     Height = 13
     Caption = 'Spektr o'#39'lchangan kun'
   end
   object Label36: TLabel
-    Left = 327
+    Left = 367
     Top = 207
     Width = 105
     Height = 13
     Caption = 'Spektr o'#39'lchangan kun'
   end
   object Label37: TLabel
-    Left = 327
+    Left = 367
     Top = 381
     Width = 105
     Height = 13
@@ -508,7 +508,7 @@ object SettingsForm: TSettingsForm
   object Bevel1: TBevel
     Left = 0
     Top = 523
-    Width = 843
+    Width = 896
     Height = 8
     Shape = bsTopLine
   end
@@ -541,542 +541,7 @@ object SettingsForm: TSettingsForm
     Text = '6180'
   end
   object Th1Date: TDateTimePicker
-    Left = 165
-    Top = 54
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.418707719909434700
-    TabOrder = 1
-  end
-  object ThEnergy1Edit: TEdit
-    Left = 105
-    Top = 573
-    Width = 58
-    Height = 21
-    TabOrder = 66
-    Text = '2500'
-  end
-  object ThEnergy2Edit: TEdit
-    Left = 186
-    Top = 573
-    Width = 58
-    Height = 21
-    TabOrder = 67
-    Text = '2720'
-  end
-  object SaveButton: TButton
-    Left = 679
-    Top = 672
-    Width = 75
-    Height = 25
-    Caption = '&Saqlash'
-    Default = True
-    TabOrder = 77
-    OnClick = SaveButtonClick
-  end
-  object CloseButton: TButton
-    Left = 761
-    Top = 672
-    Width = 75
-    Height = 25
-    Cancel = True
-    Caption = '&Yopish'
-    ModalResult = 8
-    TabOrder = 78
-  end
-  object Th1FileName: TEdit
-    Left = 487
-    Top = 52
-    Width = 284
-    Height = 21
-    TabOrder = 3
-    OnChange = FileNameChange
-  end
-  object Th1Button: TButton
-    Left = 773
-    Top = 50
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 4
-    OnClick = BrowseButtonClick
-  end
-  object Ra1Button: TButton
-    Left = 773
-    Top = 74
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 9
-    OnClick = BrowseButtonClick
-  end
-  object Ra1FileName: TEdit
-    Left = 487
-    Top = 76
-    Width = 284
-    Height = 21
-    TabOrder = 8
-    OnChange = FileNameChange
-  end
-  object RaEnergy2Edit: TEdit
-    Left = 186
-    Top = 597
-    Width = 58
-    Height = 21
-    TabOrder = 69
-    Text = '1846'
-  end
-  object RaEnergy1Edit: TEdit
-    Left = 105
-    Top = 597
-    Width = 58
-    Height = 21
-    TabOrder = 68
-    Text = '1677'
-  end
-  object Ra1Date: TDateTimePicker
-    Left = 165
-    Top = 78
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.380290173612593200
-    TabOrder = 6
-  end
-  object Ra1ActivityEdit: TEdit
-    Left = 105
-    Top = 78
-    Width = 58
-    Height = 21
-    TabOrder = 5
-    Text = '5440'
-  end
-  object K1Button: TButton
-    Left = 773
-    Top = 98
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 14
-    OnClick = BrowseButtonClick
-  end
-  object K1FileName: TEdit
-    Left = 487
-    Top = 100
-    Width = 284
-    Height = 21
-    TabOrder = 13
-    OnChange = FileNameChange
-  end
-  object KEnergy2Edit: TEdit
-    Left = 186
-    Top = 621
-    Width = 58
-    Height = 21
-    TabOrder = 71
-    Text = '1540'
-  end
-  object KEnergy1Edit: TEdit
-    Left = 105
-    Top = 621
-    Width = 58
-    Height = 21
-    TabOrder = 70
-    Text = '1385'
-  end
-  object K1Date: TDateTimePicker
-    Left = 165
-    Top = 102
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.380587037034274500
-    TabOrder = 11
-  end
-  object K1ActivityEdit: TEdit
-    Left = 105
-    Top = 102
-    Width = 58
-    Height = 21
-    TabOrder = 10
-    Text = '3100'
-  end
-  object Cs1Button: TButton
-    Left = 773
-    Top = 122
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 19
-    OnClick = BrowseButtonClick
-  end
-  object Cs1FileName: TEdit
-    Left = 487
-    Top = 124
-    Width = 284
-    Height = 21
-    TabOrder = 18
-    OnChange = FileNameChange
-  end
-  object CsEnergy2Edit: TEdit
-    Left = 186
-    Top = 645
-    Width = 58
-    Height = 21
-    TabOrder = 73
-    Text = '709'
-  end
-  object CsEnergy1Edit: TEdit
-    Left = 105
-    Top = 645
-    Width = 58
-    Height = 21
-    TabOrder = 72
-    Text = '612'
-  end
-  object Cs1Date: TDateTimePicker
-    Left = 165
-    Top = 126
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.380861782410647700
-    TabOrder = 16
-  end
-  object Cs1ActivityEdit: TEdit
-    Left = 105
-    Top = 126
-    Width = 58
-    Height = 21
-    TabOrder = 15
-    Text = '3220'
-  end
-  object Cs2ActivityEdit: TEdit
-    Left = 105
-    Top = 300
-    Width = 58
-    Height = 21
-    TabOrder = 37
-    Text = '2570'
-  end
-  object Cs2Date: TDateTimePicker
-    Left = 165
-    Top = 300
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.418708159719244600
-    TabOrder = 38
-  end
-  object Cs2FileName: TEdit
-    Left = 487
-    Top = 298
-    Width = 284
-    Height = 21
-    TabOrder = 40
-    OnChange = FileNameChange
-  end
-  object Cs2Button: TButton
-    Left = 773
-    Top = 296
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 41
-    OnClick = BrowseButtonClick
-  end
-  object K2ActivityEdit: TEdit
-    Left = 105
-    Top = 276
-    Width = 58
-    Height = 21
-    TabOrder = 32
-    Text = '13790'
-  end
-  object K2Date: TDateTimePicker
-    Left = 165
-    Top = 276
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.418708240744308600
-    TabOrder = 33
-  end
-  object K2FileName: TEdit
-    Left = 487
-    Top = 274
-    Width = 284
-    Height = 21
-    TabOrder = 35
-    OnChange = FileNameChange
-  end
-  object K2Button: TButton
-    Left = 773
-    Top = 272
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 36
-    OnClick = BrowseButtonClick
-  end
-  object Ra2ActivityEdit: TEdit
-    Left = 105
-    Top = 252
-    Width = 58
-    Height = 21
-    TabOrder = 27
-    Text = '8180'
-  end
-  object Ra2Date: TDateTimePicker
-    Left = 165
-    Top = 252
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.418708333330869200
-    TabOrder = 28
-  end
-  object Ra2FileName: TEdit
-    Left = 487
-    Top = 250
-    Width = 284
-    Height = 21
-    TabOrder = 30
-    OnChange = FileNameChange
-  end
-  object Ra2Button: TButton
-    Left = 773
-    Top = 248
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 31
-    OnClick = BrowseButtonClick
-  end
-  object Th2Button: TButton
-    Left = 773
-    Top = 224
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 26
-    OnClick = BrowseButtonClick
-  end
-  object Th2FileName: TEdit
-    Left = 487
-    Top = 226
-    Width = 284
-    Height = 21
-    TabOrder = 25
-    OnChange = FileNameChange
-  end
-  object Th2Date: TDateTimePicker
-    Left = 165
-    Top = 228
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.418708414348657200
-    TabOrder = 23
-  end
-  object Th2ActivityEdit: TEdit
-    Left = 105
-    Top = 228
-    Width = 58
-    Height = 21
-    TabOrder = 22
-    Text = '7350'
-  end
-  object Th3ActivityEdit: TEdit
-    Left = 105
-    Top = 402
-    Width = 58
-    Height = 21
-    TabOrder = 44
-    Text = '6430'
-  end
-  object Th3Date: TDateTimePicker
-    Left = 165
-    Top = 402
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.418708518518542400
-    TabOrder = 45
-  end
-  object Th3FileName: TEdit
-    Left = 487
-    Top = 400
-    Width = 284
-    Height = 21
-    TabOrder = 47
-    OnChange = FileNameChange
-  end
-  object Th3Button: TButton
-    Left = 773
-    Top = 398
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 48
-    OnClick = BrowseButtonClick
-  end
-  object Ra3Button: TButton
-    Left = 773
-    Top = 422
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 53
-    OnClick = BrowseButtonClick
-  end
-  object Ra3FileName: TEdit
-    Left = 487
-    Top = 424
-    Width = 284
-    Height = 21
-    TabOrder = 52
-    OnChange = FileNameChange
-  end
-  object Ra3Date: TDateTimePicker
-    Left = 165
-    Top = 426
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.418708599536330400
-    TabOrder = 50
-  end
-  object Ra3ActivityEdit: TEdit
-    Left = 105
-    Top = 426
-    Width = 58
-    Height = 21
-    TabOrder = 49
-    Text = '5490'
-  end
-  object K3Button: TButton
-    Left = 773
-    Top = 446
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 58
-    OnClick = BrowseButtonClick
-  end
-  object K3FileName: TEdit
-    Left = 487
-    Top = 448
-    Width = 284
-    Height = 21
-    TabOrder = 57
-    OnChange = FileNameChange
-  end
-  object K3Date: TDateTimePicker
-    Left = 165
-    Top = 450
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.418708680554118500
-    TabOrder = 55
-  end
-  object K3ActivityEdit: TEdit
-    Left = 105
-    Top = 450
-    Width = 58
-    Height = 21
-    TabOrder = 54
-    Text = '13700'
-  end
-  object Cs3Button: TButton
-    Left = 773
-    Top = 470
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 63
-    OnClick = BrowseButtonClick
-  end
-  object Cs3FileName: TEdit
-    Left = 487
-    Top = 472
-    Width = 284
-    Height = 21
-    TabOrder = 62
-    OnChange = FileNameChange
-  end
-  object Cs3Date: TDateTimePicker
-    Left = 165
-    Top = 474
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.418708784724003600
-    TabOrder = 60
-  end
-  object Cs3ActivityEdit: TEdit
-    Left = 105
-    Top = 474
-    Width = 58
-    Height = 21
-    TabOrder = 59
-    Text = '3150'
-  end
-  object Bkg1FileName: TEdit
-    Left = 487
-    Top = 148
-    Width = 284
-    Height = 21
-    TabOrder = 20
-    OnChange = FileNameChange
-  end
-  object Bkg1Button: TButton
-    Left = 773
-    Top = 146
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 21
-    OnClick = BrowseButtonClick
-  end
-  object Bkg2FileName: TEdit
-    Left = 487
-    Top = 322
-    Width = 284
-    Height = 21
-    TabOrder = 42
-    OnChange = FileNameChange
-  end
-  object Bkg2Button: TButton
-    Left = 773
-    Top = 320
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 43
-    OnClick = BrowseButtonClick
-  end
-  object Bkg3FileName: TEdit
-    Left = 487
-    Top = 496
-    Width = 284
-    Height = 21
-    TabOrder = 64
-    OnChange = FileNameChange
-  end
-  object Bkg3Button: TButton
-    Left = 773
-    Top = 494
-    Width = 26
-    Height = 25
-    Caption = '...'
-    TabOrder = 65
-    OnClick = BrowseButtonClick
-  end
-  object Th1MesDate: TDateTimePicker
-    Left = 327
+    Left = 205
     Top = 54
     Width = 117
     Height = 21
@@ -1084,111 +549,646 @@ object SettingsForm: TSettingsForm
     Time = 0.418707719909434700
     TabOrder = 2
   end
+  object ThEnergy1Edit: TEdit
+    Left = 105
+    Top = 573
+    Width = 58
+    Height = 21
+    TabOrder = 78
+    Text = '2500'
+  end
+  object ThEnergy2Edit: TEdit
+    Left = 186
+    Top = 573
+    Width = 58
+    Height = 21
+    TabOrder = 79
+    Text = '2720'
+  end
+  object SaveButton: TButton
+    Left = 727
+    Top = 670
+    Width = 75
+    Height = 25
+    Caption = '&Saqlash'
+    Default = True
+    TabOrder = 89
+    OnClick = SaveButtonClick
+  end
+  object CloseButton: TButton
+    Left = 809
+    Top = 670
+    Width = 75
+    Height = 25
+    Cancel = True
+    Caption = '&Yopish'
+    ModalResult = 8
+    TabOrder = 90
+  end
+  object Th1FileName: TEdit
+    Left = 527
+    Top = 52
+    Width = 284
+    Height = 21
+    TabOrder = 4
+    OnChange = FileNameChange
+  end
+  object Th1Button: TButton
+    Left = 813
+    Top = 50
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 5
+    OnClick = BrowseButtonClick
+  end
+  object Ra1Button: TButton
+    Left = 813
+    Top = 74
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 11
+    OnClick = BrowseButtonClick
+  end
+  object Ra1FileName: TEdit
+    Left = 527
+    Top = 76
+    Width = 284
+    Height = 21
+    TabOrder = 10
+    OnChange = FileNameChange
+  end
+  object RaEnergy2Edit: TEdit
+    Left = 186
+    Top = 597
+    Width = 58
+    Height = 21
+    TabOrder = 81
+    Text = '1846'
+  end
+  object RaEnergy1Edit: TEdit
+    Left = 105
+    Top = 597
+    Width = 58
+    Height = 21
+    TabOrder = 80
+    Text = '1677'
+  end
+  object Ra1Date: TDateTimePicker
+    Left = 205
+    Top = 78
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.380290173612593200
+    TabOrder = 8
+  end
+  object Ra1ActivityEdit: TEdit
+    Left = 105
+    Top = 78
+    Width = 58
+    Height = 21
+    TabOrder = 6
+    Text = '5440'
+  end
+  object K1Button: TButton
+    Left = 813
+    Top = 98
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 17
+    OnClick = BrowseButtonClick
+  end
+  object K1FileName: TEdit
+    Left = 527
+    Top = 100
+    Width = 284
+    Height = 21
+    TabOrder = 16
+    OnChange = FileNameChange
+  end
+  object KEnergy2Edit: TEdit
+    Left = 186
+    Top = 621
+    Width = 58
+    Height = 21
+    TabOrder = 83
+    Text = '1540'
+  end
+  object KEnergy1Edit: TEdit
+    Left = 105
+    Top = 621
+    Width = 58
+    Height = 21
+    TabOrder = 82
+    Text = '1385'
+  end
+  object K1Date: TDateTimePicker
+    Left = 205
+    Top = 102
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.380587037034274500
+    TabOrder = 14
+  end
+  object K1ActivityEdit: TEdit
+    Left = 105
+    Top = 102
+    Width = 58
+    Height = 21
+    TabOrder = 12
+    Text = '3100'
+  end
+  object Cs1Button: TButton
+    Left = 813
+    Top = 122
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 23
+    OnClick = BrowseButtonClick
+  end
+  object Cs1FileName: TEdit
+    Left = 527
+    Top = 124
+    Width = 284
+    Height = 21
+    TabOrder = 22
+    OnChange = FileNameChange
+  end
+  object CsEnergy2Edit: TEdit
+    Left = 186
+    Top = 645
+    Width = 58
+    Height = 21
+    TabOrder = 85
+    Text = '709'
+  end
+  object CsEnergy1Edit: TEdit
+    Left = 105
+    Top = 645
+    Width = 58
+    Height = 21
+    TabOrder = 84
+    Text = '612'
+  end
+  object Cs1Date: TDateTimePicker
+    Left = 205
+    Top = 126
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.380861782410647700
+    TabOrder = 20
+  end
+  object Cs1ActivityEdit: TEdit
+    Left = 105
+    Top = 126
+    Width = 58
+    Height = 21
+    TabOrder = 18
+    Text = '3220'
+  end
+  object Cs2ActivityEdit: TEdit
+    Left = 105
+    Top = 300
+    Width = 58
+    Height = 21
+    TabOrder = 44
+    Text = '2570'
+  end
+  object Cs2Date: TDateTimePicker
+    Left = 205
+    Top = 300
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.418708159719244600
+    TabOrder = 46
+  end
+  object Cs2FileName: TEdit
+    Left = 527
+    Top = 298
+    Width = 284
+    Height = 21
+    TabOrder = 48
+    OnChange = FileNameChange
+  end
+  object Cs2Button: TButton
+    Left = 813
+    Top = 296
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 49
+    OnClick = BrowseButtonClick
+  end
+  object K2ActivityEdit: TEdit
+    Left = 105
+    Top = 276
+    Width = 58
+    Height = 21
+    TabOrder = 38
+    Text = '13790'
+  end
+  object K2Date: TDateTimePicker
+    Left = 205
+    Top = 276
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.418708240744308600
+    TabOrder = 40
+  end
+  object K2FileName: TEdit
+    Left = 527
+    Top = 274
+    Width = 284
+    Height = 21
+    TabOrder = 42
+    OnChange = FileNameChange
+  end
+  object K2Button: TButton
+    Left = 813
+    Top = 272
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 43
+    OnClick = BrowseButtonClick
+  end
+  object Ra2ActivityEdit: TEdit
+    Left = 105
+    Top = 252
+    Width = 58
+    Height = 21
+    TabOrder = 32
+    Text = '8180'
+  end
+  object Ra2Date: TDateTimePicker
+    Left = 205
+    Top = 252
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.418708333330869200
+    TabOrder = 34
+  end
+  object Ra2FileName: TEdit
+    Left = 527
+    Top = 250
+    Width = 284
+    Height = 21
+    TabOrder = 36
+    OnChange = FileNameChange
+  end
+  object Ra2Button: TButton
+    Left = 813
+    Top = 248
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 37
+    OnClick = BrowseButtonClick
+  end
+  object Th2Button: TButton
+    Left = 813
+    Top = 224
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 31
+    OnClick = BrowseButtonClick
+  end
+  object Th2FileName: TEdit
+    Left = 527
+    Top = 226
+    Width = 284
+    Height = 21
+    TabOrder = 30
+    OnChange = FileNameChange
+  end
+  object Th2Date: TDateTimePicker
+    Left = 205
+    Top = 228
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.418708414348657200
+    TabOrder = 28
+  end
+  object Th2ActivityEdit: TEdit
+    Left = 105
+    Top = 228
+    Width = 58
+    Height = 21
+    TabOrder = 26
+    Text = '7350'
+  end
+  object Th3ActivityEdit: TEdit
+    Left = 105
+    Top = 402
+    Width = 58
+    Height = 21
+    TabOrder = 52
+    Text = '6430'
+  end
+  object Th3Date: TDateTimePicker
+    Left = 205
+    Top = 402
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.418708518518542400
+    TabOrder = 54
+  end
+  object Th3FileName: TEdit
+    Left = 527
+    Top = 400
+    Width = 284
+    Height = 21
+    TabOrder = 56
+    OnChange = FileNameChange
+  end
+  object Th3Button: TButton
+    Left = 813
+    Top = 398
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 57
+    OnClick = BrowseButtonClick
+  end
+  object Ra3Button: TButton
+    Left = 813
+    Top = 422
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 63
+    OnClick = BrowseButtonClick
+  end
+  object Ra3FileName: TEdit
+    Left = 527
+    Top = 424
+    Width = 284
+    Height = 21
+    TabOrder = 62
+    OnChange = FileNameChange
+  end
+  object Ra3Date: TDateTimePicker
+    Left = 205
+    Top = 426
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.418708599536330400
+    TabOrder = 60
+  end
+  object Ra3ActivityEdit: TEdit
+    Left = 105
+    Top = 426
+    Width = 58
+    Height = 21
+    TabOrder = 58
+    Text = '5490'
+  end
+  object K3Button: TButton
+    Left = 813
+    Top = 446
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 69
+    OnClick = BrowseButtonClick
+  end
+  object K3FileName: TEdit
+    Left = 527
+    Top = 448
+    Width = 284
+    Height = 21
+    TabOrder = 68
+    OnChange = FileNameChange
+  end
+  object K3Date: TDateTimePicker
+    Left = 205
+    Top = 450
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.418708680554118500
+    TabOrder = 66
+  end
+  object K3ActivityEdit: TEdit
+    Left = 105
+    Top = 450
+    Width = 58
+    Height = 21
+    TabOrder = 64
+    Text = '13700'
+  end
+  object Cs3Button: TButton
+    Left = 813
+    Top = 470
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 75
+    OnClick = BrowseButtonClick
+  end
+  object Cs3FileName: TEdit
+    Left = 527
+    Top = 472
+    Width = 284
+    Height = 21
+    TabOrder = 74
+    OnChange = FileNameChange
+  end
+  object Cs3Date: TDateTimePicker
+    Left = 205
+    Top = 474
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.418708784724003600
+    TabOrder = 72
+  end
+  object Cs3ActivityEdit: TEdit
+    Left = 105
+    Top = 474
+    Width = 58
+    Height = 21
+    TabOrder = 70
+    Text = '3150'
+  end
+  object Bkg1FileName: TEdit
+    Left = 527
+    Top = 148
+    Width = 284
+    Height = 21
+    TabOrder = 24
+    OnChange = FileNameChange
+  end
+  object Bkg1Button: TButton
+    Left = 813
+    Top = 146
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 25
+    OnClick = BrowseButtonClick
+  end
+  object Bkg2FileName: TEdit
+    Left = 527
+    Top = 322
+    Width = 284
+    Height = 21
+    TabOrder = 50
+    OnChange = FileNameChange
+  end
+  object Bkg2Button: TButton
+    Left = 813
+    Top = 320
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 51
+    OnClick = BrowseButtonClick
+  end
+  object Bkg3FileName: TEdit
+    Left = 527
+    Top = 496
+    Width = 284
+    Height = 21
+    TabOrder = 76
+    OnChange = FileNameChange
+  end
+  object Bkg3Button: TButton
+    Left = 813
+    Top = 494
+    Width = 26
+    Height = 25
+    Caption = '...'
+    TabOrder = 77
+    OnClick = BrowseButtonClick
+  end
+  object Th1MesDate: TDateTimePicker
+    Left = 367
+    Top = 54
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.418707719909434700
+    TabOrder = 3
+  end
   object Ra1MesDate: TDateTimePicker
-    Left = 327
+    Left = 367
     Top = 78
     Width = 117
     Height = 21
     Date = 34943.000000000000000000
     Time = 0.418707719909434700
-    TabOrder = 7
+    TabOrder = 9
   end
   object K1MesDate: TDateTimePicker
-    Left = 327
+    Left = 367
     Top = 102
     Width = 117
     Height = 21
     Date = 34943.000000000000000000
     Time = 0.418707719909434700
-    TabOrder = 12
+    TabOrder = 15
   end
   object Cs1MesDate: TDateTimePicker
-    Left = 327
+    Left = 367
     Top = 126
     Width = 117
     Height = 21
     Date = 34943.000000000000000000
     Time = 0.418707719909434700
-    TabOrder = 17
+    TabOrder = 21
   end
   object Th2MesDate: TDateTimePicker
-    Left = 327
+    Left = 367
     Top = 228
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.418707719909434700
-    TabOrder = 24
-  end
-  object Ra2MesDate: TDateTimePicker
-    Left = 327
-    Top = 252
     Width = 117
     Height = 21
     Date = 34943.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 29
   end
+  object Ra2MesDate: TDateTimePicker
+    Left = 367
+    Top = 252
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.418707719909434700
+    TabOrder = 35
+  end
   object K2MesDate: TDateTimePicker
-    Left = 327
+    Left = 367
     Top = 276
     Width = 117
     Height = 21
     Date = 34943.000000000000000000
     Time = 0.418707719909434700
-    TabOrder = 34
+    TabOrder = 41
   end
   object Cs2MesDate: TDateTimePicker
-    Left = 327
+    Left = 367
     Top = 300
     Width = 117
     Height = 21
     Date = 34943.000000000000000000
     Time = 0.418707719909434700
-    TabOrder = 39
+    TabOrder = 47
   end
   object Th3MesDate: TDateTimePicker
-    Left = 327
+    Left = 367
     Top = 402
     Width = 117
     Height = 21
     Date = 34943.000000000000000000
     Time = 0.418707719909434700
-    TabOrder = 46
+    TabOrder = 55
   end
   object Ra3MesDate: TDateTimePicker
-    Left = 327
+    Left = 367
     Top = 426
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.418707719909434700
-    TabOrder = 51
-  end
-  object K3MesDate: TDateTimePicker
-    Left = 327
-    Top = 450
-    Width = 117
-    Height = 21
-    Date = 34943.000000000000000000
-    Time = 0.418707719909434700
-    TabOrder = 56
-  end
-  object Cs3MesDate: TDateTimePicker
-    Left = 327
-    Top = 474
     Width = 117
     Height = 21
     Date = 34943.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 61
   end
+  object K3MesDate: TDateTimePicker
+    Left = 367
+    Top = 450
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.418707719909434700
+    TabOrder = 67
+  end
+  object Cs3MesDate: TDateTimePicker
+    Left = 367
+    Top = 474
+    Width = 117
+    Height = 21
+    Date = 34943.000000000000000000
+    Time = 0.418707719909434700
+    TabOrder = 73
+  end
   object BeEnergy2Edit: TEdit
     Left = 186
     Top = 669
     Width = 58
     Height = 21
-    TabOrder = 75
+    TabOrder = 87
     Text = '525'
   end
   object BeEnergy1Edit: TEdit
@@ -1196,7 +1196,7 @@ object SettingsForm: TSettingsForm
     Top = 669
     Width = 58
     Height = 21
-    TabOrder = 74
+    TabOrder = 86
     Text = '430'
   end
   object Be7PhotopeakEffEdit: TEdit
@@ -1207,11 +1207,107 @@ object SettingsForm: TSettingsForm
     Hint = '3 xil zichliklar uchun. Har birini nuqta-vergul bilan ajrating.'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 76
+    TabOrder = 88
+  end
+  object Edit1: TEdit
+    Left = 167
+    Top = 54
+    Width = 34
+    Height = 21
+    TabOrder = 1
+    Text = '7'
+  end
+  object Edit2: TEdit
+    Left = 167
+    Top = 78
+    Width = 34
+    Height = 21
+    TabOrder = 7
+    Text = '7'
+  end
+  object Edit3: TEdit
+    Left = 167
+    Top = 102
+    Width = 34
+    Height = 21
+    TabOrder = 13
+    Text = '7'
+  end
+  object Edit4: TEdit
+    Left = 167
+    Top = 126
+    Width = 34
+    Height = 21
+    TabOrder = 19
+    Text = '7'
+  end
+  object Edit5: TEdit
+    Left = 167
+    Top = 228
+    Width = 34
+    Height = 21
+    TabOrder = 27
+    Text = '7'
+  end
+  object Edit6: TEdit
+    Left = 167
+    Top = 252
+    Width = 34
+    Height = 21
+    TabOrder = 33
+    Text = '7'
+  end
+  object Edit7: TEdit
+    Left = 167
+    Top = 276
+    Width = 34
+    Height = 21
+    TabOrder = 39
+    Text = '7'
+  end
+  object Edit8: TEdit
+    Left = 167
+    Top = 300
+    Width = 34
+    Height = 21
+    TabOrder = 45
+    Text = '7'
+  end
+  object Edit9: TEdit
+    Left = 167
+    Top = 402
+    Width = 34
+    Height = 21
+    TabOrder = 53
+    Text = '7'
+  end
+  object Edit10: TEdit
+    Left = 167
+    Top = 426
+    Width = 34
+    Height = 21
+    TabOrder = 59
+    Text = '7'
+  end
+  object Edit11: TEdit
+    Left = 167
+    Top = 450
+    Width = 34
+    Height = 21
+    TabOrder = 65
+    Text = '7'
+  end
+  object Edit12: TEdit
+    Left = 167
+    Top = 474
+    Width = 34
+    Height = 21
+    TabOrder = 71
+    Text = '7'
   end
   object OpenDialog: TOpenDialog
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing, ofForceShowHidden]
-    Left = 47
+    Left = 631
     Top = 1
   end
 end
