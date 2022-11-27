@@ -148,18 +148,18 @@ __published:
 	TLabel *Label1;
 	TLabel *Label2;
 	TEdit *Be7PhotopeakEffEdit;
-    TEdit *Edit1;
-    TEdit *Edit2;
-    TEdit *Edit3;
-    TEdit *Edit4;
-    TEdit *Edit5;
-    TEdit *Edit6;
-    TEdit *Edit7;
-    TEdit *Edit8;
-    TEdit *Edit9;
-    TEdit *Edit10;
-    TEdit *Edit11;
-    TEdit *Edit12;
+    TEdit *Th1ErrorEdit;
+    TEdit *Ra1ErrorEdit;
+    TEdit *K1ErrorEdit;
+    TEdit *Cs1ErrorEdit;
+    TEdit *Th2ErrorEdit;
+    TEdit *Ra2ErrorEdit;
+    TEdit *K2ErrorEdit;
+    TEdit *Cs2ErrorEdit;
+    TEdit *Th3ErrorEdit;
+    TEdit *Ra3ErrorEdit;
+    TEdit *K3ErrorEdit;
+    TEdit *Cs3ErrorEdit;
     void __fastcall SaveButtonClick(TObject *Sender);
     void __fastcall BrowseButtonClick(TObject *Sender);
     void __fastcall FormPaint(TObject *Sender);
@@ -205,10 +205,10 @@ public:
     {
         return
             EnergyRangesValid() &&
-            !(Sysutils::StrToFloatDef(Th1ActivityEdit->Text, 0) <= 0 ||
-            Sysutils::StrToFloatDef(Ra1ActivityEdit->Text, 0) <= 0 ||
-            Sysutils::StrToFloatDef(K1ActivityEdit->Text, 0) <= 0 ||
-            Sysutils::StrToFloatDef(Cs1ActivityEdit->Text, 0) <= 0 ||
+            !(Sysutils::StrToFloatDef(Th1ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Th1ErrorEdit->Text, 0) <= 0 ||
+            Sysutils::StrToFloatDef(Ra1ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Ra1ErrorEdit->Text, 0) <= 0 ||
+            Sysutils::StrToFloatDef(K1ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(K1ErrorEdit->Text, 0) <= 0 ||
+            Sysutils::StrToFloatDef(Cs1ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Cs1ErrorEdit->Text, 0) <= 0 ||
 
             Th1Date->Date >= Now() ||
             Ra1Date->Date >= Now() ||
@@ -231,10 +231,10 @@ public:
     {
         return
             EnergyRangesValid() &&
-            !(Sysutils::StrToFloatDef(Th2ActivityEdit->Text, 0) <= 0 ||
-            Sysutils::StrToFloatDef(Ra2ActivityEdit->Text, 0) <= 0 ||
-            Sysutils::StrToFloatDef(K2ActivityEdit->Text, 0) <= 0 ||
-            Sysutils::StrToFloatDef(Cs2ActivityEdit->Text, 0) <= 0 ||
+            !(Sysutils::StrToFloatDef(Th2ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Th2ErrorEdit->Text, 0) <= 0 ||
+            Sysutils::StrToFloatDef(Ra2ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Ra2ErrorEdit->Text, 0) <= 0 ||
+            Sysutils::StrToFloatDef(K2ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(K2ErrorEdit->Text, 0) <= 0 ||
+            Sysutils::StrToFloatDef(Cs2ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Cs2ErrorEdit->Text, 0) <= 0 ||
 
             Th2Date->Date >= Now() ||
             Ra2Date->Date >= Now() ||
@@ -257,10 +257,10 @@ public:
     {
         return
             EnergyRangesValid() &&
-            !(Sysutils::StrToFloatDef(Th3ActivityEdit->Text, 0) <= 0 ||
-            Sysutils::StrToFloatDef(Ra3ActivityEdit->Text, 0) <= 0 ||
-            Sysutils::StrToFloatDef(K3ActivityEdit->Text, 0) <= 0 ||
-            Sysutils::StrToFloatDef(Cs3ActivityEdit->Text, 0) <= 0 ||
+            !(Sysutils::StrToFloatDef(Th3ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Th3ErrorEdit->Text, 0) <= 0 ||
+            Sysutils::StrToFloatDef(Ra3ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Ra3ErrorEdit->Text, 0) <= 0 ||
+            Sysutils::StrToFloatDef(K3ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(K3ErrorEdit->Text, 0) <= 0 ||
+            Sysutils::StrToFloatDef(Cs3ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Cs3ErrorEdit->Text, 0) <= 0 ||
 
             Th3Date->Date >= Now() ||
             Ra3Date->Date >= Now() ||

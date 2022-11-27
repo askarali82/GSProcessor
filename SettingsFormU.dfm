@@ -4,7 +4,7 @@ object SettingsForm: TSettingsForm
   BorderStyle = bsDialog
   Caption = 'Etalon va fon namunalari'
   ClientHeight = 707
-  ClientWidth = 896
+  ClientWidth = 881
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -566,7 +566,7 @@ object SettingsForm: TSettingsForm
     Text = '2720'
   end
   object SaveButton: TButton
-    Left = 727
+    Left = 712
     Top = 670
     Width = 75
     Height = 25
@@ -576,7 +576,7 @@ object SettingsForm: TSettingsForm
     OnClick = SaveButtonClick
   end
   object CloseButton: TButton
-    Left = 809
+    Left = 794
     Top = 670
     Width = 75
     Height = 25
@@ -1209,7 +1209,7 @@ object SettingsForm: TSettingsForm
     ShowHint = True
     TabOrder = 88
   end
-  object Edit1: TEdit
+  object Th1ErrorEdit: TEdit
     Left = 167
     Top = 54
     Width = 34
@@ -1217,7 +1217,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 1
     Text = '7'
   end
-  object Edit2: TEdit
+  object Ra1ErrorEdit: TEdit
     Left = 167
     Top = 78
     Width = 34
@@ -1225,7 +1225,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 7
     Text = '7'
   end
-  object Edit3: TEdit
+  object K1ErrorEdit: TEdit
     Left = 167
     Top = 102
     Width = 34
@@ -1233,7 +1233,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 13
     Text = '7'
   end
-  object Edit4: TEdit
+  object Cs1ErrorEdit: TEdit
     Left = 167
     Top = 126
     Width = 34
@@ -1241,7 +1241,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 19
     Text = '7'
   end
-  object Edit5: TEdit
+  object Th2ErrorEdit: TEdit
     Left = 167
     Top = 228
     Width = 34
@@ -1249,7 +1249,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 27
     Text = '7'
   end
-  object Edit6: TEdit
+  object Ra2ErrorEdit: TEdit
     Left = 167
     Top = 252
     Width = 34
@@ -1257,7 +1257,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 33
     Text = '7'
   end
-  object Edit7: TEdit
+  object K2ErrorEdit: TEdit
     Left = 167
     Top = 276
     Width = 34
@@ -1265,7 +1265,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 39
     Text = '7'
   end
-  object Edit8: TEdit
+  object Cs2ErrorEdit: TEdit
     Left = 167
     Top = 300
     Width = 34
@@ -1273,7 +1273,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 45
     Text = '7'
   end
-  object Edit9: TEdit
+  object Th3ErrorEdit: TEdit
     Left = 167
     Top = 402
     Width = 34
@@ -1281,7 +1281,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 53
     Text = '7'
   end
-  object Edit10: TEdit
+  object Ra3ErrorEdit: TEdit
     Left = 167
     Top = 426
     Width = 34
@@ -1289,7 +1289,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 59
     Text = '7'
   end
-  object Edit11: TEdit
+  object K3ErrorEdit: TEdit
     Left = 167
     Top = 450
     Width = 34
@@ -1297,7 +1297,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 65
     Text = '7'
   end
-  object Edit12: TEdit
+  object Cs3ErrorEdit: TEdit
     Left = 167
     Top = 474
     Width = 34

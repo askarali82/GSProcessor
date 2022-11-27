@@ -2302,7 +2302,6 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 12
       ExplicitWidth = 45
     end
     object ThTime: TEdit
@@ -2716,7 +2715,6 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 12
       ExplicitWidth = 47
     end
     object RaTime: TEdit
@@ -3130,7 +3128,6 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 12
       ExplicitWidth = 30
     end
     object KTime: TEdit
@@ -3544,7 +3541,6 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 12
       ExplicitWidth = 45
     end
     object CsTime: TEdit
@@ -3780,9 +3776,9 @@ object MainForm: TMainForm
     object BeErrorLabel: TLabel
       Left = 2
       Top = 112
-      Width = 57
+      Width = 72
       Height = 13
-      Caption = 'Xatolik (%):'
+      Caption = 'Xatolik (Bk/kg):'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clGreen
       Font.Height = -11
@@ -3870,7 +3866,6 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 12
       ExplicitWidth = 30
     end
     object BeSmpLabel: TLabel

@@ -199,21 +199,25 @@ void TSettingsForm::SaveDensity_1_Data()
     try
     {
         IniFile->WriteFloat(L"Density_1", Th1ActivityEdit->Name, Sysutils::StrToFloatDef(Th1ActivityEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_1", Th1ErrorEdit->Name, Sysutils::StrToFloatDef(Th1ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_1", Th1Date->Name, Th1Date->Date);
         IniFile->WriteDate(L"Density_1", Th1MesDate->Name, Th1MesDate->Date);
         IniFile->WriteString(L"Density_1", Th1FileName->Name, Th1FileName->Text);
 
         IniFile->WriteFloat(L"Density_1", Ra1ActivityEdit->Name, Sysutils::StrToFloatDef(Ra1ActivityEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_1", Ra1ErrorEdit->Name, Sysutils::StrToFloatDef(Ra1ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_1", Ra1Date->Name, Ra1Date->Date);
         IniFile->WriteDate(L"Density_1", Ra1MesDate->Name, Ra1MesDate->Date);
         IniFile->WriteString(L"Density_1", Ra1FileName->Name, Ra1FileName->Text);
 
         IniFile->WriteFloat(L"Density_1", K1ActivityEdit->Name, Sysutils::StrToFloatDef(K1ActivityEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_1", K1ErrorEdit->Name, Sysutils::StrToFloatDef(K1ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_1", K1Date->Name, K1Date->Date);
         IniFile->WriteDate(L"Density_1", K1MesDate->Name, K1MesDate->Date);
         IniFile->WriteString(L"Density_1", K1FileName->Name, K1FileName->Text);
 
         IniFile->WriteFloat(L"Density_1", Cs1ActivityEdit->Name, Sysutils::StrToFloatDef(Cs1ActivityEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_1", Cs1ErrorEdit->Name, Sysutils::StrToFloatDef(Cs1ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_1", Cs1Date->Name, Cs1Date->Date);
         IniFile->WriteDate(L"Density_1", Cs1MesDate->Name, Cs1MesDate->Date);
         IniFile->WriteString(L"Density_1", Cs1FileName->Name, Cs1FileName->Text);
@@ -231,21 +235,25 @@ void TSettingsForm::SaveDensity_2_Data()
     try
     {
         IniFile->WriteFloat(L"Density_2", Th2ActivityEdit->Name, Sysutils::StrToFloatDef(Th2ActivityEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_1", Th2ErrorEdit->Name, Sysutils::StrToFloatDef(Th2ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_2", Th2Date->Name, Th2Date->Date);
         IniFile->WriteDate(L"Density_2", Th2MesDate->Name, Th2MesDate->Date);
         IniFile->WriteString(L"Density_2", Th2FileName->Name, Th2FileName->Text);
 
         IniFile->WriteFloat(L"Density_2", Ra2ActivityEdit->Name, Sysutils::StrToFloatDef(Ra2ActivityEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_1", Ra2ErrorEdit->Name, Sysutils::StrToFloatDef(Ra2ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_2", Ra2Date->Name, Ra2Date->Date);
         IniFile->WriteDate(L"Density_2", Ra2MesDate->Name, Ra2MesDate->Date);
         IniFile->WriteString(L"Density_2", Ra2FileName->Name, Ra2FileName->Text);
 
         IniFile->WriteFloat(L"Density_2", K2ActivityEdit->Name, Sysutils::StrToFloatDef(K2ActivityEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_1", K2ErrorEdit->Name, Sysutils::StrToFloatDef(K2ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_2", K2Date->Name, K2Date->Date);
         IniFile->WriteDate(L"Density_2", K2MesDate->Name, K2MesDate->Date);
         IniFile->WriteString(L"Density_2", K2FileName->Name, K2FileName->Text);
 
         IniFile->WriteFloat(L"Density_2", Cs2ActivityEdit->Name, Sysutils::StrToFloatDef(Cs2ActivityEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_1", Cs2ErrorEdit->Name, Sysutils::StrToFloatDef(Cs2ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_2", Cs2Date->Name, Cs2Date->Date);
         IniFile->WriteDate(L"Density_2", Cs2MesDate->Name, Cs2MesDate->Date);
         IniFile->WriteString(L"Density_2", Cs2FileName->Name, Cs2FileName->Text);
@@ -262,21 +270,25 @@ void TSettingsForm::SaveDensity_3_Data()
     try
     {
         IniFile->WriteFloat(L"Density_3", Th3ActivityEdit->Name, Sysutils::StrToFloatDef(Th3ActivityEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_3", Th3ErrorEdit->Name, Sysutils::StrToFloatDef(Th3ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_3", Th3Date->Name, Th3Date->Date);
         IniFile->WriteDate(L"Density_3", Th3MesDate->Name, Th3MesDate->Date);
         IniFile->WriteString(L"Density_3", Th3FileName->Name, Th3FileName->Text);
 
         IniFile->WriteFloat(L"Density_3", Ra3ActivityEdit->Name, Sysutils::StrToFloatDef(Ra3ActivityEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_3", Ra3ErrorEdit->Name, Sysutils::StrToFloatDef(Ra3ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_3", Ra3Date->Name, Ra3Date->Date);
         IniFile->WriteDate(L"Density_3", Ra3MesDate->Name, Ra3MesDate->Date);
         IniFile->WriteString(L"Density_3", Ra3FileName->Name, Ra3FileName->Text);
 
         IniFile->WriteFloat(L"Density_3", K3ActivityEdit->Name, Sysutils::StrToFloatDef(K3ActivityEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_3", K3ErrorEdit->Name, Sysutils::StrToFloatDef(K3ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_3", K3Date->Name, K3Date->Date);
         IniFile->WriteDate(L"Density_3", K3MesDate->Name, K3MesDate->Date);
         IniFile->WriteString(L"Density_3", K3FileName->Name, K3FileName->Text);
 
         IniFile->WriteFloat(L"Density_3", Cs3ActivityEdit->Name, Sysutils::StrToFloatDef(Cs3ActivityEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_3", Cs3ErrorEdit->Name, Sysutils::StrToFloatDef(Cs3ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_3", Cs3Date->Name, Cs3Date->Date);
         IniFile->WriteDate(L"Density_3", Cs3MesDate->Name, Cs3MesDate->Date);
         IniFile->WriteString(L"Density_3", Cs3FileName->Name, Cs3FileName->Text);

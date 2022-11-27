@@ -44,6 +44,12 @@ struct TData
 	double MinPeakWidth;
     double MaxEnergyError;
 
+    // Std samples activity errors
+	double ThActivityErrors[3];
+	double RaActivityErrors[3];
+	double KActivityErrors[3];
+	double CsActivityErrors[3];
+
 	bool ValidSpectra(const int Idx) const
 	{
 		return

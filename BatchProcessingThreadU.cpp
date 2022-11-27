@@ -411,6 +411,15 @@ void TBatchProcessingThread::CalculateActivities(
     LOG(L"BePhotopeakEff = " + String(BePhotopeakEff) + L" for density " + String(Spectrum.DensityInGramPerLitre));
 
 
+    const double ThActivityError =
+        System::Sqrt(Utils::Sqr(BaseData.ThActivityErrors[0]) + Utils::Sqr(BaseData.ThActivityErrors[1]) + Utils::Sqr(BaseData.ThActivityErrors[2]));
+    const double RaActivityError =
+        System::Sqrt(Utils::Sqr(BaseData.RaActivityErrors[0]) + Utils::Sqr(BaseData.RaActivityErrors[1]) + Utils::Sqr(BaseData.RaActivityErrors[2]));
+    const double KActivityError =
+        System::Sqrt(Utils::Sqr(BaseData.KActivityErrors[0]) + Utils::Sqr(BaseData.KActivityErrors[1]) + Utils::Sqr(BaseData.KActivityErrors[2]));
+    const double CsActivityError =
+        System::Sqrt(Utils::Sqr(BaseData.CsActivityErrors[0]) + Utils::Sqr(BaseData.CsActivityErrors[1]) + Utils::Sqr(BaseData.CsActivityErrors[2]));
+
 
 	TSpectrum SubtractedSpc;
 	TSpectrum TMPSpc;
@@ -430,7 +439,7 @@ void TBatchProcessingThread::CalculateActivities(
 		SmpThCount > 0 ? ((2 * System::Sqrt(SmpThCount + 2*BkgThCount)) / SmpThCount) : 0;
 	const double ThTh = ThCount * ThC;
 	const double ThError2 = ThTh > 0 ? ((2*System::Sqrt(ThTh + BkgThCount)) / ThTh) : 0;
-	const double ThError = System::Sqrt(Utils::Sqr(ThError1) + Utils::Sqr(ThError2) + Utils::Sqr(0.1));
+	const double ThError = System::Sqrt(Utils::Sqr(ThError1) + Utils::Sqr(ThError2) + Utils::Sqr(ThActivityError));
 
 
 
@@ -450,7 +459,7 @@ void TBatchProcessingThread::CalculateActivities(
 		SmpRaCount > 0 ? ((2 * System::Sqrt(SmpRaCount + 2*BkgRaCount + 2*SmpRaThCount)) / SmpRaCount) : 0;
 	const double RaRa = RaCount * RaC;
 	const double RaError2 = RaRa > 0 ? ((2 * System::Sqrt(RaRa + BkgRaCount)) / RaRa) : 0;
-	const double RaError = System::Sqrt(Utils::Sqr(RaError1) + Utils::Sqr(RaError2) + Utils::Sqr(0.1));
+	const double RaError = System::Sqrt(Utils::Sqr(RaError1) + Utils::Sqr(RaError2) + Utils::Sqr(RaActivityError));
 
 
 
@@ -469,7 +478,7 @@ void TBatchProcessingThread::CalculateActivities(
 		SmpKCount > 0 ? ((2 * System::Sqrt(SmpKCount + 2*BkgKCount + 2*SmpKThCount + 2*SmpKRaCount)) / SmpKCount) : 0;
 	const double KK = KCount * KC;
 	const double KError2 = KK > 0 ? ((2 * System::Sqrt(KK + BkgKCount)) / KK) : 0;
-	const double KError  = System::Sqrt(Utils::Sqr(KError1)  + Utils::Sqr(KError2)  + Utils::Sqr(0.1));
+	const double KError  = System::Sqrt(Utils::Sqr(KError1)  + Utils::Sqr(KError2)  + Utils::Sqr(KActivityError));
 
 
 
@@ -487,7 +496,7 @@ void TBatchProcessingThread::CalculateActivities(
 		SmpCsCount > 0 ? ((2 * System::Sqrt(SmpCsCount + 2*BkgCsCount + 2*SmpCsThCount + 2*SmpCsRaCount + 2*SmpCsKCount)) / SmpCsCount) : 0;
 	const double CsCs = CsCount * CsC;
 	const double CsError2 = CsCs > 0 ? ((2 * System::Sqrt(CsCs + BkgCsCount)) / CsCs) : 0;
-	const double CsError = System::Sqrt(Utils::Sqr(CsError1) + Utils::Sqr(CsError2) + Utils::Sqr(0.1));
+	const double CsError = System::Sqrt(Utils::Sqr(CsError1) + Utils::Sqr(CsError2) + Utils::Sqr(CsActivityError));
 
 
 

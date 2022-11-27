@@ -230,7 +230,12 @@ TData TMainForm::GetData() const
         BePhotopeakEff3,
 
         MinPeakWidth,
-        MaxEnergyError
+        MaxEnergyError,
+
+        {ThActivityErrors[0], ThActivityErrors[1], ThActivityErrors[2]},
+        {RaActivityErrors[0], RaActivityErrors[1], RaActivityErrors[2]},
+        {KActivityErrors[0],  KActivityErrors[1],  KActivityErrors[2]},
+        {CsActivityErrors[0], CsActivityErrors[1], CsActivityErrors[2]}
     };
     return Result;
 }
@@ -246,21 +251,25 @@ void TMainForm::InitStdSamples(TSettingsForm *Form)
         Ths[0].ExtraStringData = Form->Th1ActivityEdit->Text;
         Ths[0].ExtraFloatData =
             Dateutils::DaysBetween(Form->Th1MesDate->Date, Form->Th1Date->Date) / DAYS_IN_YEAR;
+        ThActivityErrors[0] = Sysutils::StrToFloatDef(Form->Th1ErrorEdit->Text, 0) / 100.0;
 
         Ras[0].LoadFromFile(Form->Ra1FileName->Text);
         Ras[0].ExtraStringData = Form->Ra1ActivityEdit->Text;
         Ras[0].ExtraFloatData =
             Dateutils::DaysBetween(Form->Ra1MesDate->Date, Form->Ra1Date->Date) / DAYS_IN_YEAR;
+        RaActivityErrors[0] = Sysutils::StrToFloatDef(Form->Ra1ErrorEdit->Text, 0) / 100.0;
 
         Ks[0].LoadFromFile(Form->K1FileName->Text);
         Ks[0].ExtraStringData = Form->K1ActivityEdit->Text;
         Ks[0].ExtraFloatData =
             Dateutils::DaysBetween(Form->K1MesDate->Date, Form->K1Date->Date) / DAYS_IN_YEAR;
+        KActivityErrors[0] = Sysutils::StrToFloatDef(Form->K1ErrorEdit->Text, 0) / 100.0;
 
         Css[0].LoadFromFile(Form->Cs1FileName->Text);
         Css[0].ExtraStringData = Form->Cs1ActivityEdit->Text;
         Css[0].ExtraFloatData =
             Dateutils::DaysBetween(Form->Cs1MesDate->Date, Form->Cs1Date->Date) / DAYS_IN_YEAR;
+        CsActivityErrors[0] = Sysutils::StrToFloatDef(Form->Cs1ErrorEdit->Text, 0) / 100.0;
 
         SubtractBkgFromStandardSources(0);
     }
@@ -271,21 +280,25 @@ void TMainForm::InitStdSamples(TSettingsForm *Form)
         Ths[1].ExtraStringData = Form->Th2ActivityEdit->Text;
         Ths[1].ExtraFloatData =
             Dateutils::DaysBetween(Form->Th2MesDate->Date, Form->Th2Date->Date) / DAYS_IN_YEAR;
+        ThActivityErrors[1] = Sysutils::StrToFloatDef(Form->Th2ErrorEdit->Text, 0) / 100.0;
 
         Ras[1].LoadFromFile(Form->Ra2FileName->Text);
         Ras[1].ExtraStringData = Form->Ra2ActivityEdit->Text;
         Ras[1].ExtraFloatData =
             Dateutils::DaysBetween(Form->Ra2MesDate->Date, Form->Ra2Date->Date) / DAYS_IN_YEAR;
+        RaActivityErrors[1] = Sysutils::StrToFloatDef(Form->Ra2ErrorEdit->Text, 0) / 100.0;
 
         Ks[1].LoadFromFile(Form->K2FileName->Text);
         Ks[1].ExtraStringData = Form->K2ActivityEdit->Text;
         Ks[1].ExtraFloatData =
             Dateutils::DaysBetween(Form->K2MesDate->Date, Form->K2Date->Date) / DAYS_IN_YEAR;
+        KActivityErrors[1] = Sysutils::StrToFloatDef(Form->K2ErrorEdit->Text, 0) / 100.0;
 
         Css[1].LoadFromFile(Form->Cs2FileName->Text);
         Css[1].ExtraStringData = Form->Cs2ActivityEdit->Text;
         Css[1].ExtraFloatData =
             Dateutils::DaysBetween(Form->Cs2MesDate->Date, Form->Cs2Date->Date) / DAYS_IN_YEAR;
+        CsActivityErrors[1] = Sysutils::StrToFloatDef(Form->Cs2ErrorEdit->Text, 0) / 100.0;
 
         SubtractBkgFromStandardSources(1);
     }
@@ -296,21 +309,25 @@ void TMainForm::InitStdSamples(TSettingsForm *Form)
         Ths[2].ExtraStringData = Form->Th3ActivityEdit->Text;
         Ths[2].ExtraFloatData =
             Dateutils::DaysBetween(Form->Th3MesDate->Date, Form->Th3Date->Date) / DAYS_IN_YEAR;
+        ThActivityErrors[2] = Sysutils::StrToFloatDef(Form->Th3ErrorEdit->Text, 0) / 100.0;
 
         Ras[2].LoadFromFile(Form->Ra3FileName->Text);
         Ras[2].ExtraStringData = Form->Ra3ActivityEdit->Text;
         Ras[2].ExtraFloatData =
             Dateutils::DaysBetween(Form->Ra3MesDate->Date, Form->Ra3Date->Date) / DAYS_IN_YEAR;
+        RaActivityErrors[2] = Sysutils::StrToFloatDef(Form->Ra3ErrorEdit->Text, 0) / 100.0;
 
         Ks[2].LoadFromFile(Form->K3FileName->Text);
         Ks[2].ExtraStringData = Form->K3ActivityEdit->Text;
         Ks[2].ExtraFloatData =
             Dateutils::DaysBetween(Form->K3MesDate->Date, Form->K3Date->Date) / DAYS_IN_YEAR;
+        KActivityErrors[2] = Sysutils::StrToFloatDef(Form->K3ErrorEdit->Text, 0) / 100.0;
 
         Css[2].LoadFromFile(Form->Cs3FileName->Text);
         Css[2].ExtraStringData = Form->Cs3ActivityEdit->Text;
         Css[2].ExtraFloatData =
             Dateutils::DaysBetween(Form->Cs3MesDate->Date, Form->Cs3Date->Date) / DAYS_IN_YEAR;
+        CsActivityErrors[2] = Sysutils::StrToFloatDef(Form->Cs3ErrorEdit->Text, 0) / 100.0;
 
         SubtractBkgFromStandardSources(2);
     }
@@ -654,6 +671,14 @@ void TMainForm::DecomposeSampleSpectrum()
         const auto OrigCount = OrigSampleSpc.CalculateTotalCount();
         const auto LastCount = SampleSpc.CalculateTotalCount();
         const auto CountError = std::abs(LastCount - OrigCount) / OrigCount;
+        const double ThActivityError =
+            System::Sqrt(Utils::Sqr(ThActivityErrors[0]) + Utils::Sqr(ThActivityErrors[1]) + Utils::Sqr(ThActivityErrors[2]));
+        const double RaActivityError =
+            System::Sqrt(Utils::Sqr(RaActivityErrors[0]) + Utils::Sqr(RaActivityErrors[1]) + Utils::Sqr(RaActivityErrors[2]));
+        const double KActivityError =
+            System::Sqrt(Utils::Sqr(KActivityErrors[0]) + Utils::Sqr(KActivityErrors[1]) + Utils::Sqr(KActivityErrors[2]));
+        const double CsActivityError =
+            System::Sqrt(Utils::Sqr(CsActivityErrors[0]) + Utils::Sqr(CsActivityErrors[1]) + Utils::Sqr(CsActivityErrors[2]));
 
         DrawSpectrum(SampleSpc, SampleSpectrum);
         CalculateCountsInStdSamples();
@@ -705,7 +730,7 @@ void TMainForm::DecomposeSampleSpectrum()
         const double ThBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
         const double ThError2 = ThTh > 0 ? ((2 * System::Sqrt(ThTh + FTh)) / ThTh) : 0;
         const double ThError =
-            System::Sqrt(Utils::Sqr(ThError1) + Utils::Sqr(ThError2) + Utils::Sqr(CountError) + Utils::Sqr(0.1));
+            System::Sqrt(Utils::Sqr(ThError1) + Utils::Sqr(ThError2) + Utils::Sqr(CountError) + Utils::Sqr(ThActivityError));
         SampleThError->Text = Activity >= MDATh ? Utils::RoundFloatValue(Activity * ThError, 2, false) : String();
 
         Count = Sample_M_Th.CalculateCountByEnergyRange(RaEn1, RaEn2);
@@ -731,7 +756,7 @@ void TMainForm::DecomposeSampleSpectrum()
         const double RaBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
         const double RaError2 = RaRa > 0 ? ((2 * System::Sqrt(RaRa + FRa)) / RaRa) : 0;
         const double RaError =
-            System::Sqrt(Utils::Sqr(RaError1) + Utils::Sqr(RaError2) + Utils::Sqr(CountError) + Utils::Sqr(0.1));
+            System::Sqrt(Utils::Sqr(RaError1) + Utils::Sqr(RaError2) + Utils::Sqr(CountError) + Utils::Sqr(RaActivityError));
         SampleRaError->Text = Activity >= MDARa ? Utils::RoundFloatValue(Activity * RaError, 2, false) : String();
 
         Count = Sample_M_Ra.CalculateCountByEnergyRange(KEn1, KEn2);
@@ -756,7 +781,7 @@ void TMainForm::DecomposeSampleSpectrum()
         const double KBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
         const double KError2 = KK > 0 ? ((2 * System::Sqrt(KK + FK)) / KK) : 0;
         const double KError  =
-            System::Sqrt(Utils::Sqr(KError1)  + Utils::Sqr(KError2) + Utils::Sqr(CountError)  + Utils::Sqr(0.1));
+            System::Sqrt(Utils::Sqr(KError1)  + Utils::Sqr(KError2) + Utils::Sqr(CountError)  + Utils::Sqr(KActivityError));
         SampleKError->Text = Activity >= MDAK ? Utils::RoundFloatValue(Activity * KError, 2, false) : String();
 
         Count = Sample_M_K.CalculateCountByEnergyRange(CsEn1, CsEn2);
@@ -780,7 +805,7 @@ void TMainForm::DecomposeSampleSpectrum()
         const double CsBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
         const double CsError2 = CsCs > 0 ? ((2 * System::Sqrt(CsCs + FCs)) / CsCs) : 0;
         const double CsError =
-            System::Sqrt(Utils::Sqr(CsError1) + Utils::Sqr(CsError2) + Utils::Sqr(CountError) + Utils::Sqr(0.1));
+            System::Sqrt(Utils::Sqr(CsError1) + Utils::Sqr(CsError2) + Utils::Sqr(CountError) + Utils::Sqr(CsActivityError));
         SampleCsError->Text = Activity >= MDACs ? Utils::RoundFloatValue(Activity * CsError, 2, false) : String();
 
         DrawSpectrum(Sample_M_Cs, FinalSpectrum);
@@ -799,24 +824,33 @@ void TMainForm::DecomposeSampleSpectrum()
             BeActivityPerKilogram = BeActivityPerKgOrSq->Text;
             const double TotalMass = Sysutils::StrToFloatDef(SampleOrigMass->Text, 0) * 0.001;
             const double Square = Sysutils::StrToFloatDef(SampleSquare->Text, 0) * 0.0001;
-            if (TotalMass > 0 && Square > 0)
-            {
-                Activity *= (TotalMass / Square);
-                BeActivityPerSquare = Utils::RoundFloatValue(Activity, 2, false);
-            }
-
             const double BeError1 =
                 Count > 0 ? ((2 * System::Sqrt(Count + 2*FBe + 2*ThBe + 2*RaBe + 2*KBe + 2*CsBe)) / Count) : 0;
             const double BeError = System::Sqrt(Utils::Sqr(BeError1) + Utils::Sqr(CountError) + Utils::Sqr(0.15));
-            SampleBeError->Text = Activity >= MDABe ? Utils::RoundFloatValue(BeError * 100, 2, false) : String();
+            SampleBeError->Text = Activity >= MDABe ? Utils::RoundFloatValue(Activity * BeError, 2, false) : String();
+            BeErrorPerKilogram = SampleBeError->Text;
+
+            if (TotalMass > 0 && Square > 0 && Activity >= MDABe)
+            {
+                Activity *= (TotalMass / Square);
+                BeActivityPerSquare = Utils::RoundFloatValue(Activity, 2, false);
+                BeErrorPerSquare = Utils::RoundFloatValue(Activity * BeError, 2, false);
+            }
+            else
+            {
+                BeActivityPerSquare = L"";
+                BeErrorPerSquare = L"";
+            }
         }
         else
         {
             BeSum->Text = L"";
             BeActivityPerKgOrSq->Text = L"";
-            BeActivityPerKilogram = L"";
-            BeActivityPerSquare = L"";
             SampleBeError->Text = L"";
+            BeActivityPerKilogram = L"";
+            BeErrorPerKilogram = L"";
+            BeActivityPerSquare = L"";
+            BeErrorPerSquare = L"";
         }
     }
     catch (const Exception &E)
@@ -2083,7 +2117,7 @@ void TMainForm::ChangeUILanguage()
             BeActLabel->Caption = L"Aktivligi (Bk/m^2):";
         }
         BeMDALabel->Caption = L"AMA (Bk/kg):";
-        BeErrorLabel->Caption = L"Xatolik (%):";
+        BeErrorLabel->Caption = L"Xatolik (Bk/kg):";
         SmpLabel->Caption = L"Namuna o'lchamlari";
         SmpDurLabel->Caption = L"O'lch. vaqti (sek):";
         SmpMassLabel->Caption = L"Massasi (Gr):";
@@ -2227,7 +2261,7 @@ void TMainForm::ChangeUILanguage()
             BeActLabel->Caption = L"Activity (Bq/m^2):";
         }
         BeMDALabel->Caption = L"MDA (Bq/kg):";
-        BeErrorLabel->Caption = L"Error (%):";
+        BeErrorLabel->Caption = L"Error (Bq/kg):";
         SmpLabel->Caption = L"Sample parameters";
         SmpDurLabel->Caption = L"Meas. durat. (sec):";
         SmpMassLabel->Caption = L"Mass (Gr):";
@@ -2496,7 +2530,6 @@ void __fastcall TMainForm::BeActLabelClick(TObject *Sender)
     BeActivityPerKgOrSq->Tag = !BeActivityPerKgOrSq->Tag;
     if (BeActivityPerKgOrSq->Tag)
     {
-        BeActivityPerKgOrSq->Text = BeActivityPerKilogram;
         if (LangID == 0)
         {
             BeActLabel->Caption = L"Aktivligi (Bk/kg):";
@@ -2505,10 +2538,11 @@ void __fastcall TMainForm::BeActLabelClick(TObject *Sender)
         {
             BeActLabel->Caption = L"Activity (Bq/kg):";
         }
+        BeActivityPerKgOrSq->Text = BeActivityPerKilogram;
+        SampleBeError->Text = BeErrorPerKilogram;
     }
     else
     {
-        BeActivityPerKgOrSq->Text = BeActivityPerSquare;
         if (LangID == 0)
         {
             BeActLabel->Caption = L"Aktivligi (Bk/m^2):";
@@ -2517,6 +2551,8 @@ void __fastcall TMainForm::BeActLabelClick(TObject *Sender)
         {
             BeActLabel->Caption = L"Activity (Bq/m^2):";
         }
+        BeActivityPerKgOrSq->Text = BeActivityPerSquare;
+        SampleBeError->Text = BeErrorPerSquare;
     }
 }
 //---------------------------------------------------------------------------

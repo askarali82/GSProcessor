@@ -353,6 +353,12 @@ private:
 	double KCount = 0;
 	double CsCount = 0;
 
+    // Std samples activity errors
+	double ThActivityErrors[3] = {0, 0, 0};
+	double RaActivityErrors[3] = {0, 0, 0};
+	double KActivityErrors[3]  = {0, 0, 0};
+	double CsActivityErrors[3] = {0, 0, 0};
+
     // Energy ranges
     double ThEn1 = 0;
     double ThEn2 = 0;
@@ -390,8 +396,12 @@ private:
 	// Strings
 	String ErrorTitle;
 	String DirSelectionString;
+
     String BeActivityPerKilogram;
     String BeActivityPerSquare;
+
+    String BeErrorPerKilogram;
+    String BeErrorPerSquare;
 
 
 	void InitStdSamples(TSettingsForm *Form);
