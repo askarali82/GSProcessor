@@ -2111,13 +2111,14 @@ void TMainForm::ChangeUILanguage()
         if (BeActivityPerKgOrSq->Tag)
         {
             BeActLabel->Caption = L"Aktivligi (Bk/kg):";
+            BeErrorLabel->Caption = L"Xatolik (Bk/kg):";
         }
         else
         {
             BeActLabel->Caption = L"Aktivligi (Bk/m^2):";
+            BeErrorLabel->Caption = L"Xatolik (Bk/m^2):";
         }
         BeMDALabel->Caption = L"AMA (Bk/kg):";
-        BeErrorLabel->Caption = L"Xatolik (Bk/kg):";
         SmpLabel->Caption = L"Namuna o'lchamlari";
         SmpDurLabel->Caption = L"O'lch. vaqti (sek):";
         SmpMassLabel->Caption = L"Massasi (Gr):";
@@ -2255,13 +2256,14 @@ void TMainForm::ChangeUILanguage()
         if (BeActivityPerKgOrSq->Tag)
         {
             BeActLabel->Caption = L"Activity (Bq/kg):";
+            BeErrorLabel->Caption = L"Error (Bq/kg):";
         }
         else
         {
             BeActLabel->Caption = L"Activity (Bq/m^2):";
+            BeErrorLabel->Caption = L"Error (Bq/m^2):";
         }
         BeMDALabel->Caption = L"MDA (Bq/kg):";
-        BeErrorLabel->Caption = L"Error (Bq/kg):";
         SmpLabel->Caption = L"Sample parameters";
         SmpDurLabel->Caption = L"Meas. durat. (sec):";
         SmpMassLabel->Caption = L"Mass (Gr):";
@@ -2533,10 +2535,12 @@ void __fastcall TMainForm::BeActLabelClick(TObject *Sender)
         if (LangID == 0)
         {
             BeActLabel->Caption = L"Aktivligi (Bk/kg):";
+            BeErrorLabel->Caption = L"Xatolik (Bk/kg):";
         }
         else
         {
             BeActLabel->Caption = L"Activity (Bq/kg):";
+            BeErrorLabel->Caption = L"Error (Bq/kg):";
         }
         BeActivityPerKgOrSq->Text = BeActivityPerKilogram;
         SampleBeError->Text = BeErrorPerKilogram;
@@ -2546,10 +2550,12 @@ void __fastcall TMainForm::BeActLabelClick(TObject *Sender)
         if (LangID == 0)
         {
             BeActLabel->Caption = L"Aktivligi (Bk/m^2):";
+            BeErrorLabel->Caption = L"Xatolik (Bk/m^2):";
         }
         else
         {
             BeActLabel->Caption = L"Activity (Bq/m^2):";
+            BeErrorLabel->Caption = L"Error (Bq/m^2):";
         }
         BeActivityPerKgOrSq->Text = BeActivityPerSquare;
         SampleBeError->Text = BeErrorPerSquare;
