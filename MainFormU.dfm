@@ -4131,13 +4131,13 @@ object MainForm: TMainForm
         Left = 365
         Top = 0
         AutoSize = True
-        Caption = 'Siljish'
+        Caption = 'Spektrni siljitish'
         ImageIndex = 3
         Style = tbsTextButton
         OnClick = ShiftingButtonClick
       end
       object StandardSamplesButton: TToolButton
-        Left = 430
+        Left = 477
         Top = 0
         AutoSize = True
         Caption = 'Etalon namunalar'
@@ -4146,7 +4146,7 @@ object MainForm: TMainForm
         OnClick = StandardSamplesButtonClick
       end
       object HelpButton: TToolButton
-        Left = 552
+        Left = 599
         Top = 0
         AutoSize = True
         Caption = 'Dastur haqida'

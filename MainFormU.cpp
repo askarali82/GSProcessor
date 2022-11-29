@@ -2048,7 +2048,7 @@ void TMainForm::ChangeUILanguage()
         SelectFilesAction->Caption = L"Fayllarni tanlash";
         SelectDirectoryAction->Caption = L"Manzilni tanlash";
 
-        ShiftingButton->Caption = L"Siljish";
+        ShiftingButton->Caption = L"Spektrni siljitish";
         StandardSamplesButton->Caption = L"Etalon namunalar";
         HelpButton->Caption = L"Dastur haqida";
 
@@ -2193,7 +2193,7 @@ void TMainForm::ChangeUILanguage()
         SelectFilesAction->Caption = L"Select files";
         SelectDirectoryAction->Caption = L"Select directory";
 
-        ShiftingButton->Caption = L"Shifting";
+        ShiftingButton->Caption = L"Spectrum shifting";
         StandardSamplesButton->Caption = L"Reference samples";
         HelpButton->Caption = L"About";
 

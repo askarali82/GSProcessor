@@ -562,7 +562,7 @@ void TShiftingForm::ChangeUILanguage()
 {
 	if (LangID == 0)
 	{
-		AppName = L"Siljish";
+		AppName = L"Spektrni siljitish";
 		if (!Sample1FileName.IsEmpty() || !Sample2FileName.IsEmpty())
 		{
 			Caption =
@@ -605,7 +605,7 @@ void TShiftingForm::ChangeUILanguage()
 	}
 	else if (LangID == 1)
 	{
-		AppName = L"Shifting";
+		AppName = L"Spectrum shifting";
 		if (!Sample1FileName.IsEmpty() || !Sample2FileName.IsEmpty())
 		{
 			Caption =
