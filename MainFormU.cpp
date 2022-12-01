@@ -809,7 +809,6 @@ void TMainForm::DecomposeSampleSpectrum()
         SampleCsError->Text = Activity >= MDACs ? Utils::RoundFloatValue(Activity * CsError, 2, false) : String();
 
         DrawSpectrum(Sample_M_Cs, FinalSpectrum);
-        BeActivityPerKgOrSq->Tag = 1;
         if (MDABe > 0)
         {
             const double DensityInGramPerLitre = Sysutils::StrToFloatDef(SampleDensity->Text, 0);
@@ -820,15 +819,13 @@ void TMainForm::DecomposeSampleSpectrum()
             BeSum->Text = Utils::RoundFloatValue(Count);
             const double Weight = SameText(SampleSpc.WeightUnit, L"kg") ? (SampleSpc.Weight * 1000) : SampleSpc.Weight;
             Activity = Count / (0.104 * SampleSpc.Duration * BePhotopeakEff * (Weight / 1000));
-            BeActivityPerKgOrSq->Text = Activity >= MDABe ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
-            BeActivityPerKilogram = BeActivityPerKgOrSq->Text;
+            BeActivityPerKilogram = Activity >= MDABe ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
             const double TotalMass = Sysutils::StrToFloatDef(SampleOrigMass->Text, 0) * 0.001;
             const double Square = Sysutils::StrToFloatDef(SampleSquare->Text, 0) * 0.0001;
             const double BeError1 =
                 Count > 0 ? ((2 * System::Sqrt(Count + 2*FBe + 2*ThBe + 2*RaBe + 2*KBe + 2*CsBe)) / Count) : 0;
             const double BeError = System::Sqrt(Utils::Sqr(BeError1) + Utils::Sqr(CountError) + Utils::Sqr(0.15));
-            SampleBeError->Text = Activity >= MDABe ? Utils::RoundFloatValue(Activity * BeError, 2, false) : String();
-            BeErrorPerKilogram = SampleBeError->Text;
+            BeErrorPerKilogram = Activity >= MDABe ? Utils::RoundFloatValue(Activity * BeError, 2, false) : String();
 
             if (TotalMass > 0 && Square > 0 && Activity >= MDABe)
             {
@@ -841,6 +838,9 @@ void TMainForm::DecomposeSampleSpectrum()
                 BeActivityPerSquare = L"";
                 BeErrorPerSquare = L"";
             }
+
+            BeActivityPerKgOrSq->Text = BeActivityPerKgOrSq->Tag ? BeActivityPerKilogram : BeActivityPerSquare;
+            SampleBeError->Text = BeActivityPerKgOrSq->Tag ? BeErrorPerKilogram : BeErrorPerSquare;
         }
         else
         {
