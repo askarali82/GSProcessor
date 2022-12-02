@@ -2118,6 +2118,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
     end
     object ThLabel: TLabel
       Left = 2
@@ -2159,6 +2161,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
     end
     object ThCoeffCalcLabel: TLabel
       Left = 2
@@ -2173,6 +2177,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold, fsUnderline]
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = ThCoeffCalcLabelClick
     end
     object SmpThPhotoPeakLabel: TLabel
@@ -2249,6 +2255,8 @@ object MainForm: TMainForm
         FFFFFFFFFFFFFFFFE9E9E9E9E9E9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = OnEditUpButtonClick
     end
     object ThDownButton: TSpeedButton
@@ -2286,6 +2294,8 @@ object MainForm: TMainForm
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = OnEditDownButtonClick
     end
     object Label1: TLabel
@@ -2369,7 +2379,9 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
       ReadOnly = True
+      ShowHint = True
       TabOrder = 6
     end
     object SampleThActivity: TEdit
@@ -2531,6 +2543,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
     end
     object RaLabel: TLabel
       Left = 2
@@ -2572,6 +2586,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
     end
     object RaCoeffCalcLabel: TLabel
       Left = 2
@@ -2586,6 +2602,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold, fsUnderline]
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = RaCoeffCalcLabelClick
     end
     object SmpRaPhotoPeakLabel: TLabel
@@ -2662,6 +2680,8 @@ object MainForm: TMainForm
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = OnEditDownButtonClick
     end
     object RaUpButton: TSpeedButton
@@ -2699,6 +2719,8 @@ object MainForm: TMainForm
         FFFFFFFFFFFFFFFFE9E9E9E9E9E9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = OnEditUpButtonClick
     end
     object Label2: TLabel
@@ -2782,7 +2804,9 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
       ReadOnly = True
+      ShowHint = True
       TabOrder = 6
     end
     object SampleRaActivity: TEdit
@@ -2944,6 +2968,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
     end
     object KLabel: TLabel
       Left = 2
@@ -2985,6 +3011,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
     end
     object KCoeffCalcLabel: TLabel
       Left = 2
@@ -2999,6 +3027,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold, fsUnderline]
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = KCoeffCalcLabelClick
     end
     object SmpKPhotoPeakLabel: TLabel
@@ -3075,6 +3105,8 @@ object MainForm: TMainForm
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = OnEditDownButtonClick
     end
     object KUpButton: TSpeedButton
@@ -3112,6 +3144,8 @@ object MainForm: TMainForm
         FFFFFFFFFFFFFFFFE9E9E9E9E9E9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = OnEditUpButtonClick
     end
     object Label3: TLabel
@@ -3195,7 +3229,9 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
       ReadOnly = True
+      ShowHint = True
       TabOrder = 3
     end
     object SampleKActivity: TEdit
@@ -3357,6 +3393,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
     end
     object CsLabel: TLabel
       Left = 2
@@ -3398,6 +3436,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
     end
     object CsCoeffCalcLabel: TLabel
       Left = 2
@@ -3412,6 +3452,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = [fsBold, fsUnderline]
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = CsCoeffCalcLabelClick
     end
     object SmpCsPhotoPeakLabel: TLabel
@@ -3488,6 +3530,8 @@ object MainForm: TMainForm
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = OnEditDownButtonClick
     end
     object CsUpButton: TSpeedButton
@@ -3525,6 +3569,8 @@ object MainForm: TMainForm
         FFFFFFFFFFFFFFFFE9E9E9E9E9E9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = OnEditUpButtonClick
     end
     object Label4: TLabel
@@ -3608,7 +3654,9 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
       ReadOnly = True
+      ShowHint = True
       TabOrder = 6
     end
     object SampleCsActivity: TEdit
@@ -3759,6 +3807,8 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
     end
     object SmpDensityLabel: TLabel
       Left = 2
@@ -3931,7 +3981,9 @@ object MainForm: TMainForm
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
       ReadOnly = True
+      ShowHint = True
       TabOrder = 2
     end
     object SampleDensity: TEdit

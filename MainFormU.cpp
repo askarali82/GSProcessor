@@ -25,6 +25,8 @@ __fastcall TMainForm::TMainForm(TComponent* Owner):
     Application->Title = AppName;
     Application->ModalPopupMode = pmAuto;
     Application->OnException = OnAppException;
+    Application->HintHidePause = 8000;
+    Application->HintPause = 300;
     Caption = AppName;
     FormatSettings.DateSeparator = L'.';
     FormatSettings.DecimalSeparator = L'.';
@@ -2173,6 +2175,37 @@ void TMainForm::ChangeUILanguage()
         {
             BeActivityPerKgOrSq->Text = AMA;
         }
+
+        ThCoeffCalcLabel->Hint = L"  Namunadagi fotocho'qqining etalon namunadagi fotocho'qqi yuzasiga nisbati  ";
+        RaCoeffCalcLabel->Hint = ThCoeffCalcLabel->Hint;
+        KCoeffCalcLabel->Hint = ThCoeffCalcLabel->Hint;
+        CsCoeffCalcLabel->Hint = ThCoeffCalcLabel->Hint;
+
+        ThCoeffLabel->Hint = L"  Namunadagi fotocho'qqining etalon namunadagi fotocho'qqi yuzasiga nisbati  \r\n"
+                             L"  O'zgartirish mumkin  ";
+        RaCoeffLabel->Hint = ThCoeffLabel->Hint;
+        KCoeffLabel->Hint = ThCoeffLabel->Hint;
+        CsCoeffLabel->Hint = ThCoeffLabel->Hint;
+
+        ThUpButton->Hint = L"  Koeffitsiyentni 0.001 ga orttirish  ";
+        ThDownButton->Hint = L"  Koeffitsiyentni 0.001 ga kamaytirish  ";
+        RaUpButton->Hint = ThUpButton->Hint;
+        RaDownButton->Hint = ThDownButton->Hint;
+        KUpButton->Hint = ThUpButton->Hint;
+        KDownButton->Hint = ThDownButton->Hint;
+        CsUpButton->Hint = ThUpButton->Hint;
+        CsDownButton->Hint = ThDownButton->Hint;
+
+        ThMDALabel->Hint = L"  Aniqlanadigan minimal aktivlik  ";
+        ThMDA->Hint = ThMDALabel->Hint;
+        RaMDALabel->Hint = ThMDALabel->Hint;
+        RaMDA->Hint = ThMDALabel->Hint;
+        KMDALabel->Hint = ThMDALabel->Hint;
+        KMDA->Hint = ThMDALabel->Hint;
+        CsMDALabel->Hint = ThMDALabel->Hint;
+        CsMDA->Hint = ThMDALabel->Hint;
+        BeMDALabel->Hint = ThMDALabel->Hint;
+        BeMDA->Hint = ThMDALabel->Hint;
     }
     else if (LangID == 1)
     {
@@ -2318,6 +2351,37 @@ void TMainForm::ChangeUILanguage()
         {
             BeActivityPerKgOrSq->Text = MDA;
         }
+
+        ThCoeffCalcLabel->Hint = L"  Ratio of the photopeak area in the sample to the photopeak area in the reference sample  ";
+        RaCoeffCalcLabel->Hint = ThCoeffCalcLabel->Hint;
+        KCoeffCalcLabel->Hint = ThCoeffCalcLabel->Hint;
+        CsCoeffCalcLabel->Hint = ThCoeffCalcLabel->Hint;
+
+        ThCoeffLabel->Hint = L"  Ratio of the photopeak area in the sample to the photopeak area in the reference sample  \r\n"
+                             L"  Can be modified  ";
+        RaCoeffLabel->Hint = ThCoeffLabel->Hint;
+        KCoeffLabel->Hint = ThCoeffLabel->Hint;
+        CsCoeffLabel->Hint = ThCoeffLabel->Hint;
+
+        ThUpButton->Hint = L"  Increasing the coefficient by 0.001  ";
+        ThDownButton->Hint = L"  Decreasing the coefficient by 0.001  ";
+        RaUpButton->Hint = ThUpButton->Hint;
+        RaDownButton->Hint = ThDownButton->Hint;
+        KUpButton->Hint = ThUpButton->Hint;
+        KDownButton->Hint = ThDownButton->Hint;
+        CsUpButton->Hint = ThUpButton->Hint;
+        CsDownButton->Hint = ThDownButton->Hint;
+
+        ThMDALabel->Hint = L"  Minimum detectable activity  ";
+        ThMDA->Hint = ThMDALabel->Hint;
+        RaMDALabel->Hint = ThMDALabel->Hint;
+        RaMDA->Hint = ThMDALabel->Hint;
+        KMDALabel->Hint = ThMDALabel->Hint;
+        KMDA->Hint = ThMDALabel->Hint;
+        CsMDALabel->Hint = ThMDALabel->Hint;
+        CsMDA->Hint = ThMDALabel->Hint;
+        BeMDALabel->Hint = ThMDALabel->Hint;
+        BeMDA->Hint = ThMDALabel->Hint;
     }
     else
     {
