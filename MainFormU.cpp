@@ -891,31 +891,20 @@ void TMainForm::PopulateStandardSourcesInfo(TSettingsForm *Settings)
         System::Exp(-(System::Ln(2) / 30) * CsSpc.ExtraFloatData);
     CsActivity->Text = Utils::RoundFloatValue(Act, 2, false);
 
-    if (BkgSpc.IsValid())
-    {
-        BkgChan1Edit->Text = BkgSpc.Channel1;
-        BkgChan2Edit->Text = BkgSpc.Channel2;
-    }
-    if (ThSpc.IsValid())
-    {
-        ThChan1Edit->Text = ThSpc.Channel1;
-        ThChan2Edit->Text = ThSpc.Channel2;
-    }
-    if (RaSpc.IsValid())
-    {
-        RaChan1Edit->Text = RaSpc.Channel1;
-        RaChan2Edit->Text = RaSpc.Channel2;
-    }
-    if (KSpc.IsValid())
-    {
-        KChan1Edit->Text = KSpc.Channel1;
-        KChan2Edit->Text = KSpc.Channel2;
-    }
-    if (CsSpc.IsValid())
-    {
-        CsChan1Edit->Text = CsSpc.Channel1;
-        CsChan2Edit->Text = CsSpc.Channel2;
-    }
+    BkgChan1Edit->Text = CalcCenterOfPeak(BkgSpc, Ths[1].Energy1);
+    BkgChan2Edit->Text = CalcCenterOfPeak(BkgSpc, Ths[1].Energy2);
+
+    ThChan1Edit->Text = CalcCenterOfPeak(ThSpc, Ths[1].Energy1);
+    ThChan2Edit->Text = CalcCenterOfPeak(ThSpc, Ths[1].Energy2);
+
+    RaChan1Edit->Text = CalcCenterOfPeak(RaSpc, Ths[1].Energy1);
+    RaChan2Edit->Text = CalcCenterOfPeak(RaSpc, Ths[1].Energy2);
+
+    KChan1Edit->Text = CalcCenterOfPeak(KSpc, Ths[1].Energy1);
+    KChan2Edit->Text = CalcCenterOfPeak(KSpc, Ths[1].Energy2);
+
+    CsChan1Edit->Text = CalcCenterOfPeak(CsSpc, Ths[1].Energy1);
+    CsChan2Edit->Text = CalcCenterOfPeak(CsSpc, Ths[1].Energy2);
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::OnParamChange(TObject *Sender)
@@ -1558,30 +1547,19 @@ void __fastcall TMainForm::OnCh2RightShiftBtnClick(TObject *Sender)
     OnShiftingDataChange(Chan2Edit);
 }
 //---------------------------------------------------------------------------
-void TMainForm::CalcCentersOfPeak()
+int TMainForm::CalcCenterOfPeak(const TSpectrum &Spc, const double Energy) const
 {
     try
     {
-        if (!OrigSampleSpc.IsValid() || !Ths[1].IsValid())
+        if (Spc.IsValid())
         {
-            return;
-        }
-        SmpChan1Edit->OnChange = 0;
-        SmpChan2Edit->OnChange = 0;
-        try
-        {
-            SmpChan1Edit->Text = Math::Ceil((Ths[1].Energy1 - OrigSampleSpc.B) / OrigSampleSpc.K);
-            SmpChan2Edit->Text = Math::Ceil((Ths[1].Energy2 - OrigSampleSpc.B) / OrigSampleSpc.K);
-        }
-        __finally
-        {
-            SmpChan1Edit->OnChange = OnShiftingDataChange;
-            SmpChan2Edit->OnChange = OnShiftingDataChange;
+            return Math::Ceil((Energy - Spc.B) / Spc.K);
         }
     }
     catch (Exception &)
     {
     }
+    return 0;
 }
 //---------------------------------------------------------------------------
 bool TMainForm::OpenSampleSpectrum(const String &FileName)
@@ -1609,7 +1587,20 @@ bool TMainForm::OpenSampleSpectrum(const String &FileName)
         SameText(SampleSpc.WeightUnit, L"kg") ? (SampleSpc.Weight * 1000) : SampleSpc.Weight;
     SampleMass->Text = Utils::RoundFloatValue(Weight);
     SampleDensity->Text = Utils::RoundFloatValue(SampleSpc.DensityInGramPerLitre);
-    CalcCentersOfPeak();
+
+    SmpChan1Edit->OnChange = 0;
+    SmpChan2Edit->OnChange = 0;
+    try
+    {
+        SmpChan1Edit->Text = CalcCenterOfPeak(OrigSampleSpc, Ths[1].Energy1);
+        SmpChan2Edit->Text = CalcCenterOfPeak(OrigSampleSpc, Ths[1].Energy2);
+    }
+    __finally
+    {
+        SmpChan1Edit->OnChange = OnShiftingDataChange;
+        SmpChan2Edit->OnChange = OnShiftingDataChange;
+    }
+
     ShiftSrc();
     CreateVirtualSpectra();
     if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&

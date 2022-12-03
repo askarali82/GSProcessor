@@ -2316,11 +2316,13 @@ object MainForm: TMainForm
     end
     object ThTime: TEdit
       Left = 89
-      Top = 38
+      Top = 40
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2333,11 +2335,13 @@ object MainForm: TMainForm
     end
     object ThSum: TEdit
       Left = 89
-      Top = 62
+      Top = 64
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2350,11 +2354,13 @@ object MainForm: TMainForm
     end
     object ThActivity: TEdit
       Left = 89
-      Top = 86
+      Top = 88
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2367,11 +2373,13 @@ object MainForm: TMainForm
     end
     object ThMDA: TEdit
       Left = 89
-      Top = 202
+      Top = 204
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2386,11 +2394,13 @@ object MainForm: TMainForm
     end
     object SampleThActivity: TEdit
       Left = 89
-      Top = 226
+      Top = 228
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2406,6 +2416,7 @@ object MainForm: TMainForm
       Top = 178
       Width = 48
       Height = 21
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2420,11 +2431,13 @@ object MainForm: TMainForm
     end
     object ThSnSe1: TEdit
       Left = 89
-      Top = 154
+      Top = 156
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2437,11 +2450,13 @@ object MainForm: TMainForm
     end
     object SampleThSum: TEdit
       Left = 89
-      Top = 130
+      Top = 132
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2454,11 +2469,13 @@ object MainForm: TMainForm
     end
     object SampleThError: TEdit
       Left = 89
-      Top = 250
+      Top = 252
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2741,11 +2758,13 @@ object MainForm: TMainForm
     end
     object RaTime: TEdit
       Left = 89
-      Top = 38
+      Top = 40
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2758,11 +2777,13 @@ object MainForm: TMainForm
     end
     object RaSum: TEdit
       Left = 89
-      Top = 62
+      Top = 64
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2775,11 +2796,13 @@ object MainForm: TMainForm
     end
     object RaActivity: TEdit
       Left = 89
-      Top = 86
+      Top = 88
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2792,11 +2815,13 @@ object MainForm: TMainForm
     end
     object RaMDA: TEdit
       Left = 89
-      Top = 202
+      Top = 204
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2811,11 +2836,13 @@ object MainForm: TMainForm
     end
     object SampleRaActivity: TEdit
       Left = 89
-      Top = 226
+      Top = 228
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2831,6 +2858,7 @@ object MainForm: TMainForm
       Top = 178
       Width = 48
       Height = 21
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2845,11 +2873,13 @@ object MainForm: TMainForm
     end
     object RaSnSe1: TEdit
       Left = 89
-      Top = 154
+      Top = 156
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2862,11 +2892,13 @@ object MainForm: TMainForm
     end
     object SampleRaSum: TEdit
       Left = 89
-      Top = 130
+      Top = 132
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -2879,11 +2911,13 @@ object MainForm: TMainForm
     end
     object SampleRaError: TEdit
       Left = 89
-      Top = 250
+      Top = 252
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3166,11 +3200,13 @@ object MainForm: TMainForm
     end
     object KTime: TEdit
       Left = 89
-      Top = 38
+      Top = 40
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3183,11 +3219,13 @@ object MainForm: TMainForm
     end
     object KSum: TEdit
       Left = 89
-      Top = 62
+      Top = 64
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3200,11 +3238,13 @@ object MainForm: TMainForm
     end
     object KActivity: TEdit
       Left = 89
-      Top = 86
+      Top = 88
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3217,11 +3257,13 @@ object MainForm: TMainForm
     end
     object KMDA: TEdit
       Left = 89
-      Top = 202
+      Top = 204
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3236,11 +3278,13 @@ object MainForm: TMainForm
     end
     object SampleKActivity: TEdit
       Left = 89
-      Top = 226
+      Top = 228
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3256,6 +3300,7 @@ object MainForm: TMainForm
       Top = 178
       Width = 48
       Height = 21
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3270,11 +3315,13 @@ object MainForm: TMainForm
     end
     object KSnSe1: TEdit
       Left = 89
-      Top = 154
+      Top = 156
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3287,11 +3334,13 @@ object MainForm: TMainForm
     end
     object SampleKSum: TEdit
       Left = 89
-      Top = 130
+      Top = 132
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3304,11 +3353,13 @@ object MainForm: TMainForm
     end
     object SampleKError: TEdit
       Left = 89
-      Top = 250
+      Top = 252
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3591,11 +3642,13 @@ object MainForm: TMainForm
     end
     object CsTime: TEdit
       Left = 89
-      Top = 38
+      Top = 40
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3608,11 +3661,13 @@ object MainForm: TMainForm
     end
     object CsSum: TEdit
       Left = 89
-      Top = 62
+      Top = 64
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3625,11 +3680,13 @@ object MainForm: TMainForm
     end
     object CsActivity: TEdit
       Left = 89
-      Top = 86
+      Top = 88
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3642,11 +3699,13 @@ object MainForm: TMainForm
     end
     object CsMDA: TEdit
       Left = 89
-      Top = 202
+      Top = 204
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3661,11 +3720,13 @@ object MainForm: TMainForm
     end
     object SampleCsActivity: TEdit
       Left = 89
-      Top = 226
+      Top = 228
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3681,6 +3742,7 @@ object MainForm: TMainForm
       Top = 178
       Width = 48
       Height = 21
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3695,11 +3757,13 @@ object MainForm: TMainForm
     end
     object CsSnSe1: TEdit
       Left = 89
-      Top = 154
+      Top = 156
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3712,11 +3776,13 @@ object MainForm: TMainForm
     end
     object SampleCsSum: TEdit
       Left = 89
-      Top = 130
+      Top = 132
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3729,11 +3795,13 @@ object MainForm: TMainForm
     end
     object SampleCsError: TEdit
       Left = 89
-      Top = 250
+      Top = 252
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3934,11 +4002,13 @@ object MainForm: TMainForm
     end
     object BeSum: TEdit
       Left = 92
-      Top = 38
+      Top = 40
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3952,11 +4022,13 @@ object MainForm: TMainForm
     object BeActivityPerKgOrSq: TEdit
       Tag = 1
       Left = 92
-      Top = 86
+      Top = 88
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3969,11 +4041,13 @@ object MainForm: TMainForm
     end
     object BeMDA: TEdit
       Left = 92
-      Top = 62
+      Top = 64
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3991,6 +4065,7 @@ object MainForm: TMainForm
       Top = 202
       Width = 61
       Height = 21
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -4004,11 +4079,13 @@ object MainForm: TMainForm
     end
     object SampleBeError: TEdit
       Left = 92
-      Top = 109
+      Top = 111
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -4024,6 +4101,7 @@ object MainForm: TMainForm
       Top = 226
       Width = 61
       Height = 21
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -4040,6 +4118,7 @@ object MainForm: TMainForm
       Top = 250
       Width = 61
       Height = 21
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -4053,11 +4132,13 @@ object MainForm: TMainForm
     end
     object SampleMass: TEdit
       Left = 92
-      Top = 178
+      Top = 180
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -4070,11 +4151,13 @@ object MainForm: TMainForm
     end
     object SampleTime: TEdit
       Left = 92
-      Top = 154
+      Top = 156
       Width = 61
       Height = 21
       TabStop = False
+      Alignment = taRightJustify
       Anchors = [akTop, akRight]
+      BorderStyle = bsNone
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText

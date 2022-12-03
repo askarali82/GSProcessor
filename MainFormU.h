@@ -423,7 +423,7 @@ private:
     bool ShiftRa();
     bool ShiftK();
     bool ShiftCs();
-	void CalcCentersOfPeak();
+	int CalcCenterOfPeak(const TSpectrum &Spc, const double Energy) const;
 	void SaveParametersFile(const String &FileName);
 	void ChangeUILanguage();
     void __fastcall OnAppException(TObject* Sender, Exception* E);
