@@ -412,6 +412,7 @@ void __fastcall TMainForm::SpectraLoadTimerTimer(TObject *Sender)
         Energy2Edit->Text = Ths[1].Energy2;
         SrcChan1Edit->Text = Ths[1].Channel1;
         SrcChan2Edit->Text = Ths[1].Channel2;
+        ChangeUILanguage();
     }
 }
 //---------------------------------------------------------------------------
@@ -2197,6 +2198,35 @@ void TMainForm::ChangeUILanguage()
         CsMDA->Hint = ThMDALabel->Hint;
         BeMDALabel->Hint = ThMDALabel->Hint;
         BeMDA->Hint = ThMDALabel->Hint;
+
+        const String Str = L" energiyaga to'g'ri keluvchi kanal raqami  ";
+        const String E1 = Sysutils::StringReplace(ThE1Label->Caption, L":", L"", TReplaceFlags() << rfReplaceAll);
+        const String E2 = Sysutils::StringReplace(ThE2Label->Caption, L":", L"", TReplaceFlags() << rfReplaceAll);
+        const String keV = L" keV";
+        SmpCh1Label->Hint = L"  " + (Energy1Edit->Text.IsEmpty() ? E1 : Energy1Edit->Text + keV) + Str;
+        SmpChan1Edit->Hint = SmpCh1Label->Hint;
+        SmpCh2Label->Hint = L"  " + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + Str;
+        SmpChan2Edit->Hint = SmpCh2Label->Hint;
+
+        BkgCh1Label->Hint = L"  " + (Energy1Edit->Text.IsEmpty() ? E1 : Energy1Edit->Text + keV) + Str;
+        BkgChan1Edit->Hint = BkgCh1Label->Hint;
+        BkgCh2Label->Hint = L"  " + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + Str;
+        BkgChan2Edit->Hint = BkgCh2Label->Hint;
+
+        RaCh1Label->Hint = L"  " + (Energy1Edit->Text.IsEmpty() ? E1 : Energy1Edit->Text + keV) + Str;
+        RaChan1Edit->Hint = RaCh1Label->Hint;
+        RaCh2Label->Hint = L"  " + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + Str;
+        RaChan2Edit->Hint = RaCh2Label->Hint;
+
+        KCh1Label->Hint = L"  " + (Energy1Edit->Text.IsEmpty() ? E1 : Energy1Edit->Text + keV) + Str;
+        KChan1Edit->Hint = KCh1Label->Hint;
+        KCh2Label->Hint = L"  " + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + Str;
+        KChan2Edit->Hint = KCh2Label->Hint;
+
+        CsCh1Label->Hint = L"  " + (Energy1Edit->Text.IsEmpty() ? E1 : Energy1Edit->Text + keV) + Str;
+        CsChan1Edit->Hint = CsCh1Label->Hint;
+        CsCh2Label->Hint = L"  " + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + Str;
+        CsChan2Edit->Hint = CsCh2Label->Hint;
     }
     else if (LangID == 1)
     {
@@ -2373,6 +2403,35 @@ void TMainForm::ChangeUILanguage()
         CsMDA->Hint = ThMDALabel->Hint;
         BeMDALabel->Hint = ThMDALabel->Hint;
         BeMDA->Hint = ThMDALabel->Hint;
+
+        const String Str = L"  Channel number corresponding to ";
+        const String E1 = Sysutils::StringReplace(ThE1Label->Caption, L":", L"", TReplaceFlags() << rfReplaceAll);
+        const String E2 = Sysutils::StringReplace(ThE2Label->Caption, L":", L"", TReplaceFlags() << rfReplaceAll);
+        const String keV = L" keV";
+        SmpCh1Label->Hint = Str + (Energy1Edit->Text.IsEmpty() ? E1 : Energy1Edit->Text + keV) + L" energy  ";
+        SmpChan1Edit->Hint = SmpCh1Label->Hint;
+        SmpCh2Label->Hint = Str + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + L" energy  ";
+        SmpChan2Edit->Hint = SmpCh2Label->Hint;
+
+        BkgCh1Label->Hint = Str + (Energy1Edit->Text.IsEmpty() ? E1 : Energy1Edit->Text + keV) + L" energy  ";
+        BkgChan1Edit->Hint = BkgCh1Label->Hint;
+        BkgCh2Label->Hint = Str + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + L" energy  ";
+        BkgChan2Edit->Hint = BkgCh2Label->Hint;
+
+        RaCh1Label->Hint = Str + (Energy1Edit->Text.IsEmpty() ? E1 : Energy1Edit->Text + keV) + L" energy  ";
+        RaChan1Edit->Hint = RaCh1Label->Hint;
+        RaCh2Label->Hint = Str + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + L" energy  ";
+        RaChan2Edit->Hint = RaCh2Label->Hint;
+
+        KCh1Label->Hint = Str + (Energy1Edit->Text.IsEmpty() ? E1 : Energy1Edit->Text + keV) + L" energy  ";
+        KChan1Edit->Hint = KCh1Label->Hint;
+        KCh2Label->Hint = Str + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + L" energy  ";
+        KChan2Edit->Hint = KCh2Label->Hint;
+
+        CsCh1Label->Hint = Str + (Energy1Edit->Text.IsEmpty() ? E1 : Energy1Edit->Text + keV) + L" energy  ";
+        CsChan1Edit->Hint = CsCh1Label->Hint;
+        CsCh2Label->Hint = Str + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + L" energy  ";
+        CsChan2Edit->Hint = CsCh2Label->Hint;
     }
     else
     {
