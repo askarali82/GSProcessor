@@ -463,10 +463,12 @@ void __fastcall TShiftingForm::AboutButtonClick(TObject *Sender)
 {
 	String AboutStr = L"Dastur haqida";
 	String Copyright = L"Yadro Fizikasi Laboratoriyasi, Samarqand Davlat Universiteti";
+    String Developer = L"Dasturchi: Asqarali Azimov";
 	if (LangID == 1)
 	{
 		AboutStr = L"About";
         Copyright = L"Nuclear Physics Laboratory, Samarkand State University";
+        Developer = L"Developer: Askarali Azimov";
     }
 
 	String Version = GetVersionString();
@@ -476,7 +478,9 @@ void __fastcall TShiftingForm::AboutButtonClick(TObject *Sender)
 	}
 	const String &Message =
 		String(AppName + Version + L"\r\n") +
-		Char(169) + L" " + Copyright + L", 2021 - 2022.";
+		Char(169) + L" " + Copyright + L", 2021 - 2022.\r\n\r\n" +
+        Developer;
+
 	Application->MessageBox(Message.c_str(), AboutStr.c_str(), MB_OK | MB_ICONINFORMATION);
 }
 //---------------------------------------------------------------------------
