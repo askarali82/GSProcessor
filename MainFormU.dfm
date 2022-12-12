@@ -5108,7 +5108,7 @@ object MainForm: TMainForm
       OnExecute = SelectDirectoryActionExecute
     end
     object LanguageAction: TAction
-      Caption = '  UZB  '
+      Caption = '  O'#39'ZB  '
       ShortCut = 16460
       OnExecute = LanguageActionExecute
     end

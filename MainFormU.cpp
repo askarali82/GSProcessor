@@ -2028,7 +2028,7 @@ void TMainForm::ChangeUILanguage()
         ErrorTitle = L"Xato";
         DirSelectionString = L"Manzil tanlash...";
 
-        LanguageAction->Caption = L"  UZB  ";
+        LanguageAction->Caption = L"  O'ZB  ";
 
         OpenButton->Caption = L"Ochish";
         OpenSpectrumAction->Caption = L"Spektrni ochish";
@@ -2125,6 +2125,7 @@ void TMainForm::ChangeUILanguage()
         SampleChart->Title->Text->Text = L"Namuna";
         SampleChart->LeftAxis->Title->Caption = FinalSpcChart->LeftAxis->Title->Caption;
         BkgChart->Title->Text->Text = L"Fon";
+        BkgChart->LeftAxis->Title->Caption = SampleChart->LeftAxis->Title->Caption;
         ThChart->LeftAxis->Title->Caption = SampleChart->LeftAxis->Title->Caption;
         RaChart->LeftAxis->Title->Caption = SampleChart->LeftAxis->Title->Caption;
         KChart->LeftAxis->Title->Caption = SampleChart->LeftAxis->Title->Caption;
@@ -2330,6 +2331,7 @@ void TMainForm::ChangeUILanguage()
         SampleChart->Title->Text->Text = L"Sample";
         SampleChart->LeftAxis->Title->Caption = FinalSpcChart->LeftAxis->Title->Caption;
         BkgChart->Title->Text->Text = L"Background";
+        BkgChart->LeftAxis->Title->Caption = SampleChart->LeftAxis->Title->Caption;
         ThChart->LeftAxis->Title->Caption = SampleChart->LeftAxis->Title->Caption;
         RaChart->LeftAxis->Title->Caption = SampleChart->LeftAxis->Title->Caption;
         KChart->LeftAxis->Title->Caption = SampleChart->LeftAxis->Title->Caption;
