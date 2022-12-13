@@ -37,7 +37,7 @@ object SettingsForm: TSettingsForm
     Caption = 'Aktivligi (Bk), xatoligi (%) va qayd qilingan sanasi'
   end
   object Label34: TLabel
-    Left = 487
+    Left = 527
     Top = 33
     Width = 99
     Height = 13
@@ -402,8 +402,8 @@ object SettingsForm: TSettingsForm
     Caption = 'Namuna'
   end
   object ImageCorrect: TImage
-    Left = 586
-    Top = 8
+    Left = 763
+    Top = -1
     Width = 24
     Height = 24
     AutoSize = True
@@ -440,8 +440,8 @@ object SettingsForm: TSettingsForm
     Visible = False
   end
   object ImageIncorrect: TImage
-    Left = 546
-    Top = 8
+    Left = 712
+    Top = -1
     Width = 24
     Height = 24
     AutoSize = True
@@ -1307,7 +1307,7 @@ object SettingsForm: TSettingsForm
   end
   object OpenDialog: TOpenDialog
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing, ofForceShowHidden]
-    Left = 631
+    Left = 807
     Top = 1
   end
 end

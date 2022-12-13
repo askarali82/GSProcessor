@@ -5,10 +5,10 @@
 //---------------------------------------------------------------------------
 #include <Vcl.Styles.hpp>
 #include <Vcl.Themes.hpp>
+USEFORM("MainFormU.cpp", MainForm);
 USEFORM("SettingsFormU.cpp", SettingsForm);
 USEFORM("ShiftingFormU.cpp", ShiftingForm);
 USEFORM("BatchProcessingResultsFormU.cpp", BatchProcessingResultsForm);
-USEFORM("MainFormU.cpp", MainForm);
 //---------------------------------------------------------------------------
 std::atomic<int> LangID = 0;
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
@@ -18,8 +18,8 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
         Application->Initialize();
         Application->MainFormOnTaskBar = true;
         Application->CreateForm(__classid(TMainForm), &MainForm);
-        Application->CreateForm(__classid(TShiftingForm), &ShiftingForm);
-        Application->Run();
+         Application->CreateForm(__classid(TShiftingForm), &ShiftingForm);
+         Application->Run();
     }
     catch (Exception &exception)
     {
