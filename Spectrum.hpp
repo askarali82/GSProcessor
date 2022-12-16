@@ -700,7 +700,7 @@ bool TSpectrum::Shift(const double SrcCh1, const double SrcCh2, const double Smp
                 const double d = double(I) / 1000.0;
                 const int En = Math::Ceil(1000 * (SmpK * (X + d) + SmpB));
                 ResultSpc.Counts[i] = Counts[X] + Math::Ceil(d * (Counts[X + 1] - Counts[X]));
-                if (Math::Ceil(1000 * SrcCal) < En)
+                if (En > Math::Ceil(1000 * SrcCal))
                 {
                     break;
                 }
