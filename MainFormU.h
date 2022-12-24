@@ -192,9 +192,9 @@ __published:
     TSpeedButton *ThCh2LeftShiftBtn;
     TSpeedButton *ThCh2RightShiftBtn;
     TEdit *ThChan2Edit;
-	TLabel *ThCh2_1Label;
+    TLabel *ThCh2Label;
     TEdit *ThChan1Edit;
-	TLabel *ThCh1_1Label;
+    TLabel *ThCh1Label;
     TEdit *RaDValEdit1;
     TSpeedButton *RaCh1LeftShiftBtn;
     TSpeedButton *RaCh1RightShiftBtn;
@@ -225,10 +225,6 @@ __published:
 	TLabel *CsCh2Label;
     TEdit *CsChan1Edit;
 	TLabel *CsCh1Label;
-    TEdit *SrcChan2Edit;
-	TLabel *ThCh2Label;
-    TEdit *SrcChan1Edit;
-	TLabel *ThCh1Label;
     TEdit *Energy2Edit;
 	TLabel *ThE2Label;
     TEdit *Energy1Edit;

@@ -410,8 +410,6 @@ void __fastcall TMainForm::SpectraLoadTimerTimer(TObject *Sender)
     {
         Energy1Edit->Text = Ths[1].Energy1;
         Energy2Edit->Text = Ths[1].Energy2;
-        SrcChan1Edit->Text = Ths[1].Channel1;
-        SrcChan2Edit->Text = Ths[1].Channel2;
         ChangeUILanguage();
     }
 }
@@ -1074,8 +1072,8 @@ bool TMainForm::ShiftSrc()
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
-    const double SrcCh1 = Sysutils::StrToFloatDef(SrcChan1Edit->Text, 0);
-    const double SrcCh2 = Sysutils::StrToFloatDef(SrcChan2Edit->Text, 0);
+    const double SrcCh1 = Ths[1].Channel1;
+    const double SrcCh2 = Ths[1].Channel2;
     const double SmpCh1 = Sysutils::StrToFloatDef(SmpChan1Edit->Text, 0);
     const double SmpCh2 = Sysutils::StrToFloatDef(SmpChan2Edit->Text, 0);
     if (En1    > 0 && En2    > En1    &&
@@ -1102,8 +1100,8 @@ bool TMainForm::ShiftBkg()
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
-    const double SrcCh1 = Sysutils::StrToFloatDef(SrcChan1Edit->Text, 0);
-    const double SrcCh2 = Sysutils::StrToFloatDef(SrcChan2Edit->Text, 0);
+    const double SrcCh1 = Ths[1].Channel1;
+    const double SrcCh2 = Ths[1].Channel2;
     const double BkgCh1 = Sysutils::StrToFloatDef(BkgChan1Edit->Text, 0);
     const double BkgCh2 = Sysutils::StrToFloatDef(BkgChan2Edit->Text, 0);
     if (En1    > 0 && En2    > En1 &&
@@ -1130,8 +1128,8 @@ bool TMainForm::ShiftTh()
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
-    const double SrcCh1 = Sysutils::StrToFloatDef(SrcChan1Edit->Text, 0);
-    const double SrcCh2 = Sysutils::StrToFloatDef(SrcChan2Edit->Text, 0);
+    const double SrcCh1 = Ths[1].Channel1;
+    const double SrcCh2 = Ths[1].Channel2;
     const double ThCh1 = Sysutils::StrToFloatDef(ThChan1Edit->Text, 0);
     const double ThCh2 = Sysutils::StrToFloatDef(ThChan2Edit->Text, 0);
     if (En1    > 0 && En2    > En1 &&
@@ -1158,8 +1156,8 @@ bool TMainForm::ShiftRa()
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
-    const double SrcCh1 = Sysutils::StrToFloatDef(SrcChan1Edit->Text, 0);
-    const double SrcCh2 = Sysutils::StrToFloatDef(SrcChan2Edit->Text, 0);
+    const double SrcCh1 = Ths[1].Channel1;
+    const double SrcCh2 = Ths[1].Channel2;
     const double RaCh1 = Sysutils::StrToFloatDef(RaChan1Edit->Text, 0);
     const double RaCh2 = Sysutils::StrToFloatDef(RaChan2Edit->Text, 0);
     if (En1    > 0 && En2    > En1 &&
@@ -1186,8 +1184,8 @@ bool TMainForm::ShiftK()
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
-    const double SrcCh1 = Sysutils::StrToFloatDef(SrcChan1Edit->Text, 0);
-    const double SrcCh2 = Sysutils::StrToFloatDef(SrcChan2Edit->Text, 0);
+    const double SrcCh1 = Ths[1].Channel1;
+    const double SrcCh2 = Ths[1].Channel2;
     const double KCh1 = Sysutils::StrToFloatDef(KChan1Edit->Text, 0);
     const double KCh2 = Sysutils::StrToFloatDef(KChan2Edit->Text, 0);
     if (En1    > 0 && En2    > En1 &&
@@ -1214,8 +1212,8 @@ bool TMainForm::ShiftCs()
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
-    const double SrcCh1 = Sysutils::StrToFloatDef(SrcChan1Edit->Text, 0);
-    const double SrcCh2 = Sysutils::StrToFloatDef(SrcChan2Edit->Text, 0);
+    const double SrcCh1 = Ths[1].Channel1;
+    const double SrcCh2 = Ths[1].Channel2;
     const double CsCh1 = Sysutils::StrToFloatDef(CsChan1Edit->Text, 0);
     const double CsCh2 = Sysutils::StrToFloatDef(CsChan2Edit->Text, 0);
     if (En1    > 0 && En2    > En1 &&
@@ -2137,8 +2135,6 @@ void TMainForm::ChangeUILanguage()
         BkgCh2Label->Caption = SmpCh2Label->Caption;
         ThCh1Label->Caption = SmpCh1Label->Caption;
         ThCh2Label->Caption = SmpCh2Label->Caption;
-        ThCh1_1Label->Caption = SmpCh1Label->Caption;
-        ThCh2_1Label->Caption = SmpCh2Label->Caption;
         RaCh1Label->Caption = SmpCh1Label->Caption;
         RaCh2Label->Caption = SmpCh2Label->Caption;
         KCh1Label->Caption = SmpCh1Label->Caption;
@@ -2343,8 +2339,6 @@ void TMainForm::ChangeUILanguage()
         BkgCh2Label->Caption = SmpCh2Label->Caption;
         ThCh1Label->Caption = SmpCh1Label->Caption;
         ThCh2Label->Caption = SmpCh2Label->Caption;
-        ThCh1_1Label->Caption = SmpCh1Label->Caption;
-        ThCh2_1Label->Caption = SmpCh2Label->Caption;
         RaCh1Label->Caption = SmpCh1Label->Caption;
         RaCh2Label->Caption = SmpCh2Label->Caption;
         KCh1Label->Caption = SmpCh1Label->Caption;

@@ -35,8 +35,8 @@ object MainForm: TMainForm
       589
       100)
     object SmpCh2RightShiftBtn: TSpeedButton
-      Left = 566
-      Top = 27
+      Left = 564
+      Top = 46
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -66,8 +66,8 @@ object MainForm: TMainForm
       OnClick = OnCh2RightShiftBtnClick
     end
     object SmpCh2LeftShiftBtn: TSpeedButton
-      Left = 543
-      Top = 27
+      Left = 541
+      Top = 46
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -97,8 +97,8 @@ object MainForm: TMainForm
       OnClick = OnCh2LeftShiftBtnClick
     end
     object SmpCh1RightShiftBtn: TSpeedButton
-      Left = 492
-      Top = 27
+      Left = 487
+      Top = 46
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -128,8 +128,8 @@ object MainForm: TMainForm
       OnClick = OnCh1RightShiftBtnClick
     end
     object SmpCh1LeftShiftBtn: TSpeedButton
-      Left = 469
-      Top = 27
+      Left = 464
+      Top = 46
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -159,7 +159,7 @@ object MainForm: TMainForm
       OnClick = OnCh1LeftShiftBtnClick
     end
     object SmpCh1Label: TLabel
-      Left = 445
+      Left = 444
       Top = 7
       Width = 17
       Height = 13
@@ -175,7 +175,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object SmpCh2Label: TLabel
-      Left = 519
+      Left = 521
       Top = 7
       Width = 17
       Height = 13
@@ -295,7 +295,7 @@ object MainForm: TMainForm
     object SmpChan1Edit: TEdit
       Left = 464
       Top = 4
-      Width = 36
+      Width = 45
       Height = 21
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
@@ -310,8 +310,8 @@ object MainForm: TMainForm
       OnChange = OnShiftingDataChange
     end
     object SmpDValEdit1: TEdit
-      Left = 442
-      Top = 29
+      Left = 464
+      Top = 27
       Width = 26
       Height = 18
       Anchors = [akTop, akRight]
@@ -324,8 +324,8 @@ object MainForm: TMainForm
       TabOrder = 2
     end
     object SmpDValEdit2: TEdit
-      Left = 516
-      Top = 29
+      Left = 541
+      Top = 27
       Width = 26
       Height = 18
       Anchors = [akTop, akRight]
@@ -338,9 +338,9 @@ object MainForm: TMainForm
       TabOrder = 3
     end
     object SmpChan2Edit: TEdit
-      Left = 538
+      Left = 541
       Top = 4
-      Width = 36
+      Width = 45
       Height = 21
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
@@ -370,8 +370,8 @@ object MainForm: TMainForm
       589
       100)
     object BkgCh1LeftShiftBtn: TSpeedButton
-      Left = 469
-      Top = 30
+      Left = 464
+      Top = 47
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -401,8 +401,8 @@ object MainForm: TMainForm
       OnClick = OnCh1LeftShiftBtnClick
     end
     object BkgCh2RightShiftBtn: TSpeedButton
-      Left = 566
-      Top = 30
+      Left = 564
+      Top = 47
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -432,8 +432,8 @@ object MainForm: TMainForm
       OnClick = OnCh2RightShiftBtnClick
     end
     object BkgCh2LeftShiftBtn: TSpeedButton
-      Left = 543
-      Top = 30
+      Left = 541
+      Top = 47
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -463,8 +463,8 @@ object MainForm: TMainForm
       OnClick = OnCh2LeftShiftBtnClick
     end
     object BkgCh1RightShiftBtn: TSpeedButton
-      Left = 492
-      Top = 30
+      Left = 487
+      Top = 47
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -494,7 +494,7 @@ object MainForm: TMainForm
       OnClick = OnCh1RightShiftBtnClick
     end
     object BkgCh2Label: TLabel
-      Left = 519
+      Left = 521
       Top = 8
       Width = 17
       Height = 13
@@ -510,7 +510,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object BkgCh1Label: TLabel
-      Left = 445
+      Left = 444
       Top = 8
       Width = 17
       Height = 13
@@ -613,8 +613,8 @@ object MainForm: TMainForm
       end
     end
     object BkgDValEdit2: TEdit
-      Left = 516
-      Top = 32
+      Left = 541
+      Top = 28
       Width = 26
       Height = 18
       Anchors = [akTop, akRight]
@@ -627,8 +627,8 @@ object MainForm: TMainForm
       TabOrder = 3
     end
     object BkgDValEdit1: TEdit
-      Left = 442
-      Top = 32
+      Left = 464
+      Top = 28
       Width = 26
       Height = 18
       Anchors = [akTop, akRight]
@@ -641,9 +641,9 @@ object MainForm: TMainForm
       TabOrder = 2
     end
     object BkgChan2Edit: TEdit
-      Left = 538
+      Left = 541
       Top = 5
-      Width = 36
+      Width = 45
       Height = 21
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
@@ -660,7 +660,7 @@ object MainForm: TMainForm
     object BkgChan1Edit: TEdit
       Left = 464
       Top = 5
-      Width = 36
+      Width = 45
       Height = 21
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
@@ -690,8 +690,8 @@ object MainForm: TMainForm
       589
       100)
     object ThCh1LeftShiftBtn: TSpeedButton
-      Left = 469
-      Top = 74
+      Left = 464
+      Top = 70
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -721,8 +721,8 @@ object MainForm: TMainForm
       OnClick = OnCh1LeftShiftBtnClick
     end
     object ThCh1RightShiftBtn: TSpeedButton
-      Left = 492
-      Top = 74
+      Left = 487
+      Top = 70
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -752,8 +752,8 @@ object MainForm: TMainForm
       OnClick = OnCh1RightShiftBtnClick
     end
     object ThCh2LeftShiftBtn: TSpeedButton
-      Left = 543
-      Top = 74
+      Left = 541
+      Top = 70
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -783,8 +783,8 @@ object MainForm: TMainForm
       OnClick = OnCh2LeftShiftBtnClick
     end
     object ThCh2RightShiftBtn: TSpeedButton
-      Left = 566
-      Top = 74
+      Left = 564
+      Top = 70
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -813,65 +813,37 @@ object MainForm: TMainForm
         0000}
       OnClick = OnCh2RightShiftBtnClick
     end
-    object ThCh2_1Label: TLabel
-      Left = 519
-      Top = 53
-      Width = 17
-      Height = 13
-      Anchors = [akTop, akRight]
-      Caption = 'K2:'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clRed
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object ThCh1_1Label: TLabel
-      Left = 445
-      Top = 53
-      Width = 17
-      Height = 13
-      Anchors = [akTop, akRight]
-      Caption = 'K1:'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clRed
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
     object ThCh2Label: TLabel
-      Left = 519
-      Top = 29
+      Left = 521
+      Top = 31
       Width = 17
       Height = 13
       Anchors = [akTop, akRight]
       Caption = 'K2:'
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
+      Font.Color = clRed
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
     end
     object ThCh1Label: TLabel
-      Left = 445
-      Top = 29
+      Left = 444
+      Top = 31
       Width = 17
       Height = 13
       Anchors = [akTop, akRight]
       Caption = 'K1:'
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlue
+      Font.Color = clRed
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
     end
     object ThE2Label: TLabel
-      Left = 519
-      Top = 5
+      Left = 521
+      Top = 7
       Width = 16
       Height = 13
       Anchors = [akTop, akRight]
@@ -884,8 +856,8 @@ object MainForm: TMainForm
       ParentFont = False
     end
     object ThE1Label: TLabel
-      Left = 445
-      Top = 5
+      Left = 444
+      Top = 7
       Width = 16
       Height = 13
       Anchors = [akTop, akRight]
@@ -962,7 +934,7 @@ object MainForm: TMainForm
       Align = alLeft
       Color = clMedGray
       TabStop = False
-      TabOrder = 8
+      TabOrder = 6
       Anchors = [akLeft, akTop, akRight, akBottom]
       OnMouseMove = OnChartMouseMove
       DefaultCanvas = 'TGDIPlusCanvas'
@@ -987,103 +959,67 @@ object MainForm: TMainForm
       end
     end
     object ThDValEdit1: TEdit
-      Left = 442
-      Top = 77
-      Width = 26
-      Height = 18
-      Anchors = [akTop, akRight]
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -8
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 6
-    end
-    object ThDValEdit2: TEdit
-      Left = 516
-      Top = 77
-      Width = 26
-      Height = 18
-      Anchors = [akTop, akRight]
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -8
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 7
-    end
-    object ThChan2Edit: TEdit
-      Left = 538
-      Top = 50
-      Width = 36
-      Height = 21
-      Anchors = [akTop, akRight]
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      TabOrder = 5
-      OnChange = OnShiftingDataChange
-    end
-    object ThChan1Edit: TEdit
       Left = 464
-      Top = 50
-      Width = 36
-      Height = 21
+      Top = 51
+      Width = 26
+      Height = 18
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -11
+      Font.Height = -8
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
       TabOrder = 4
-      OnChange = OnShiftingDataChange
     end
-    object SrcChan2Edit: TEdit
-      Left = 538
-      Top = 26
-      Width = 36
-      Height = 21
-      TabStop = False
+    object ThDValEdit2: TEdit
+      Left = 541
+      Top = 51
+      Width = 26
+      Height = 18
       Anchors = [akTop, akRight]
-      Color = clBtnFace
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -8
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 5
+    end
+    object ThChan2Edit: TEdit
+      Left = 541
+      Top = 28
+      Width = 45
+      Height = 21
+      Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      ReadOnly = True
       TabOrder = 3
       OnChange = OnShiftingDataChange
     end
-    object SrcChan1Edit: TEdit
+    object ThChan1Edit: TEdit
       Left = 464
-      Top = 26
-      Width = 36
+      Top = 28
+      Width = 45
       Height = 21
-      TabStop = False
       Anchors = [akTop, akRight]
-      Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      ReadOnly = True
       TabOrder = 2
       OnChange = OnShiftingDataChange
     end
     object Energy2Edit: TEdit
-      Left = 538
-      Top = 2
-      Width = 46
+      Left = 541
+      Top = 4
+      Width = 45
       Height = 21
       TabStop = False
       Anchors = [akTop, akRight]
@@ -1100,8 +1036,8 @@ object MainForm: TMainForm
     end
     object Energy1Edit: TEdit
       Left = 464
-      Top = 2
-      Width = 46
+      Top = 4
+      Width = 45
       Height = 21
       TabStop = False
       Anchors = [akTop, akRight]
@@ -1132,8 +1068,8 @@ object MainForm: TMainForm
       589
       100)
     object RaCh1LeftShiftBtn: TSpeedButton
-      Left = 469
-      Top = 29
+      Left = 464
+      Top = 47
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -1163,8 +1099,8 @@ object MainForm: TMainForm
       OnClick = OnCh1LeftShiftBtnClick
     end
     object RaCh1RightShiftBtn: TSpeedButton
-      Left = 492
-      Top = 29
+      Left = 487
+      Top = 47
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -1194,8 +1130,8 @@ object MainForm: TMainForm
       OnClick = OnCh1RightShiftBtnClick
     end
     object RaCh2LeftShiftBtn: TSpeedButton
-      Left = 543
-      Top = 29
+      Left = 541
+      Top = 47
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -1225,8 +1161,8 @@ object MainForm: TMainForm
       OnClick = OnCh2LeftShiftBtnClick
     end
     object RaCh2RightShiftBtn: TSpeedButton
-      Left = 566
-      Top = 29
+      Left = 564
+      Top = 47
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -1256,7 +1192,7 @@ object MainForm: TMainForm
       OnClick = OnCh2RightShiftBtnClick
     end
     object RaCh2Label: TLabel
-      Left = 519
+      Left = 521
       Top = 8
       Width = 17
       Height = 13
@@ -1272,7 +1208,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object RaCh1Label: TLabel
-      Left = 445
+      Left = 444
       Top = 8
       Width = 17
       Height = 13
@@ -1375,8 +1311,8 @@ object MainForm: TMainForm
       end
     end
     object RaDValEdit1: TEdit
-      Left = 442
-      Top = 32
+      Left = 464
+      Top = 28
       Width = 26
       Height = 18
       Anchors = [akTop, akRight]
@@ -1389,8 +1325,8 @@ object MainForm: TMainForm
       TabOrder = 2
     end
     object RaDValEdit2: TEdit
-      Left = 516
-      Top = 32
+      Left = 541
+      Top = 28
       Width = 26
       Height = 18
       Anchors = [akTop, akRight]
@@ -1403,9 +1339,9 @@ object MainForm: TMainForm
       TabOrder = 3
     end
     object RaChan2Edit: TEdit
-      Left = 538
+      Left = 541
       Top = 5
-      Width = 36
+      Width = 45
       Height = 21
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
@@ -1422,7 +1358,7 @@ object MainForm: TMainForm
     object RaChan1Edit: TEdit
       Left = 464
       Top = 5
-      Width = 36
+      Width = 45
       Height = 21
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
@@ -1452,8 +1388,8 @@ object MainForm: TMainForm
       589
       100)
     object KCh1LeftShiftBtn: TSpeedButton
-      Left = 469
-      Top = 30
+      Left = 464
+      Top = 47
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -1483,8 +1419,8 @@ object MainForm: TMainForm
       OnClick = OnCh1LeftShiftBtnClick
     end
     object KCh1RightShiftBtn: TSpeedButton
-      Left = 492
-      Top = 30
+      Left = 487
+      Top = 47
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -1514,8 +1450,8 @@ object MainForm: TMainForm
       OnClick = OnCh1RightShiftBtnClick
     end
     object KCh2LeftShiftBtn: TSpeedButton
-      Left = 543
-      Top = 30
+      Left = 541
+      Top = 47
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -1545,8 +1481,8 @@ object MainForm: TMainForm
       OnClick = OnCh2LeftShiftBtnClick
     end
     object KCh2RightShiftBtn: TSpeedButton
-      Left = 566
-      Top = 30
+      Left = 564
+      Top = 47
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -1576,7 +1512,7 @@ object MainForm: TMainForm
       OnClick = OnCh2RightShiftBtnClick
     end
     object KCh2Label: TLabel
-      Left = 519
+      Left = 521
       Top = 9
       Width = 17
       Height = 13
@@ -1592,7 +1528,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object KCh1Label: TLabel
-      Left = 445
+      Left = 444
       Top = 9
       Width = 17
       Height = 13
@@ -1695,8 +1631,8 @@ object MainForm: TMainForm
       end
     end
     object KDValEdit1: TEdit
-      Left = 442
-      Top = 33
+      Left = 464
+      Top = 29
       Width = 26
       Height = 18
       Anchors = [akTop, akRight]
@@ -1709,8 +1645,8 @@ object MainForm: TMainForm
       TabOrder = 2
     end
     object KDValEdit2: TEdit
-      Left = 516
-      Top = 33
+      Left = 541
+      Top = 29
       Width = 26
       Height = 18
       Anchors = [akTop, akRight]
@@ -1723,9 +1659,9 @@ object MainForm: TMainForm
       TabOrder = 3
     end
     object KChan2Edit: TEdit
-      Left = 538
+      Left = 541
       Top = 6
-      Width = 36
+      Width = 45
       Height = 21
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
@@ -1742,7 +1678,7 @@ object MainForm: TMainForm
     object KChan1Edit: TEdit
       Left = 464
       Top = 6
-      Width = 36
+      Width = 45
       Height = 21
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
@@ -1772,8 +1708,8 @@ object MainForm: TMainForm
       589
       100)
     object CsCh1LeftShiftBtn: TSpeedButton
-      Left = 469
-      Top = 30
+      Left = 464
+      Top = 48
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -1803,8 +1739,8 @@ object MainForm: TMainForm
       OnClick = OnCh1LeftShiftBtnClick
     end
     object CsCh1RightShiftBtn: TSpeedButton
-      Left = 492
-      Top = 30
+      Left = 487
+      Top = 48
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -1834,8 +1770,8 @@ object MainForm: TMainForm
       OnClick = OnCh1RightShiftBtnClick
     end
     object CsCh2LeftShiftBtn: TSpeedButton
-      Left = 543
-      Top = 30
+      Left = 538
+      Top = 48
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -1865,8 +1801,8 @@ object MainForm: TMainForm
       OnClick = OnCh2LeftShiftBtnClick
     end
     object CsCh2RightShiftBtn: TSpeedButton
-      Left = 566
-      Top = 30
+      Left = 561
+      Top = 48
       Width = 23
       Height = 22
       Anchors = [akTop, akRight]
@@ -1896,7 +1832,7 @@ object MainForm: TMainForm
       OnClick = OnCh2RightShiftBtnClick
     end
     object CsCh2Label: TLabel
-      Left = 519
+      Left = 521
       Top = 9
       Width = 17
       Height = 13
@@ -1912,7 +1848,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object CsCh1Label: TLabel
-      Left = 445
+      Left = 444
       Top = 9
       Width = 17
       Height = 13
@@ -2015,8 +1951,8 @@ object MainForm: TMainForm
       end
     end
     object CsDValEdit1: TEdit
-      Left = 442
-      Top = 33
+      Left = 464
+      Top = 29
       Width = 26
       Height = 18
       Anchors = [akTop, akRight]
@@ -2029,8 +1965,8 @@ object MainForm: TMainForm
       TabOrder = 2
     end
     object CsDValEdit2: TEdit
-      Left = 516
-      Top = 33
+      Left = 538
+      Top = 29
       Width = 26
       Height = 18
       Anchors = [akTop, akRight]
@@ -2043,9 +1979,9 @@ object MainForm: TMainForm
       TabOrder = 3
     end
     object CsChan2Edit: TEdit
-      Left = 538
+      Left = 541
       Top = 6
-      Width = 36
+      Width = 45
       Height = 21
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
@@ -2062,7 +1998,7 @@ object MainForm: TMainForm
     object CsChan1Edit: TEdit
       Left = 464
       Top = 6
-      Width = 36
+      Width = 45
       Height = 21
       Anchors = [akTop, akRight]
       Font.Charset = DEFAULT_CHARSET
