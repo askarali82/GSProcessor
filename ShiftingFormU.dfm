@@ -166,7 +166,7 @@ object ShiftingForm: TShiftingForm
     OnClick = Ch1RightShiftBtnClick
   end
   object Ch2LeftShiftBtn: TSpeedButton
-    Left = 978
+    Left = 975
     Top = 258
     Width = 23
     Height = 22
@@ -197,7 +197,7 @@ object ShiftingForm: TShiftingForm
     OnClick = Ch2LeftShiftBtnClick
   end
   object Ch2RightShiftBtn: TSpeedButton
-    Left = 1004
+    Left = 1001
     Top = 258
     Width = 23
     Height = 22
