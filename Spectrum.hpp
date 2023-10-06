@@ -377,7 +377,7 @@ bool TSpectrum::IsValid() const
         CheckError(Weight > 0);
         CheckError(Volume > 0);
         CheckError(SameText(WeightUnit, L"g") || SameText(WeightUnit, L"kg"));
-        CheckError(SameText(VolumeUnit, L"l"));
+        CheckError(SameText(VolumeUnit, L"l") || SameText(VolumeUnit, L"ml"));
         CheckError(Channel1 > 0 && Channel2 > 0 && Energy1 > 0 && Energy2 > 0);
         CheckError(ChannelCount == 1024 || ChannelCount == 4096);
         CheckError(Counts.size() == ChannelCount && Energies.size() == ChannelCount);

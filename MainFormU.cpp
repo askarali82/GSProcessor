@@ -782,7 +782,7 @@ void TMainForm::DecomposeSampleSpectrum()
         const double KBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
         const double KError2 = KK > 0 ? ((2 * System::Sqrt(KK + FK)) / KK) : 0;
         const double KError  =
-            System::Sqrt(Utils::Sqr(KError1)  + Utils::Sqr(KError2) + Utils::Sqr(CountError)  + Utils::Sqr(KActivityError));
+            System::Sqrt(Utils::Sqr(KError1)  + Utils::Sqr(KError2) + Utils::Sqr(CountError) + Utils::Sqr(KActivityError));
         SampleKError->Text = Activity >= MDAK ? Utils::RoundFloatValue(Activity * KError, 2, false) : String();
 
         Count = Sample_M_K.CalculateCountByEnergyRange(CsEn1, CsEn2);
