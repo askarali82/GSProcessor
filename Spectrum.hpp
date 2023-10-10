@@ -51,6 +51,7 @@ private:
     static String SampleVolumeError;
     static String SampleMassUnitError;
     static String SampleVolumeUnitError;
+    static String SampleDensityError;
     static String ChannelCountError;
     static String EnergyCalibrationError;
     static String NoSpectrumError;
@@ -109,6 +110,7 @@ public:
         SampleVolumeError = L"Namuna hajmi noma'lum.";
         SampleMassUnitError = L"Namuna massasining o'lchov birligi noma'lum.";
         SampleVolumeUnitError = L"Namuna hajmining o'lchov birligi noma'lum.";
+        SampleDensityError = L"Namunaning zichligi noma'lum.";
         ChannelCountError = L"Kanallar soni noma'lum.";
         EnergyCalibrationError = L"Energiya bo'yicha kalibrovka bajarilmagan.";
         NoSpectrumError = L"Faylda spektr mavjud emas.";
@@ -134,6 +136,7 @@ public:
             SampleVolumeError = L"The sample volume is unknown.";
             SampleMassUnitError = L"The unit of measurement of the sample mass is unknown.";
             SampleVolumeUnitError = L"The unit of measurement of the sample volume is unknown.";
+            SampleDensityError = L"The sample density is unknown.";
             ChannelCountError = L"The count of channels is unknown.";
             EnergyCalibrationError = L"Energy calibration not performed.";
             NoSpectrumError = L"The file doesn't contain a valid spectrum.";
@@ -229,6 +232,7 @@ String TSpectrum::SampleMassError;
 String TSpectrum::SampleVolumeError;
 String TSpectrum::SampleMassUnitError;
 String TSpectrum::SampleVolumeUnitError;
+String TSpectrum::SampleDensityError;
 String TSpectrum::ChannelCountError;
 String TSpectrum::EnergyCalibrationError;
 String TSpectrum::NoSpectrumError;
@@ -275,6 +279,7 @@ bool TSpectrum::LoadFromFile(const String &FileName, const bool ShowExceptionMsg
         }
 
         DensityInGramPerLitre = SameText(WeightUnit, L"kg") ? ((Weight * 1000) / Volume) : (Weight / Volume);
+        CheckError(DensityInGramPerLitre > 0, SampleDensityError);
 
         ChannelCount = Lines->ReadInteger(L"Channel_count", L"N", 0);
         CheckError(ChannelCount == 1024 || ChannelCount == 4096, ChannelCountError);

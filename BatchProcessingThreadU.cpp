@@ -167,7 +167,21 @@ bool TBatchProcessingThread::CreateVirtualSpectra(const TSpectrum &Spectrum)
 
 	if (BaseData.ValidSpectra(0) && BaseData.ValidSpectra(1) && BaseData.ValidSpectra(2))
     {
+        String ErrorMsg;
+
         // Th-232
+        bool DensityOK =
+            BaseData.Ths[1].DensityInGramPerLitre > BaseData.Ths[0].DensityInGramPerLitre &&
+            BaseData.Ths[1].DensityInGramPerLitre < BaseData.Ths[2].DensityInGramPerLitre;
+        if (!DensityOK)
+        {
+            ErrorMsg = L"Th-232 etalon namunalari zichliklarida xatolik bor.";
+            if (LangID == 1)
+            {
+                ErrorMsg = L"Error in densities of Th-232 standard samples.";
+            }
+            throw Exception(ErrorMsg);
+        }
 		Utils::NormalizeStandardSources(BaseData.Ths[1], const_cast<TSpectrum &>(BaseData.Ths[0]), BaseData.ThEn1, BaseData.ThEn2);
 		Utils::NormalizeStandardSources(BaseData.Ths[1], const_cast<TSpectrum &>(BaseData.Ths[2]), BaseData.ThEn1, BaseData.ThEn2);
 		if (DensityInGramPerLitre <= BaseData.Ths[1].DensityInGramPerLitre)
@@ -196,6 +210,18 @@ bool TBatchProcessingThread::CreateVirtualSpectra(const TSpectrum &Spectrum)
 		}
 
 		// Ra-226
+        DensityOK =
+            BaseData.Ras[1].DensityInGramPerLitre > BaseData.Ras[0].DensityInGramPerLitre &&
+            BaseData.Ras[1].DensityInGramPerLitre < BaseData.Ras[2].DensityInGramPerLitre;
+        if (!DensityOK)
+        {
+            ErrorMsg = L"Ra-226 etalon namunalari zichliklarida xatolik bor.";
+            if (LangID == 1)
+            {
+                ErrorMsg = L"Error in densities of Ra-226 standard samples.";
+            }
+            throw Exception(ErrorMsg);
+        }
 		Utils::NormalizeStandardSources(BaseData.Ras[1], const_cast<TSpectrum &>(BaseData.Ras[0]), BaseData.RaEn1, BaseData.RaEn2);
 		Utils::NormalizeStandardSources(BaseData.Ras[1], const_cast<TSpectrum &>(BaseData.Ras[2]), BaseData.RaEn1, BaseData.RaEn2);
 		if (DensityInGramPerLitre <= BaseData.Ras[1].DensityInGramPerLitre)
@@ -224,6 +250,18 @@ bool TBatchProcessingThread::CreateVirtualSpectra(const TSpectrum &Spectrum)
         }
 
         // K-40
+        DensityOK =
+            BaseData.Ks[1].DensityInGramPerLitre > BaseData.Ks[0].DensityInGramPerLitre &&
+            BaseData.Ks[1].DensityInGramPerLitre < BaseData.Ks[2].DensityInGramPerLitre;
+        if (!DensityOK)
+        {
+            ErrorMsg = L"K-40 etalon namunalari zichliklarida xatolik bor.";
+            if (LangID == 1)
+            {
+                ErrorMsg = L"Error in densities of K-40 standard samples.";
+            }
+            throw Exception(ErrorMsg);
+        }
 		Utils::NormalizeStandardSources(BaseData.Ks[1], const_cast<TSpectrum &>(BaseData.Ks[0]), BaseData.KEn1, BaseData.KEn2);
 		Utils::NormalizeStandardSources(BaseData.Ks[1], const_cast<TSpectrum &>(BaseData.Ks[2]), BaseData.KEn1, BaseData.KEn2);
 		if (DensityInGramPerLitre <= BaseData.Ks[1].DensityInGramPerLitre)
@@ -252,6 +290,18 @@ bool TBatchProcessingThread::CreateVirtualSpectra(const TSpectrum &Spectrum)
         }
 
         // Cs-137
+        DensityOK =
+            BaseData.Css[1].DensityInGramPerLitre > BaseData.Css[0].DensityInGramPerLitre &&
+            BaseData.Css[1].DensityInGramPerLitre < BaseData.Css[2].DensityInGramPerLitre;
+        if (!DensityOK)
+        {
+            ErrorMsg = L"Cs-137 etalon namunalari zichliklarida xatolik bor.";
+            if (LangID == 1)
+            {
+                ErrorMsg = L"Error in densities of Cs-137 standard samples.";
+            }
+            throw Exception(ErrorMsg);
+        }
 		Utils::NormalizeStandardSources(BaseData.Css[1], const_cast<TSpectrum &>(BaseData.Css[0]), BaseData.CsEn1, BaseData.CsEn2);
 		Utils::NormalizeStandardSources(BaseData.Css[1], const_cast<TSpectrum &>(BaseData.Css[2]), BaseData.CsEn1, BaseData.CsEn2);
 		if (DensityInGramPerLitre <= BaseData.Css[1].DensityInGramPerLitre)
@@ -280,6 +330,18 @@ bool TBatchProcessingThread::CreateVirtualSpectra(const TSpectrum &Spectrum)
         }
 
         // Fon
+        DensityOK =
+            BaseData.Bkgs[1].DensityInGramPerLitre > BaseData.Bkgs[0].DensityInGramPerLitre &&
+            BaseData.Bkgs[1].DensityInGramPerLitre < BaseData.Bkgs[2].DensityInGramPerLitre;
+        if (!DensityOK)
+        {
+            ErrorMsg = L"Tabiiy fon namunalari zichliklarida xatolik bor.";
+            if (LangID == 1)
+            {
+                ErrorMsg = L"Error in densities of background samples.";
+            }
+            throw Exception(ErrorMsg);
+        }
 		if (DensityInGramPerLitre <= BaseData.Bkgs[1].DensityInGramPerLitre)
         {
 			const double K1 = (1 - ((BaseData.Bkgs[1].DensityInGramPerLitre - DensityInGramPerLitre) /
@@ -308,7 +370,7 @@ bool TBatchProcessingThread::CreateVirtualSpectra(const TSpectrum &Spectrum)
 	}
 	else
 	{
-		LOG(L"Bir yoki undan ortiq etalon va/yoki fon namunalari spektrlari topilmadi.");
+		LOG(L"One or more reference and/or background samples spectra not found.");
         return false;
     }
 }

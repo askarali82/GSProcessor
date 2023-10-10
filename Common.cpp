@@ -65,7 +65,7 @@ void Utils::LogException(const Exception &E, const AnsiString &Func, const AnsiS
 String Utils::RoundFloatValue(const double Value, const int D, const bool DeleteZeroes)
 {
 	String Result = Sysutils::FloatToStrF(Value, ffFixed, 15, D);
-	if (DeleteZeroes)
+	if (Value != 0.0 && DeleteZeroes)
 	{
 		bool ZeroFound = Result[Result.Length()] == L'0';
 		while (ZeroFound)
