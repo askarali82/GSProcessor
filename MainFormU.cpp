@@ -1125,7 +1125,7 @@ void __fastcall TMainForm::HelpButtonClick(TObject *Sender)
     }
     const String &Message =
         String(AppName + Version + L"\r\n") +
-        Char(169) + L" " + Copyright + L", 2021 - 2022.\r\n\r\n" +
+        Char(169) + L" " + Copyright + L", 2021 - 2023.\r\n\r\n" +
         Developer + L"\r\n" +
         Icons;
     Application->MessageBox(Message.c_str(), AboutStr.c_str(), MB_OK | MB_ICONINFORMATION);
@@ -1893,6 +1893,8 @@ void __fastcall TMainForm::SaveParametersActionExecute(TObject *Sender)
     {
         SaveDialog->Filter = L"PAR files (*.par)|*.par";
     }
+    const String &FileName = Sysutils::ExtractFileName(SampleFileName);
+    SaveDialog->FileName = !FileName.IsEmpty() ? Sysutils::ChangeFileExt(FileName, L".par") : String();
     if (!SaveDialog->Execute(Handle))
     {
         return;
