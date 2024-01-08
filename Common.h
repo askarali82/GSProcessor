@@ -58,35 +58,35 @@ class Utils
 private:
 
 public:
-	static void Log(const AnsiString &Func, const AnsiString &Line, AnsiString Msg);
+    static void Log(const AnsiString &Func, const AnsiString &Line, AnsiString Msg);
 
-	static void LogException(const Exception &E, const AnsiString &Func, const AnsiString &Line);
+    static void LogException(const Exception &E, const AnsiString &Func, const AnsiString &Line);
 
-	static String RoundFloatValue(const double Value, const int D = 2, const bool DeleteZeroes = true);
+    static String RoundFloatValue(const double Value, const int D = 2, const bool DeleteZeroes = true);
 
-	static void NormalizeStandardSources(const TSpectrum &Spc1, TSpectrum &Spc2, const double Energy1, const double Energy2);
+    static void NormalizeStandardSources(const TSpectrum &Spc1, TSpectrum &Spc2, const double Energy1, const double Energy2);
 
-	static inline double Sqr(const double F)
-	{
-		return F * F;
-	}
-
-	static bool IsEqual(const double a, const double b, const double epsilon = 0.001)
-	{
-		return std::abs(a - b) < epsilon;
+    static inline double Sqr(const double F)
+    {
+        return F * F;
     }
 
-	static void CheckError(const bool Error, String Msg)
-	{
-		if (Msg == "")
-		{
-			Msg = "Unknown error.";
-		}
-		if (Error)
-		{
-			throw Exception(Msg);
-		}
-	}
+    static bool IsEqual(const double a, const double b, const double epsilon = 0.001)
+    {
+        return std::abs(a - b) < epsilon;
+    }
+
+    static void CheckError(const bool Error, String Msg)
+    {
+        if (Msg == "")
+        {
+            Msg = "Unknown error.";
+        }
+        if (Error)
+        {
+            throw Exception(Msg);
+        }
+    }
 
     static String GetDialogBoxFilterForSpectraFiles();
 

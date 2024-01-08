@@ -57,17 +57,17 @@ __published:
     TChart *CsChart;
     TChart *FinalSpcChart;
     TPanel *ThInfoPanel;
-	TLabel *ThDurLabel;
-	TLabel *ThPhotoPeakLabel;
-	TLabel *ThActLabel;
-	TLabel *ThMDALabel;
-	TLabel *ThLabel;
-	TLabel *ThSmpLabel;
+    TLabel *ThDurLabel;
+    TLabel *ThPhotoPeakLabel;
+    TLabel *ThActLabel;
+    TLabel *ThMDALabel;
+    TLabel *ThLabel;
+    TLabel *ThSmpLabel;
     TLabel *ThCoeffLabel;
     TLabel *ThCoeffCalcLabel;
-	TLabel *SmpThPhotoPeakLabel;
-	TLabel *SmpThErrorLabel;
-	TLabel *SmpThActLabel;
+    TLabel *SmpThPhotoPeakLabel;
+    TLabel *SmpThErrorLabel;
+    TLabel *SmpThActLabel;
     TEdit *ThTime;
     TEdit *ThSum;
     TEdit *ThActivity;
@@ -78,17 +78,17 @@ __published:
     TEdit *SampleThSum;
     TEdit *SampleThError;
     TPanel *RaInfoPanel;
-	TLabel *RaDurLabel;
-	TLabel *RaPhotoPeakLabel;
-	TLabel *RaActLabel;
-	TLabel *RaMDALabel;
-	TLabel *RaLabel;
-	TLabel *RaSmpLabel;
+    TLabel *RaDurLabel;
+    TLabel *RaPhotoPeakLabel;
+    TLabel *RaActLabel;
+    TLabel *RaMDALabel;
+    TLabel *RaLabel;
+    TLabel *RaSmpLabel;
     TLabel *RaCoeffLabel;
     TLabel *RaCoeffCalcLabel;
-	TLabel *SmpRaPhotoPeakLabel;
-	TLabel *SmpRaErrorLabel;
-	TLabel *SmpRaActLabel;
+    TLabel *SmpRaPhotoPeakLabel;
+    TLabel *SmpRaErrorLabel;
+    TLabel *SmpRaActLabel;
     TEdit *RaTime;
     TEdit *RaSum;
     TEdit *RaActivity;
@@ -99,17 +99,17 @@ __published:
     TEdit *SampleRaSum;
     TEdit *SampleRaError;
     TPanel *KInfoPanel;
-	TLabel *KDurLabel;
-	TLabel *KPhotoPeakLabel;
-	TLabel *KActLabel;
-	TLabel *KMDALabel;
-	TLabel *KLabel;
-	TLabel *KSmpLabel;
+    TLabel *KDurLabel;
+    TLabel *KPhotoPeakLabel;
+    TLabel *KActLabel;
+    TLabel *KMDALabel;
+    TLabel *KLabel;
+    TLabel *KSmpLabel;
     TLabel *KCoeffLabel;
     TLabel *KCoeffCalcLabel;
-	TLabel *SmpKPhotoPeakLabel;
-	TLabel *SmpKErrorLabel;
-	TLabel *SmpKActLabel;
+    TLabel *SmpKPhotoPeakLabel;
+    TLabel *SmpKErrorLabel;
+    TLabel *SmpKActLabel;
     TEdit *KTime;
     TEdit *KSum;
     TEdit *KActivity;
@@ -120,17 +120,17 @@ __published:
     TEdit *SampleKSum;
     TEdit *SampleKError;
     TPanel *CsInfoPanel;
-	TLabel *CsDurLabel;
-	TLabel *CsPhotoPeakLabel;
-	TLabel *CsActLabel;
-	TLabel *CsMDALabel;
-	TLabel *CsLabel;
-	TLabel *CsSmpLabel;
+    TLabel *CsDurLabel;
+    TLabel *CsPhotoPeakLabel;
+    TLabel *CsActLabel;
+    TLabel *CsMDALabel;
+    TLabel *CsLabel;
+    TLabel *CsSmpLabel;
     TLabel *CsCoeffLabel;
     TLabel *CsCoeffCalcLabel;
-	TLabel *SmpCsPhotoPeakLabel;
-	TLabel *SmpCsErrorLabel;
-	TLabel *SmpCsActLabel;
+    TLabel *SmpCsPhotoPeakLabel;
+    TLabel *SmpCsErrorLabel;
+    TLabel *SmpCsActLabel;
     TEdit *CsTime;
     TEdit *CsSum;
     TEdit *CsActivity;
@@ -141,26 +141,26 @@ __published:
     TEdit *SampleCsSum;
     TEdit *SampleCsError;
     TPanel *SampleInfoPanel;
-	TLabel *BePhotoPeakLabel;
+    TLabel *BePhotoPeakLabel;
     TLabel *BeActLabel;
-	TLabel *BeMDALabel;
-	TLabel *SmpDensityLabel;
+    TLabel *BeMDALabel;
+    TLabel *SmpDensityLabel;
     TEdit *BeSum;
     TEdit *BeActivityPerKgOrSq;
     TEdit *BeMDA;
     TEdit *SampleDensity;
     TEdit *SampleBeError;
-	TLabel *BeErrorLabel;
+    TLabel *BeErrorLabel;
     TEdit *SampleOrigMass;
-	TLabel *SmpTotalMassLabel;
+    TLabel *SmpTotalMassLabel;
     TEdit *SampleSquare;
-	TLabel *SmpSquareLabel;
-	TLabel *SmpLabel;
+    TLabel *SmpSquareLabel;
+    TLabel *SmpLabel;
     TOpenDialog *OpenDialog;
     TEdit *SampleMass;
-	TLabel *SmpMassLabel;
+    TLabel *SmpMassLabel;
     TEdit *SampleTime;
-	TLabel *SmpDurLabel;
+    TLabel *SmpDurLabel;
     TTimer *SpectraLoadTimer;
     TStatusBar *StatusBar;
     TImageList *ImageList;
@@ -172,8 +172,8 @@ __published:
     TSpeedButton *SmpCh2LeftShiftBtn;
     TSpeedButton *SmpCh1RightShiftBtn;
     TSpeedButton *SmpCh1LeftShiftBtn;
-	TLabel *SmpCh1Label;
-	TLabel *SmpCh2Label;
+    TLabel *SmpCh1Label;
+    TLabel *SmpCh2Label;
     TTimer *ShiftingTimer;
     TSpeedButton *BkgCh1LeftShiftBtn;
     TSpeedButton *BkgCh2RightShiftBtn;
@@ -182,9 +182,9 @@ __published:
     TSpeedButton *BkgCh1RightShiftBtn;
     TEdit *BkgDValEdit1;
     TEdit *BkgChan2Edit;
-	TLabel *BkgCh2Label;
+    TLabel *BkgCh2Label;
     TEdit *BkgChan1Edit;
-	TLabel *BkgCh1Label;
+    TLabel *BkgCh1Label;
     TEdit *ThDValEdit1;
     TSpeedButton *ThCh1LeftShiftBtn;
     TSpeedButton *ThCh1RightShiftBtn;
@@ -202,9 +202,9 @@ __published:
     TSpeedButton *RaCh2LeftShiftBtn;
     TSpeedButton *RaCh2RightShiftBtn;
     TEdit *RaChan2Edit;
-	TLabel *RaCh2Label;
+    TLabel *RaCh2Label;
     TEdit *RaChan1Edit;
-	TLabel *RaCh1Label;
+    TLabel *RaCh1Label;
     TEdit *KDValEdit1;
     TSpeedButton *KCh1LeftShiftBtn;
     TSpeedButton *KCh1RightShiftBtn;
@@ -212,9 +212,9 @@ __published:
     TSpeedButton *KCh2LeftShiftBtn;
     TSpeedButton *KCh2RightShiftBtn;
     TEdit *KChan2Edit;
-	TLabel *KCh2Label;
+    TLabel *KCh2Label;
     TEdit *KChan1Edit;
-	TLabel *KCh1Label;
+    TLabel *KCh1Label;
     TEdit *CsDValEdit1;
     TSpeedButton *CsCh1LeftShiftBtn;
     TSpeedButton *CsCh1RightShiftBtn;
@@ -222,39 +222,39 @@ __published:
     TSpeedButton *CsCh2LeftShiftBtn;
     TSpeedButton *CsCh2RightShiftBtn;
     TEdit *CsChan2Edit;
-	TLabel *CsCh2Label;
+    TLabel *CsCh2Label;
     TEdit *CsChan1Edit;
-	TLabel *CsCh1Label;
+    TLabel *CsCh1Label;
     TEdit *Energy2Edit;
-	TLabel *ThE2Label;
+    TLabel *ThE2Label;
     TEdit *Energy1Edit;
-	TLabel *ThE1Label;
-	TPopupMenu *BatchProcessingPopupMenu;
-	TMenuItem *SelectFilesMI;
-	TMenuItem *SelectFolderMI;
-	TPopupMenu *OpenPopupMenu;
-	TPopupMenu *SavePopupMenu;
-	TActionList *ActionList;
-	TAction *OpenSpectrumAction;
-	TAction *OpenParametersAction;
-	TAction *SaveSpectraAction;
-	TAction *SaveParametersAction;
-	TMenuItem *Spektrniochish1;
-	TMenuItem *Parameterlarorqaliochish1;
-	TMenuItem *Spektralrnisaqlash1;
-	TMenuItem *Parameterlarnisaqlash1;
-	TSaveDialog *SaveDialog;
-	TAction *SelectFilesAction;
-	TAction *SelectDirectoryAction;
-	TPanel *ToolBarPanel;
-	TToolBar *ToolBar;
-	TToolButton *OpenButton;
-	TToolButton *SaveSpectraButton;
-	TToolButton *BatchProcessButton;
-	TToolButton *ShiftingButton;
-	TToolButton *StandardSamplesButton;
-	TAction *LanguageAction;
-	TSpeedButton *SpeedButton1;
+    TLabel *ThE1Label;
+    TPopupMenu *BatchProcessingPopupMenu;
+    TMenuItem *SelectFilesMI;
+    TMenuItem *SelectFolderMI;
+    TPopupMenu *OpenPopupMenu;
+    TPopupMenu *SavePopupMenu;
+    TActionList *ActionList;
+    TAction *OpenSpectrumAction;
+    TAction *OpenParametersAction;
+    TAction *SaveSpectraAction;
+    TAction *SaveParametersAction;
+    TMenuItem *Spektrniochish1;
+    TMenuItem *Parameterlarorqaliochish1;
+    TMenuItem *Spektralrnisaqlash1;
+    TMenuItem *Parameterlarnisaqlash1;
+    TSaveDialog *SaveDialog;
+    TAction *SelectFilesAction;
+    TAction *SelectDirectoryAction;
+    TPanel *ToolBarPanel;
+    TToolBar *ToolBar;
+    TToolButton *OpenButton;
+    TToolButton *SaveSpectraButton;
+    TToolButton *BatchProcessButton;
+    TToolButton *ShiftingButton;
+    TToolButton *StandardSamplesButton;
+    TAction *LanguageAction;
+    TSpeedButton *SpeedButton1;
     TToolButton *HelpButton;
     TSpeedButton *ThUpButton;
     TSpeedButton *ThDownButton;
@@ -285,16 +285,16 @@ __published:
     void __fastcall OnCh2LeftShiftBtnClick(TObject *Sender);
     void __fastcall OnCh2RightShiftBtnClick(TObject *Sender);
     void __fastcall OnShiftingTimerTimer(TObject *Sender);
-	void __fastcall OpenSpectrumActionExecute(TObject *Sender);
-	void __fastcall OpenParametersActionExecute(TObject *Sender);
-	void __fastcall SaveSpectraActionExecute(TObject *Sender);
-	void __fastcall SaveParametersActionExecute(TObject *Sender);
-	void __fastcall SelectFilesActionExecute(TObject *Sender);
-	void __fastcall SelectDirectoryActionExecute(TObject *Sender);
-	void __fastcall LanguageActionExecute(TObject *Sender);
-	void __fastcall OpenButtonClick(TObject *Sender);
-	void __fastcall SaveSpectraButtonClick(TObject *Sender);
-	void __fastcall BatchProcessButtonClick(TObject *Sender);
+    void __fastcall OpenSpectrumActionExecute(TObject *Sender);
+    void __fastcall OpenParametersActionExecute(TObject *Sender);
+    void __fastcall SaveSpectraActionExecute(TObject *Sender);
+    void __fastcall SaveParametersActionExecute(TObject *Sender);
+    void __fastcall SelectFilesActionExecute(TObject *Sender);
+    void __fastcall SelectDirectoryActionExecute(TObject *Sender);
+    void __fastcall LanguageActionExecute(TObject *Sender);
+    void __fastcall OpenButtonClick(TObject *Sender);
+    void __fastcall SaveSpectraButtonClick(TObject *Sender);
+    void __fastcall BatchProcessButtonClick(TObject *Sender);
     void __fastcall ThCoeffCalcLabelClick(TObject *Sender);
     void __fastcall RaCoeffCalcLabelClick(TObject *Sender);
     void __fastcall KCoeffCalcLabelClick(TObject *Sender);
@@ -344,16 +344,16 @@ private:
     TSpectrum Sample_M_Cs;
 
     // Sums
-	double ThCount = 0;
-	double RaCount = 0;
-	double KCount = 0;
-	double CsCount = 0;
+    double ThCount = 0;
+    double RaCount = 0;
+    double KCount = 0;
+    double CsCount = 0;
 
     // Std samples activity errors
-	double ThActivityErrors[3] = {0, 0, 0};
-	double RaActivityErrors[3] = {0, 0, 0};
-	double KActivityErrors[3]  = {0, 0, 0};
-	double CsActivityErrors[3] = {0, 0, 0};
+    double ThActivityErrors[3] = {0, 0, 0};
+    double RaActivityErrors[3] = {0, 0, 0};
+    double KActivityErrors[3]  = {0, 0, 0};
+    double CsActivityErrors[3] = {0, 0, 0};
 
     // Energy ranges
     double ThEn1 = 0;
@@ -364,15 +364,15 @@ private:
     double KEn2 = 0;
     double CsEn1 = 0;
     double CsEn2 = 0;
-	double BeEn1 = 0;
-	double BeEn2 = 0;
+    double BeEn1 = 0;
+    double BeEn2 = 0;
 
     double BePhotopeakEff1;
     double BePhotopeakEff2;
     double BePhotopeakEff3;
 
-	//Search peaks
-	double MinPeakWidth;
+    //Search peaks
+    double MinPeakWidth;
     double MaxEnergyError;
 
     // Coefficients
@@ -382,16 +382,16 @@ private:
     double CsC = 0;
 
     // Miscl.
-	wchar_t DispName[MAX_PATH];
-	BROWSEINFOW BrowseInfo;
-	String SampleFileName;
+    wchar_t DispName[MAX_PATH];
+    BROWSEINFOW BrowseInfo;
+    String SampleFileName;
 
-	std::unique_ptr<TBatchProcessingThread> BatchProcessingThread;
-	TData GetData() const;
+    std::unique_ptr<TBatchProcessingThread> BatchProcessingThread;
+    TData GetData() const;
 
-	// Strings
-	String ErrorTitle;
-	String DirSelectionString;
+    // Strings
+    String ErrorTitle;
+    String DirSelectionString;
 
     String BeActivityPerKilogram;
     String BeActivityPerSquare;
@@ -400,11 +400,11 @@ private:
     String BeErrorPerSquare;
 
 
-	void InitStdSamples(TSettingsForm *Form);
+    void InitStdSamples(TSettingsForm *Form);
     void SubtractBkgFromStandardSources(const int Idx);
-	void CreateVirtualSpectra();
+    void CreateVirtualSpectra();
     void CalculateCountsInStdSamples();
-	void DrawSpectrum(const TSpectrum &Spc, TLineSeries *LineSeries);
+    void DrawSpectrum(const TSpectrum &Spc, TLineSeries *LineSeries);
     bool OpenSampleSpectrum(const String &FileName);
     void DecomposeSampleSpectrum();
     void PopulateStandardSourcesInfo(TSettingsForm *Settings);
@@ -419,20 +419,20 @@ private:
     bool ShiftRa();
     bool ShiftK();
     bool ShiftCs();
-	int CalcCenterOfPeak(const TSpectrum &Spc, const double Energy) const;
-	void SaveParametersFile(const String &FileName);
-	void ChangeUILanguage();
+    int CalcCenterOfPeak(const TSpectrum &Spc, const double Energy) const;
+    void SaveParametersFile(const String &FileName);
+    void ChangeUILanguage();
     void __fastcall OnAppException(TObject* Sender, Exception* E);
 
 public:
     __fastcall TMainForm(TComponent* Owner);
-	__fastcall ~TMainForm();
-	void OpenFromBatchResult(
-		const String &FileName,
-		const String &ThC,
-		const String &RaC,
-		const String &KC,
-		const String &CsC);
+    __fastcall ~TMainForm();
+    void OpenFromBatchResult(
+        const String &FileName,
+        const String &ThC,
+        const String &RaC,
+        const String &KC,
+        const String &CsC);
     void SetSampleSpectrum(const TSpectrum &ShiftedSpc, const String &Ch1Str, const String &Ch2Str);
 };
 //---------------------------------------------------------------------------

@@ -25,7 +25,7 @@ extern std::atomic<int> LangID;
 class TSettingsForm : public TForm
 {
 __published:
-	TLabel *Title1Label;
+    TLabel *Title1Label;
     TEdit *Th1ActivityEdit;
     TLabel *Label7;
     TDateTimePicker *Th1Date;
@@ -115,9 +115,9 @@ __published:
     TButton *Bkg3Button;
     TLabel *Label31;
     TOpenDialog *OpenDialog;
-	TLabel *Title2Label;
-	TLabel *Title3Label;
-	TLabel *Title4Label;
+    TLabel *Title2Label;
+    TLabel *Title3Label;
+    TLabel *Title4Label;
     TLabel *Label18;
     TLabel *Label20;
     TLabel *Label22;
@@ -142,12 +142,12 @@ __published:
     TDateTimePicker *Cs3MesDate;
     TLabel *Label36;
     TLabel *Label37;
-	TBevel *Bevel1;
-	TEdit *BeEnergy2Edit;
-	TEdit *BeEnergy1Edit;
-	TLabel *Label1;
-	TLabel *Label2;
-	TEdit *Be7PhotopeakEffEdit;
+    TBevel *Bevel1;
+    TEdit *BeEnergy2Edit;
+    TEdit *BeEnergy1Edit;
+    TLabel *Label1;
+    TLabel *Label2;
+    TEdit *Be7PhotopeakEffEdit;
     TEdit *Th1ErrorEdit;
     TEdit *Ra1ErrorEdit;
     TEdit *K1ErrorEdit;
@@ -175,9 +175,9 @@ private:
     void SaveEnergyRanges();
     void SaveDensity_1_Data();
     void SaveDensity_2_Data();
-	void SaveDensity_3_Data();
+    void SaveDensity_3_Data();
 
-	void ChangeUILanguage();
+    void ChangeUILanguage();
 
 public:
     __fastcall TSettingsForm(TComponent* Owner);
@@ -190,16 +190,16 @@ public:
             Sysutils::StrToFloatDef(KEnergy1Edit->Text, 0) > 0 &&
             Sysutils::StrToFloatDef(CsEnergy1Edit->Text, 0) > 0 &&
 
-			Sysutils::StrToFloatDef(ThEnergy2Edit->Text, 0) > 0 &&
-			Sysutils::StrToFloatDef(RaEnergy2Edit->Text, 0) > 0 &&
-			Sysutils::StrToFloatDef(KEnergy2Edit->Text, 0) > 0 &&
-			Sysutils::StrToFloatDef(CsEnergy2Edit->Text, 0) > 0 &&
+            Sysutils::StrToFloatDef(ThEnergy2Edit->Text, 0) > 0 &&
+            Sysutils::StrToFloatDef(RaEnergy2Edit->Text, 0) > 0 &&
+            Sysutils::StrToFloatDef(KEnergy2Edit->Text, 0) > 0 &&
+            Sysutils::StrToFloatDef(CsEnergy2Edit->Text, 0) > 0 &&
 
-			(Sysutils::StrToFloatDef(ThEnergy2Edit->Text, 0) > Sysutils::StrToFloatDef(ThEnergy1Edit->Text, 0)) &&
-			(Sysutils::StrToFloatDef(RaEnergy2Edit->Text, 0) > Sysutils::StrToFloatDef(RaEnergy1Edit->Text, 0)) &&
-			(Sysutils::StrToFloatDef(KEnergy2Edit->Text, 0) > Sysutils::StrToFloatDef(KEnergy1Edit->Text, 0))   &&
-			(Sysutils::StrToFloatDef(CsEnergy2Edit->Text, 0) > Sysutils::StrToFloatDef(CsEnergy1Edit->Text, 0));
-	}
+            (Sysutils::StrToFloatDef(ThEnergy2Edit->Text, 0) > Sysutils::StrToFloatDef(ThEnergy1Edit->Text, 0)) &&
+            (Sysutils::StrToFloatDef(RaEnergy2Edit->Text, 0) > Sysutils::StrToFloatDef(RaEnergy1Edit->Text, 0)) &&
+            (Sysutils::StrToFloatDef(KEnergy2Edit->Text, 0) > Sysutils::StrToFloatDef(KEnergy1Edit->Text, 0))   &&
+            (Sysutils::StrToFloatDef(CsEnergy2Edit->Text, 0) > Sysutils::StrToFloatDef(CsEnergy1Edit->Text, 0));
+    }
 
     bool Density_1_SamplesValid() const
     {
@@ -277,7 +277,7 @@ public:
             !Sysutils::FileExists(K3FileName->Text) ||
             !Sysutils::FileExists(Cs3FileName->Text) ||
             !Sysutils::FileExists(Bkg3FileName->Text));
-	}
+    }
 
     String GetSetting(const String &Section, const String &Name) const;
 

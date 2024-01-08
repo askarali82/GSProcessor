@@ -37,7 +37,7 @@ __fastcall TSettingsForm::TSettingsForm(TComponent* Owner):
     LoadDensity_1_Data();
     LoadDensity_2_Data();
     LoadDensity_3_Data();
-	LoadEnergyRanges();
+    LoadEnergyRanges();
 
     ChangeUILanguage();
 }
@@ -54,13 +54,13 @@ void TSettingsForm::LoadEnergyRanges()
         KEnergy2Edit->Text = IniFile->ReadFloat(L"EnergyRanges", KEnergy2Edit->Name, 1540);
         CsEnergy1Edit->Text = IniFile->ReadFloat(L"EnergyRanges", CsEnergy1Edit->Name, 612);
         CsEnergy2Edit->Text = IniFile->ReadFloat(L"EnergyRanges", CsEnergy2Edit->Name, 709);
-		BeEnergy1Edit->Text = IniFile->ReadFloat(L"EnergyRanges", BeEnergy1Edit->Name, 430);
-		BeEnergy2Edit->Text = IniFile->ReadFloat(L"EnergyRanges", BeEnergy2Edit->Name, 525);
+        BeEnergy1Edit->Text = IniFile->ReadFloat(L"EnergyRanges", BeEnergy1Edit->Name, 430);
+        BeEnergy2Edit->Text = IniFile->ReadFloat(L"EnergyRanges", BeEnergy2Edit->Name, 525);
 
-		Be7PhotopeakEffEdit->Text = IniFile->ReadString(L"Be7", Be7PhotopeakEffEdit->Name, L"");
-	}
+        Be7PhotopeakEffEdit->Text = IniFile->ReadString(L"Be7", Be7PhotopeakEffEdit->Name, L"");
+    }
     catch (Exception &)
-	{
+    {
     }
 }
 //---------------------------------------------------------------------------
@@ -76,11 +76,11 @@ void TSettingsForm::SaveEnergyRanges()
         IniFile->WriteFloat(L"EnergyRanges", KEnergy2Edit->Name, Sysutils::StrToFloatDef(KEnergy2Edit->Text, 0));
         IniFile->WriteFloat(L"EnergyRanges", CsEnergy1Edit->Name, Sysutils::StrToFloatDef(CsEnergy1Edit->Text, 0));
         IniFile->WriteFloat(L"EnergyRanges", CsEnergy2Edit->Name, Sysutils::StrToFloatDef(CsEnergy2Edit->Text, 0));
-		IniFile->WriteFloat(L"EnergyRanges", BeEnergy1Edit->Name, Sysutils::StrToFloatDef(BeEnergy1Edit->Text, 0));
-		IniFile->WriteFloat(L"EnergyRanges", BeEnergy2Edit->Name, Sysutils::StrToFloatDef(BeEnergy2Edit->Text, 0));
+        IniFile->WriteFloat(L"EnergyRanges", BeEnergy1Edit->Name, Sysutils::StrToFloatDef(BeEnergy1Edit->Text, 0));
+        IniFile->WriteFloat(L"EnergyRanges", BeEnergy2Edit->Name, Sysutils::StrToFloatDef(BeEnergy2Edit->Text, 0));
 
-		IniFile->WriteString(L"Be7", Be7PhotopeakEffEdit->Name, Be7PhotopeakEffEdit->Text);
-	}
+        IniFile->WriteString(L"Be7", Be7PhotopeakEffEdit->Name, Be7PhotopeakEffEdit->Text);
+    }
     catch (Exception &)
     {
     }
@@ -93,10 +93,10 @@ void TSettingsForm::LoadDensity_1_Data()
         Th1ActivityEdit->Text = IniFile->ReadFloat(L"Density_1", Th1ActivityEdit->Name, 6180);
         Th1Date->Date = IniFile->ReadDate(L"Density_1", Th1Date->Name, TDateTime(1995, 9, 1));
         Th1MesDate->Date = IniFile->ReadDate(L"Density_1", Th1MesDate->Name, TDateTime(1995, 9, 1));
-		Th1FileName->Text = IniFile->ReadString(L"Density_1", Th1FileName->Name, L"");
+        Th1FileName->Text = IniFile->ReadString(L"Density_1", Th1FileName->Name, L"");
         Th1FileName->Tag = Sysutils::FileExists(Th1FileName->Text);
 
-		Ra1ActivityEdit->Text = IniFile->ReadFloat(L"Density_1", Ra1ActivityEdit->Name, 5440);
+        Ra1ActivityEdit->Text = IniFile->ReadFloat(L"Density_1", Ra1ActivityEdit->Name, 5440);
         Ra1Date->Date = IniFile->ReadDate(L"Density_1", Ra1Date->Name, TDateTime(1995, 9, 1));
         Ra1MesDate->Date = IniFile->ReadDate(L"Density_1", Ra1MesDate->Name, TDateTime(1995, 9, 1));
         Ra1FileName->Text = IniFile->ReadString(L"Density_1", Ra1FileName->Name, L"");
@@ -302,75 +302,75 @@ void TSettingsForm::SaveDensity_3_Data()
 //---------------------------------------------------------------------------
 bool TSettingsForm::VolumesAreValid(String &ErrorMessage) const
 {
-	ErrorMessage = L"";
-	std::vector<String> FileNames;
-	FileNames.push_back(Th1FileName->Text);
-	FileNames.push_back(Ra1FileName->Text);
-	FileNames.push_back(K1FileName->Text);
-	FileNames.push_back(Cs1FileName->Text);
-	FileNames.push_back(Bkg1FileName->Text);
+    ErrorMessage = L"";
+    std::vector<String> FileNames;
+    FileNames.push_back(Th1FileName->Text);
+    FileNames.push_back(Ra1FileName->Text);
+    FileNames.push_back(K1FileName->Text);
+    FileNames.push_back(Cs1FileName->Text);
+    FileNames.push_back(Bkg1FileName->Text);
 
-	FileNames.push_back(Th2FileName->Text);
-	FileNames.push_back(Ra2FileName->Text);
-	FileNames.push_back(K2FileName->Text);
-	FileNames.push_back(Cs2FileName->Text);
-	FileNames.push_back(Bkg2FileName->Text);
+    FileNames.push_back(Th2FileName->Text);
+    FileNames.push_back(Ra2FileName->Text);
+    FileNames.push_back(K2FileName->Text);
+    FileNames.push_back(Cs2FileName->Text);
+    FileNames.push_back(Bkg2FileName->Text);
 
-	FileNames.push_back(Th3FileName->Text);
-	FileNames.push_back(Ra3FileName->Text);
-	FileNames.push_back(K3FileName->Text);
-	FileNames.push_back(Cs3FileName->Text);
-	FileNames.push_back(Bkg3FileName->Text);
-	double Volume = 0;
-	for (size_t i = 0; i < FileNames.size(); i++)
-	{
-		TSpectrum Spc;
-		if (!Spc.LoadFromFile(FileNames[i]))
-		{
-			ErrorMessage = QuotedStr(FileNames[i]) + L" faylini o'qishning imkoni bo'lmadi.";
-			if (LangID == 1)
-			{
-				ErrorMessage = L"Couldn't load file " + QuotedStr(FileNames[i]) + L".";
+    FileNames.push_back(Th3FileName->Text);
+    FileNames.push_back(Ra3FileName->Text);
+    FileNames.push_back(K3FileName->Text);
+    FileNames.push_back(Cs3FileName->Text);
+    FileNames.push_back(Bkg3FileName->Text);
+    double Volume = 0;
+    for (size_t i = 0; i < FileNames.size(); i++)
+    {
+        TSpectrum Spc;
+        if (!Spc.LoadFromFile(FileNames[i]))
+        {
+            ErrorMessage = QuotedStr(FileNames[i]) + L" faylini o'qishning imkoni bo'lmadi.";
+            if (LangID == 1)
+            {
+                ErrorMessage = L"Couldn't load file " + QuotedStr(FileNames[i]) + L".";
             }
-			return false;
+            return false;
         }
-		if (i == 0)
-		{
-			Volume = Spc.Volume;
-		}
-		else if (!Utils::IsEqual(Spc.Volume, Volume))
-		{
-			ErrorMessage =
-				QuotedStr(FileNames[i]) + L" spektrida namuna hajmi noto'g'ri.";
-			if (LangID == 1)
-			{
-				ErrorMessage = L"In spectrum " + QuotedStr(FileNames[i]) + L", sample volume is not valid.";
+        if (i == 0)
+        {
+            Volume = Spc.Volume;
+        }
+        else if (!Utils::IsEqual(Spc.Volume, Volume))
+        {
+            ErrorMessage =
+                QuotedStr(FileNames[i]) + L" spektrida namuna hajmi noto'g'ri.";
+            if (LangID == 1)
+            {
+                ErrorMessage = L"In spectrum " + QuotedStr(FileNames[i]) + L", sample volume is not valid.";
             }
-			return false;
+            return false;
         }
-	}
+    }
     return true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TSettingsForm::SaveButtonClick(TObject *Sender)
 {
-	String ErrorMessage =
-		L"3 xil zichlikli etalon va fon namunalarining barcha ma'lumotlari to'ldirilishi shart.";
-	String Title = L"Xato";
-	if (LangID == 1)
-	{
-		ErrorMessage = L"Please fill in the all fields.";
-		Title = L"Error";
-	}
-	if (!Density_1_SamplesValid() || !Density_2_SamplesValid() || !Density_3_SamplesValid())
-	{
-		Application->MessageBox(ErrorMessage.c_str(), Title.c_str(), MB_OK | MB_ICONERROR);
-		return;
-	}
-	if (!VolumesAreValid(ErrorMessage))
-	{
+    String ErrorMessage =
+        L"3 xil zichlikli etalon va fon namunalarining barcha ma'lumotlari to'ldirilishi shart.";
+    String Title = L"Xato";
+    if (LangID == 1)
+    {
+        ErrorMessage = L"Please fill in the all fields.";
+        Title = L"Error";
+    }
+    if (!Density_1_SamplesValid() || !Density_2_SamplesValid() || !Density_3_SamplesValid())
+    {
         Application->MessageBox(ErrorMessage.c_str(), Title.c_str(), MB_OK | MB_ICONERROR);
-		return;
+        return;
+    }
+    if (!VolumesAreValid(ErrorMessage))
+    {
+        Application->MessageBox(ErrorMessage.c_str(), Title.c_str(), MB_OK | MB_ICONERROR);
+        return;
     }
     if (Density_1_SamplesValid())
     {
@@ -381,7 +381,7 @@ void __fastcall TSettingsForm::SaveButtonClick(TObject *Sender)
         SaveDensity_2_Data();
     }
     if (Density_3_SamplesValid())
-	{
+    {
         SaveDensity_3_Data();
     }
     SaveEnergyRanges();
@@ -391,11 +391,11 @@ void __fastcall TSettingsForm::SaveButtonClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TSettingsForm::BrowseButtonClick(TObject *Sender)
 {
-	OpenDialog->Filter = Utils::GetDialogBoxFilterForSpectraFiles();
-	OpenDialog->FileName = L"";
-	if (!OpenDialog->Execute(Handle))
+    OpenDialog->Filter = Utils::GetDialogBoxFilterForSpectraFiles();
+    OpenDialog->FileName = L"";
+    if (!OpenDialog->Execute(Handle))
     {
-		return;
+        return;
     }
     TButton *Button = dynamic_cast<TButton*>(Sender);
     TEdit *FileName = reinterpret_cast<TEdit*>(Button->Tag);
@@ -552,90 +552,90 @@ void __fastcall TSettingsForm::FileNameChange(TObject *Sender)
 //---------------------------------------------------------------------------
 String TSettingsForm::GetSetting(const String &Section, const String &Name) const
 {
-	try
-	{
-		return IniFile->ReadString(Section, Name, L"");
-	}
-	catch (const Exception &)
-	{
-	}
+    try
+    {
+        return IniFile->ReadString(Section, Name, L"");
+    }
+    catch (const Exception &)
+    {
+    }
     return L"";
 }
 //---------------------------------------------------------------------------
 void TSettingsForm::ChangeUILanguage()
 {
-	if (LangID == 0)
-	{
-		Caption = L"Etalon va fon namunalari";
+    if (LangID == 0)
+    {
+        Caption = L"Etalon va fon namunalari";
 
-		Title1Label->Caption = L"Zichligi 200 Gr/L dan 500 Gr/L gacha bo'lgan namunalar.";
-		Label40->Caption = L"Namuna";
-		Label7->Caption = L"Aktivligi (Bk), xatoligi (%) va qayd qilingan sanasi";
-		Label35->Caption = L"Spektr o'lchangan kun";
-		Label34->Caption = L"Spektr faylining nomi";
-		Label29->Caption = L"Tabiiy fon";
+        Title1Label->Caption = L"Zichligi 200 Gr/L dan 500 Gr/L gacha bo'lgan namunalar.";
+        Label40->Caption = L"Namuna";
+        Label7->Caption = L"Aktivligi (Bk), xatoligi (%) va qayd qilingan sanasi";
+        Label35->Caption = L"Spektr o'lchangan kun";
+        Label34->Caption = L"Spektr faylining nomi";
+        Label29->Caption = L"Tabiiy fon";
 
-		Title2Label->Caption = L"Zichligi 800 Gr/L dan 1100 Gr/L gacha bo'lgan namunalar.";
-		Label12->Caption = Label40->Caption;
-		Label16->Caption = Label7->Caption;
-		Label36->Caption = Label35->Caption;
-		Label14->Caption = Label34->Caption;
-		Label30->Caption = Label29->Caption;
+        Title2Label->Caption = L"Zichligi 800 Gr/L dan 1100 Gr/L gacha bo'lgan namunalar.";
+        Label12->Caption = Label40->Caption;
+        Label16->Caption = Label7->Caption;
+        Label36->Caption = Label35->Caption;
+        Label14->Caption = Label34->Caption;
+        Label30->Caption = Label29->Caption;
 
-		Title3Label->Caption = L"Zichligi 1500 Gr/L dan 1800 Gr/L gacha bo'lgan namunalar.";
-		Label24->Caption = Label40->Caption;
-		Label19->Caption = Label7->Caption;
-		Label37->Caption = Label35->Caption;
-		Label21->Caption = Label34->Caption;
-		Label31->Caption = Label29->Caption;
+        Title3Label->Caption = L"Zichligi 1500 Gr/L dan 1800 Gr/L gacha bo'lgan namunalar.";
+        Label24->Caption = Label40->Caption;
+        Label19->Caption = Label7->Caption;
+        Label37->Caption = Label35->Caption;
+        Label21->Caption = Label34->Caption;
+        Label31->Caption = Label29->Caption;
 
-		Title4Label->Caption = L"Foydalaniluvchi fotocho'qqilar sohalari (chap va o'ng nuqtalari).";
-		Label33->Caption = Label40->Caption;
-		Label9->Caption = L"keV dan";
-		Label32->Caption = L"keV gacha";
-		Label2->Caption = L"Fotocho'qqi effektivligi, %";
+        Title4Label->Caption = L"Foydalaniluvchi fotocho'qqilar sohalari (chap va o'ng nuqtalari).";
+        Label33->Caption = Label40->Caption;
+        Label9->Caption = L"keV dan";
+        Label32->Caption = L"keV gacha";
+        Label2->Caption = L"Fotocho'qqi effektivligi, %";
         Be7PhotopeakEffEdit->Hint = L"Uch xil zichliklar uchun. Har birini nuqta-vergul (;) bilan ajrating.";
 
-		SaveButton->Caption = L"&Saqlash";
-		CloseButton->Caption = L"&Yopish";
-	}
-	else if (LangID == 1)
-	{
-		Caption = L"Reference and background samples";
+        SaveButton->Caption = L"&Saqlash";
+        CloseButton->Caption = L"&Yopish";
+    }
+    else if (LangID == 1)
+    {
+        Caption = L"Reference and background samples";
 
-		Title1Label->Caption = L"Samples with density of 200 Gr / L to 500 Gr / L.";
-		Label40->Caption = L"Sample";
-		Label7->Caption = L"Activity (Bq), error (%) and registered date";
-		Label35->Caption = L"Date the spectrum measured";
-		Label34->Caption = L"Name of the spectrum file";
-		Label29->Caption = L"Background";
+        Title1Label->Caption = L"Samples with density of 200 Gr / L to 500 Gr / L.";
+        Label40->Caption = L"Sample";
+        Label7->Caption = L"Activity (Bq), error (%) and registered date";
+        Label35->Caption = L"Date the spectrum measured";
+        Label34->Caption = L"Name of the spectrum file";
+        Label29->Caption = L"Background";
 
-		Title2Label->Caption = L"Samples with density of 800 Gr / L to 1100 Gr / L.";
-		Label12->Caption = Label40->Caption;
-		Label16->Caption = Label7->Caption;
-		Label36->Caption = Label35->Caption;
-		Label14->Caption = Label34->Caption;
-		Label30->Caption = Label29->Caption;
+        Title2Label->Caption = L"Samples with density of 800 Gr / L to 1100 Gr / L.";
+        Label12->Caption = Label40->Caption;
+        Label16->Caption = Label7->Caption;
+        Label36->Caption = Label35->Caption;
+        Label14->Caption = Label34->Caption;
+        Label30->Caption = Label29->Caption;
 
-		Title3Label->Caption = L"Samples with density of 1500 Gr / L to 1800 Gr / L.";
-		Label24->Caption = Label40->Caption;
-		Label19->Caption = Label7->Caption;
-		Label37->Caption = Label35->Caption;
-		Label21->Caption = Label34->Caption;
-		Label31->Caption = Label29->Caption;
+        Title3Label->Caption = L"Samples with density of 1500 Gr / L to 1800 Gr / L.";
+        Label24->Caption = Label40->Caption;
+        Label19->Caption = Label7->Caption;
+        Label37->Caption = Label35->Caption;
+        Label21->Caption = Label34->Caption;
+        Label31->Caption = Label29->Caption;
 
-		Title4Label->Caption = L"Areas of photopeaks used (left and right points).";
-		Label33->Caption = Label40->Caption;
-		Label9->Caption = L"From keV";
-		Label32->Caption = L"To keV";
-		Label2->Caption = L"Photopeak efficiency, %";
+        Title4Label->Caption = L"Areas of photopeaks used (left and right points).";
+        Label33->Caption = Label40->Caption;
+        Label9->Caption = L"From keV";
+        Label32->Caption = L"To keV";
+        Label2->Caption = L"Photopeak efficiency, %";
         Be7PhotopeakEffEdit->Hint = L"For three densities. Separate them by semicolon (;).";
 
-		SaveButton->Caption = L"&Save";
-		CloseButton->Caption = L"&Close";
-	}
-	else
-	{
-		throw Exception(L"Unknown language.");
-	}
+        SaveButton->Caption = L"&Save";
+        CloseButton->Caption = L"&Close";
+    }
+    else
+    {
+        throw Exception(L"Unknown language.");
+    }
 }

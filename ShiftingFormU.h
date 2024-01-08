@@ -30,7 +30,7 @@ extern std::atomic<int> LangID;
 //
 class TShiftingForm : public TForm
 {
-__published:	// IDE-managed Components
+__published:    // IDE-managed Components
     TToolBar *ToolBar;
     TToolButton *Spectrum1Button;
     TToolButton *Spectrum2Button;
@@ -62,13 +62,13 @@ __published:	// IDE-managed Components
     TEdit *DValEdit1;
     TStatusBar *StatusBar;
     TPopupMenu *PopupMenu;
-	TMenuItem *Spectrum1_MI;
-	TMenuItem *Spectrum2_MI;
+    TMenuItem *Spectrum1_MI;
+    TMenuItem *Spectrum2_MI;
     TToolButton *SaveSpectrum2;
     TPopupMenu *SaveButtonPopupMenu;
-	TMenuItem *SaveToTXTMI;
-	TMenuItem *SaveToASWMI;
-	TMenuItem *ClipboardMI;
+    TMenuItem *SaveToTXTMI;
+    TMenuItem *SaveToASWMI;
+    TMenuItem *ClipboardMI;
     TTimer *ShiftingTimer;
     TToolButton *AboutBtnSeparator;
     TToolButton *AboutButton;
@@ -76,9 +76,9 @@ __published:	// IDE-managed Components
     TMenuItem *CopyEnergiesAndCountMI;
     TMenuItem *SaveCountsMI;
     TMenuItem *SaveEnergiesAndCountsMI;
-	TToolButton *ToolButton1;
-	TToolButton *ToolButton2;
-	TMenuItem *SaveToGSPMI;
+    TToolButton *ToolButton1;
+    TToolButton *ToolButton2;
+    TMenuItem *SaveToGSPMI;
     void __fastcall LogLinButtonClick(TObject *Sender);
     void __fastcall Spectrum1ButtonClick(TObject *Sender);
     void __fastcall Spectrum2ButtonClick(TObject *Sender);
@@ -100,7 +100,7 @@ __published:	// IDE-managed Components
     void __fastcall CopyEnergiesAndCountMIClick(TObject *Sender);
     void __fastcall SaveCountsMIClick(TObject *Sender);
     void __fastcall SaveEnergiesAndCountsMIClick(TObject *Sender);
-	void __fastcall SaveToGSPMIClick(TObject *Sender);
+    void __fastcall SaveToGSPMIClick(TObject *Sender);
     void __fastcall SaveSpectrum2Click(TObject *Sender);
 
 protected:
@@ -109,23 +109,23 @@ protected:
 private:
     String AppName;
     TSpectrum Sample1;
-	TSpectrum Sample2;
+    TSpectrum Sample2;
     TSpectrum ShiftedSample2;
-	String Sample1FileName;
-	String Sample2FileName;
-	String ChannelStr;
-	String EnergyStr;
-	String Count1Str;
-	String Count2Str;
+    String Sample1FileName;
+    String Sample2FileName;
+    String ChannelStr;
+    String EnergyStr;
+    String Count1Str;
+    String Count2Str;
 
-	String GetVersionString(const String &DefaultVal = L"") const;
-	void DrawSpectrum(const TSpectrum &Spc, TLineSeries *LineSeries);
-	void Shift();
+    String GetVersionString(const String &DefaultVal = L"") const;
+    void DrawSpectrum(const TSpectrum &Spc, TLineSeries *LineSeries);
+    void Shift();
     void SaveToOriginalFile();
     void __fastcall OnAppException(TObject* Sender, Exception* E);
 
 public:
-	__fastcall TShiftingForm(TComponent* Owner);
+    __fastcall TShiftingForm(TComponent* Owner);
     void ChangeUILanguage();
     void Load(
         const TSpectrum &Spc1,
