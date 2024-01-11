@@ -20,26 +20,6 @@ extern std::atomic<int> LangID;
 //
 //
 
-struct TPeak
-{
-    size_t LeftPCh = 0;
-    double LeftPEn = 0;
-
-    size_t CenterCh = 0;
-    double CenterEn = 0;
-
-    size_t RightPCh = 0;
-    double RightPEn = 0;
-
-    String ToString() const
-    {
-        return
-            String(LeftPCh)  + L"->" + Sysutils::FloatToStrF(LeftPEn, ffFixed, 15, 2)  + L"; " +
-            String(CenterCh) + L"->" + Sysutils::FloatToStrF(CenterEn, ffFixed, 15, 2) + L"; " +
-            String(RightPCh) + L"->" + Sysutils::FloatToStrF(RightPEn, ffFixed, 15, 2);
-    }
-};
-
 class TSpectrum
 {
 private:
@@ -220,8 +200,6 @@ public:
     TSpectrum Smooth() const;
 
     TSpectrum FirstDerivative() const;
-
-    std::vector<TPeak> FindPeaks(const double WidthThreshold) const;
 };
 //---------------------------------------------------------------------------
 String TSpectrum::FileExistenceError;
@@ -802,68 +780,6 @@ TSpectrum TSpectrum::FirstDerivative() const
         ErrorMessage = E.Message;
     }
     return *this;
-}
-//---------------------------------------------------------------------------
-std::vector<TPeak> TSpectrum::FindPeaks(const double WidthThreshold) const
-{
-    std::vector<TPeak> Result;
-    try
-    {
-        ErrorMessage = L"";
-        TSpectrum Spc = *this;
-        for (int i = 0; i < 16; i++)
-        {
-            Spc = Spc.Smooth(3);
-        }
-        Spc = Spc.FirstDerivative();
-        bool N_Current = false;
-        for (size_t i = 0; i < Spc.Counts.size(); i++)
-        {
-            if (Spc.Counts[i] < 0)
-            {
-                if (!N_Current)
-                {
-                    N_Current = true;
-                    TPeak P;
-                    P.CenterCh = i;
-                    P.CenterEn = Spc.Energies[i];
-                    for (int j = int(i - 1); j >= 0; j--)
-                    {
-                        if (Spc.Counts[j] < 0)
-                        {
-                            P.LeftPCh = j;
-                            P.LeftPEn = Spc.Energies[j];
-                            break;
-                        }
-                    }
-                    for (size_t j = i + 1; j < Spc.Counts.size(); j++)
-                    {
-                        if (Spc.Counts[j] >= 0)
-                        {
-                            P.RightPCh = j;
-                            P.RightPEn = Spc.Energies[j];
-                            break;
-                        }
-                    }
-                    const double DW = WidthThreshold / 2.0;
-                    if (P.RightPEn > 0 && P.LeftPEn > 0 && (P.RightPEn - P.LeftPEn) > WidthThreshold &&
-                        (P.CenterEn - P.LeftPEn) > DW && (P.RightPEn - P.CenterEn) > DW)
-                    {
-                        Result.push_back(P);
-                    }
-                }
-            }
-            else if (N_Current)
-            {
-                N_Current = false;
-            }
-        }
-    }
-    catch (const Exception &E)
-    {
-        ErrorMessage = E.Message;
-    }
-    return Result;
 }
 
 #endif

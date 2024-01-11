@@ -106,7 +106,6 @@ private:
     bool Be7IsCalculated;
 
     void GetFilesList();
-    void RecalibrateIfNeeded(TSpectrum &Spectrum);
     bool CreateVirtualSpectra(const TSpectrum &Spectrum);
 
     void CalculateCountsAndActivitiesInStdSamples();

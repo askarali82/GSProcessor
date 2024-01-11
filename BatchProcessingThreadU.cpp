@@ -74,25 +74,6 @@ void TBatchProcessingThread::GetFilesList()
     }
 }
 //---------------------------------------------------------------------------
-void TBatchProcessingThread::RecalibrateIfNeeded(TSpectrum &Spectrum)
-{
-    const int Ch1 = (238.8 - Spectrum.B) / Spectrum.K;
-    const int Ch1_1 = (1460.8 - Spectrum.B) / Spectrum.K;
-    const int Ch2 = (2614.5 - Spectrum.B) / Spectrum.K;
-    LOG(L"Ch1: " + IntToStr(Ch1) + L", Ch1_1: " + IntToStr(Ch1_1) + L", Ch2: " + IntToStr(Ch2));
-    if (!Spectrum.Energies.empty())
-    {
-        LOG(L"Range: " + Utils::RoundFloatValue(Spectrum.Energies.back() - Spectrum.Energies.front()));
-    }
-    const auto &Peaks = Spectrum.FindPeaks(BaseData.MinPeakWidth);
-    String PeaksInfo;
-    for (const auto &P : Peaks)
-    {
-        PeaksInfo = PeaksInfo.IsEmpty() ? P.ToString() : PeaksInfo + L"\r\n" + P.ToString();
-    }
-    LOG(L"\r\n" + PeaksInfo);
-}
-//---------------------------------------------------------------------------
 void __fastcall TBatchProcessingThread::Execute()
 {
     try
@@ -129,7 +110,6 @@ void __fastcall TBatchProcessingThread::Execute()
                     }
                     throw Exception(Msg);
                 }
-                //RecalibrateIfNeeded(WorkSpc);
                 if (!CreateVirtualSpectra(WorkSpc))
                 {
                     continue;
