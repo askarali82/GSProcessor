@@ -1,4 +1,4 @@
-# Gamma Sectra Processor
+# Gamma Spectra Processor
 
 ## Scintillation Gamma-Spectra Analysis Software
 
