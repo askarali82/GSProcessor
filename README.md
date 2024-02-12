@@ -17,6 +17,7 @@ The software utilizes techniques described in the article:
 *"Gamma-spectrometric determination of natural radionuclides and 137Cs concentrations in environmental samples. The improved scintillation technique"*
 
 Published in "Radiation Measurements", vol. 43, issue 1, pp. 66-71, January 2008.
+https://doi.org/10.1016/j.radmeas.2007.11.006
 
 ## Spectrum File Format
 
