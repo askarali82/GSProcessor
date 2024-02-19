@@ -776,11 +776,11 @@ void TMainForm::DecomposeSampleSpectrum()
         CsMDA->Text = Utils::RoundFloatValue(MDACs, 2, false);
         BeMDA->Text = MDABe > 0 ? Utils::RoundFloatValue(MDABe, 2, false) : String();
 
-        const double FTh = TMPSpc.CalculateCountByEnergyRange(ThEn1, ThEn2);
-        const double FRa = TMPSpc.CalculateCountByEnergyRange(RaEn1, RaEn2);
-        const double FK = TMPSpc.CalculateCountByEnergyRange(KEn1, KEn2);
-        const double FCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
-        const double FBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
+        const double BkgTh = TMPSpc.CalculateCountByEnergyRange(ThEn1, ThEn2);
+        const double BkgRa = TMPSpc.CalculateCountByEnergyRange(RaEn1, RaEn2);
+        const double BkgK = TMPSpc.CalculateCountByEnergyRange(KEn1, KEn2);
+        const double BkgCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
+        const double BkgBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
 
         double Count = Sample_M_Bkg.CalculateCountByEnergyRange(ThEn1, ThEn2);
         double Coeff = Count / ThCount;
@@ -798,15 +798,14 @@ void TMainForm::DecomposeSampleSpectrum()
         OK = Sample_M_Bkg.Subtract(TMPSpc, Sample_M_Th);
         TSpectrum::CheckError(OK, Msg + L"\r\n\r\n" + Sample_M_Bkg.ErrorMessage);
 
-        const double ThError1 = Count > 0 ? ((2 * System::Sqrt(Count + 2*FTh)) / Count) : 0;
+        const double ThError1 = Count > 0 ? (System::Sqrt(Count + BkgTh) / Count) : 0;
         const double ThTh = TMPSpc.CalculateCountByEnergyRange(ThEn1, ThEn2);
         const double ThRa = TMPSpc.CalculateCountByEnergyRange(RaEn1, RaEn2);
         const double ThK = TMPSpc.CalculateCountByEnergyRange(KEn1, KEn2);
         const double ThCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
         const double ThBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
-        const double ThError2 = ThTh > 0 ? ((2 * System::Sqrt(ThTh + FTh)) / ThTh) : 0;
         const double ThError =
-            System::Sqrt(Utils::Sqr(ThError1) + Utils::Sqr(ThError2) + Utils::Sqr(CountError) + Utils::Sqr(ThActivityError));
+            System::Sqrt(Utils::Sqr(ThError1) + Utils::Sqr(CountError) + Utils::Sqr(ThActivityError));
         SampleThError->Text = Activity >= MDATh ? Utils::RoundFloatValue(Activity * ThError, 2, false) : String();
 
         Count = Sample_M_Th.CalculateCountByEnergyRange(RaEn1, RaEn2);
@@ -825,14 +824,13 @@ void TMainForm::DecomposeSampleSpectrum()
         OK = Sample_M_Th.Subtract(TMPSpc, Sample_M_Ra);
         TSpectrum::CheckError(OK, Msg + L"\r\n\r\n" + Sample_M_Th.ErrorMessage);
 
-        const double RaError1 = Count > 0 ? ((2 * System::Sqrt(Count + 2*FRa + 2*ThRa)) / Count) : 0;
+        const double RaError1 = Count > 0 ? (System::Sqrt(Count + (BkgRa + ThRa)) / Count) : 0;
         const double RaRa = TMPSpc.CalculateCountByEnergyRange(RaEn1, RaEn2);
         const double RaK = TMPSpc.CalculateCountByEnergyRange(KEn1, KEn2);
         const double RaCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
         const double RaBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
-        const double RaError2 = RaRa > 0 ? ((2 * System::Sqrt(RaRa + FRa)) / RaRa) : 0;
         const double RaError =
-            System::Sqrt(Utils::Sqr(RaError1) + Utils::Sqr(RaError2) + Utils::Sqr(CountError) + Utils::Sqr(RaActivityError));
+            System::Sqrt(Utils::Sqr(RaError1) + Utils::Sqr(CountError) + Utils::Sqr(RaActivityError));
         SampleRaError->Text = Activity >= MDARa ? Utils::RoundFloatValue(Activity * RaError, 2, false) : String();
 
         Count = Sample_M_Ra.CalculateCountByEnergyRange(KEn1, KEn2);
@@ -851,13 +849,12 @@ void TMainForm::DecomposeSampleSpectrum()
         OK = Sample_M_Ra.Subtract(TMPSpc, Sample_M_K);
         TSpectrum::CheckError(OK, Msg + L"\r\n\r\n" + Sample_M_Ra.ErrorMessage);
 
-        const double KError1 = Count > 0 ? ((2 * System::Sqrt(Count + 2*FK + 2*ThK + 2*RaK)) / Count) : 0;
+        const double KError1 = Count > 0 ? (System::Sqrt(Count + (BkgK + ThK + RaK)) / Count) : 0;
         const double KK = TMPSpc.CalculateCountByEnergyRange(KEn1, KEn2);
         const double KCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
         const double KBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
-        const double KError2 = KK > 0 ? ((2 * System::Sqrt(KK + FK)) / KK) : 0;
         const double KError  =
-            System::Sqrt(Utils::Sqr(KError1)  + Utils::Sqr(KError2) + Utils::Sqr(CountError) + Utils::Sqr(KActivityError));
+            System::Sqrt(Utils::Sqr(KError1) + Utils::Sqr(CountError) + Utils::Sqr(KActivityError));
         SampleKError->Text = Activity >= MDAK ? Utils::RoundFloatValue(Activity * KError, 2, false) : String();
 
         Count = Sample_M_K.CalculateCountByEnergyRange(CsEn1, CsEn2);
@@ -876,31 +873,30 @@ void TMainForm::DecomposeSampleSpectrum()
         OK = Sample_M_K.Subtract(TMPSpc, Sample_M_Cs);
         TSpectrum::CheckError(OK, Msg + L"\r\n\r\n" + Sample_M_K.ErrorMessage);
 
-        const double CsError1 = Count > 0 ? ((2 * System::Sqrt(Count + 2*FCs + 2*ThCs + 2*RaCs + 2*KCs)) / Count) : 0;
+        const double CsError1 = Count > 0 ? (System::Sqrt(Count + (BkgCs + ThCs + RaCs + KCs)) / Count) : 0;
         const double CsCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
         const double CsBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
-        const double CsError2 = CsCs > 0 ? ((2 * System::Sqrt(CsCs + FCs)) / CsCs) : 0;
         const double CsError =
-            System::Sqrt(Utils::Sqr(CsError1) + Utils::Sqr(CsError2) + Utils::Sqr(CountError) + Utils::Sqr(CsActivityError));
+            System::Sqrt(Utils::Sqr(CsError1) + Utils::Sqr(CountError) + Utils::Sqr(CsActivityError));
         SampleCsError->Text = Activity >= MDACs ? Utils::RoundFloatValue(Activity * CsError, 2, false) : String();
 
         DrawSpectrum(Sample_M_Cs, FinalSpectrum);
+        Count = Sample_M_Cs.CalculateCountByEnergyRange(BeEn1, BeEn2);
+        BeSum->Text = Utils::RoundFloatValue(Count);
         if (MDABe > 0)
         {
             const double DensityInGramPerLitre = Sysutils::StrToFloatDef(SampleDensity->Text, 0);
             const double BePhotopeakEff =
                 Utils::CalcBe7Effectivity(BePhotopeakEff1, BePhotopeakEff2, BePhotopeakEff3, DensityInGramPerLitre);
             LOG(L"BePhotopeakEff = " + String(BePhotopeakEff) + L" for density " + SampleDensity->Text);
-            Count = Sample_M_Cs.CalculateCountByEnergyRange(BeEn1, BeEn2);
-            BeSum->Text = Utils::RoundFloatValue(Count);
             const double Weight = SameText(SampleSpc.WeightUnit, L"kg") ? (SampleSpc.Weight * 1000) : SampleSpc.Weight;
             Activity = Count / (0.104 * SampleSpc.Duration * BePhotopeakEff * (Weight / 1000));
             BeActivityPerKilogram = Activity >= MDABe ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
             const double TotalMass = Sysutils::StrToFloatDef(SampleOrigMass->Text, 0) * 0.001;
             const double Square = Sysutils::StrToFloatDef(SampleSquare->Text, 0) * 0.0001;
             const double BeError1 =
-                Count > 0 ? ((2 * System::Sqrt(Count + 2*FBe + 2*ThBe + 2*RaBe + 2*KBe + 2*CsBe)) / Count) : 0;
-            const double BeError = System::Sqrt(Utils::Sqr(BeError1) + Utils::Sqr(CountError) + Utils::Sqr(0.15));
+                Count > 0 ? (System::Sqrt(Count + (BkgBe + ThBe + RaBe + KBe + CsBe)) / Count) : 0;
+            const double BeError = System::Sqrt(Utils::Sqr(BeError1) + Utils::Sqr(CountError) + Utils::Sqr(0.1));
             BeErrorPerKilogram = Activity >= MDABe ? Utils::RoundFloatValue(Activity * BeError, 2, false) : String();
 
             if (TotalMass > 0 && Square > 0 && Activity >= MDABe)
@@ -920,7 +916,6 @@ void TMainForm::DecomposeSampleSpectrum()
         }
         else
         {
-            BeSum->Text = L"";
             BeActivityPerKgOrSq->Text = L"";
             SampleBeError->Text = L"";
             BeActivityPerKilogram = L"";
@@ -1125,7 +1120,7 @@ void __fastcall TMainForm::HelpButtonClick(TObject *Sender)
     }
     const String &Message =
         String(AppName + Version + L"\r\n") +
-        Char(169) + L" " + Copyright + L", 2021 - 2023.\r\n\r\n" +
+        Char(169) + L" " + Copyright + L", 2021 - 2024.\r\n\r\n" +
         Developer + L"\r\n" +
         Icons;
     Application->MessageBox(Message.c_str(), AboutStr.c_str(), MB_OK | MB_ICONINFORMATION);
@@ -2400,7 +2395,7 @@ void TMainForm::ChangeUILanguage()
         SmpTotalMassLabel->Caption = L"Total mass (Gr):";
         SmpSquareLabel->Caption = L"Square (Sm^2):";
 
-        FinalSpcChart->Title->Text->Text = L"Final spectrum";
+        FinalSpcChart->Title->Text->Text = L"Residual spectrum";
         FinalSpcChart->LeftAxis->Title->Caption = L"Count";
         SampleChart->Title->Text->Text = L"Sample";
         SampleChart->LeftAxis->Title->Caption = FinalSpcChart->LeftAxis->Title->Caption;

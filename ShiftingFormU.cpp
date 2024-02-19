@@ -478,7 +478,7 @@ void __fastcall TShiftingForm::AboutButtonClick(TObject *Sender)
     }
     const String &Message =
         String(AppName + Version + L"\r\n") +
-        Char(169) + L" " + Copyright + L", 2021 - 2023.\r\n\r\n" +
+        Char(169) + L" " + Copyright + L", 2021 - 2024.\r\n\r\n" +
         Developer;
 
     Application->MessageBox(Message.c_str(), AboutStr.c_str(), MB_OK | MB_ICONINFORMATION);

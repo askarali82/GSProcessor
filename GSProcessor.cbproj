@@ -122,14 +122,13 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <LinkPackageStatics>rtl.lib;vcl.lib;Tee.lib;vclimg.lib</LinkPackageStatics>
         <VerInfo_Locale>1091</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=Gamma spektrlarni tahlil qilish;FileVersion=3.3.2.0;InternalName=$(MSBuildProjectName);LegalCopyright=Yadro Fizikasi Laboratoriyasi, Samarqand Davlat Universiteti;LegalTrademarks=;OriginalFilename=$(MSBuildProjectName).exe;ProgramID=;ProductName=$(MSBuildProjectName);ProductVersion=3.3.2.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=Gamma spektrlarni tahlil qilish;FileVersion=3.3.3.0;InternalName=$(MSBuildProjectName);LegalCopyright=Yadro Fizikasi Laboratoriyasi, Samarqand Davlat Universiteti;LegalTrademarks=;OriginalFilename=$(MSBuildProjectName).exe;ProgramID=;ProductName=$(MSBuildProjectName);ProductVersion=3.3.3.0;Comments=</VerInfo_Keys>
         <VerInfo_MajorVer>3</VerInfo_MajorVer>
         <FinalOutputDir>.\bin</FinalOutputDir>
         <IntermediateOutputDir>.\GSPTemp</IntermediateOutputDir>
-        <PostBuildEvent><![CDATA[D:\Projects\ProcessASW\bin\CopyCommand.exe]]></PostBuildEvent>
-        <PostBuildEventCancelOnError>false</PostBuildEventCancelOnError>
+        <PostBuildEvent><![CDATA[cmd.exe C:\Data\Projects\GSProcessor\bin\CopyFiles.bat]]></PostBuildEvent>
         <VerInfo_MinorVer>3</VerInfo_MinorVer>
-        <VerInfo_Release>2</VerInfo_Release>
+        <VerInfo_Release>3</VerInfo_Release>
     </PropertyGroup>
     <ItemGroup>
         <CppCompile Include="BatchProcessingResultsFormU.cpp">
@@ -767,7 +766,7 @@
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>D:\Projects\ProcessASW\bin\CopyCommand.exe</PostBuildEvent>
-        <PostBuildEventIgnoreExitCode>True</PostBuildEventIgnoreExitCode>
+        <PostBuildEvent>cmd.exe C:\Data\Projects\GSProcessor\bin\CopyFiles.bat</PostBuildEvent>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>
