@@ -146,7 +146,7 @@ __published:
     TEdit *BeEnergy2Edit;
     TEdit *BeEnergy1Edit;
     TLabel *Label1;
-    TLabel *Label2;
+    TLabel *Be7EffLabel;
     TEdit *Be7PhotopeakEffEdit;
     TEdit *Th1ErrorEdit;
     TEdit *Ra1ErrorEdit;
@@ -160,6 +160,8 @@ __published:
     TEdit *Ra3ErrorEdit;
     TEdit *K3ErrorEdit;
     TEdit *Cs3ErrorEdit;
+    TLabel *Be7SystematicErrorLabel;
+    TEdit *Be7SystematicErrorEdit;
     void __fastcall SaveButtonClick(TObject *Sender);
     void __fastcall BrowseButtonClick(TObject *Sender);
     void __fastcall FormPaint(TObject *Sender);
@@ -168,11 +170,13 @@ __published:
 private:
     std::unique_ptr<TMemIniFile> IniFile;
     void LoadEnergyRanges();
+    void LoadBe7Params();
     void LoadDensity_1_Data();
     void LoadDensity_2_Data();
     void LoadDensity_3_Data();
 
     void SaveEnergyRanges();
+    void SaveBe7Params();
     void SaveDensity_1_Data();
     void SaveDensity_2_Data();
     void SaveDensity_3_Data();

@@ -40,6 +40,8 @@ struct TData
     double BePhotopeakEff2;
     double BePhotopeakEff3;
 
+    double BeSysError;
+
     //Search peaks
     double MinPeakWidth;
     double MaxEnergyError;

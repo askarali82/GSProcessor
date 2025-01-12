@@ -231,6 +231,8 @@ TData TMainForm::GetData() const
         BePhotopeakEff2,
         BePhotopeakEff3,
 
+        BeSysError,
+
         MinPeakWidth,
         MaxEnergyError,
 
@@ -428,9 +430,11 @@ void TMainForm::SetEnergyRanges(TSettingsForm *Settings)
     BeEn2 = Sysutils::StrToFloatDef(Settings->BeEnergy2Edit->Text, 0);
 
     const auto &Strs = Utils::CreateStringVectorFromDelimitedStr(Settings->Be7PhotopeakEffEdit->Text, L';', false);
-    BePhotopeakEff1 = Strs.size() > 0 ? (Sysutils::StrToFloatDef(Strs[0], 0) / 100.0) : 0;
-    BePhotopeakEff2 = Strs.size() > 1 ? (Sysutils::StrToFloatDef(Strs[1], 0) / 100.0) : 0;
-    BePhotopeakEff3 = Strs.size() > 2 ? (Sysutils::StrToFloatDef(Strs[2], 0) / 100.0) : 0;
+    BePhotopeakEff1 = Strs.size() > 0 ? (Sysutils::StrToFloatDef(Strs[0].Trim(), 0) / 100.0) : 0;
+    BePhotopeakEff2 = Strs.size() > 1 ? (Sysutils::StrToFloatDef(Strs[1].Trim(), 0) / 100.0) : 0;
+    BePhotopeakEff3 = Strs.size() > 2 ? (Sysutils::StrToFloatDef(Strs[2].Trim(), 0) / 100.0) : 0;
+
+    BeSysError = Sysutils::StrToFloatDef(Settings->Be7SystematicErrorEdit->Text.Trim(), 0) / 100.0;
 
     MinPeakWidth = Sysutils::StrToFloatDef(Settings->GetSetting(L"PeakSearch", L"MinPeakWidth"), 0);
     MaxEnergyError = Sysutils::StrToFloatDef(Settings->GetSetting(L"PeakSearch", L"MaxEnergyError"), 0);
@@ -896,7 +900,7 @@ void TMainForm::DecomposeSampleSpectrum()
             const double Square = Sysutils::StrToFloatDef(SampleSquare->Text, 0) * 0.0001;
             const double BeError1 =
                 Count > 0 ? (System::Sqrt(Count + (BkgBe + ThBe + RaBe + KBe + CsBe)) / Count) : 0;
-            const double BeError = System::Sqrt(Utils::Sqr(BeError1) + Utils::Sqr(CountError) + Utils::Sqr(0.1));
+            const double BeError = System::Sqrt(Utils::Sqr(BeError1) + Utils::Sqr(CountError) + Utils::Sqr(BeSysError));
             BeErrorPerKilogram = Activity >= MDABe ? Utils::RoundFloatValue(Activity * BeError, 2, false) : String();
 
             if (TotalMass > 0 && Square > 0 && Activity >= MDABe)

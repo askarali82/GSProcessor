@@ -367,9 +367,12 @@ private:
     double BeEn1 = 0;
     double BeEn2 = 0;
 
+    // Photopeak efficiency for Be-7
     double BePhotopeakEff1;
     double BePhotopeakEff2;
     double BePhotopeakEff3;
+
+    double BeSysError;
 
     //Search peaks
     double MinPeakWidth;

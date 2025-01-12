@@ -38,6 +38,7 @@ __fastcall TSettingsForm::TSettingsForm(TComponent* Owner):
     LoadDensity_2_Data();
     LoadDensity_3_Data();
     LoadEnergyRanges();
+    LoadBe7Params();
 
     ChangeUILanguage();
 }
@@ -56,8 +57,6 @@ void TSettingsForm::LoadEnergyRanges()
         CsEnergy2Edit->Text = IniFile->ReadFloat(L"EnergyRanges", CsEnergy2Edit->Name, 709);
         BeEnergy1Edit->Text = IniFile->ReadFloat(L"EnergyRanges", BeEnergy1Edit->Name, 430);
         BeEnergy2Edit->Text = IniFile->ReadFloat(L"EnergyRanges", BeEnergy2Edit->Name, 525);
-
-        Be7PhotopeakEffEdit->Text = IniFile->ReadString(L"Be7", Be7PhotopeakEffEdit->Name, L"");
     }
     catch (Exception &)
     {
@@ -78,8 +77,30 @@ void TSettingsForm::SaveEnergyRanges()
         IniFile->WriteFloat(L"EnergyRanges", CsEnergy2Edit->Name, Sysutils::StrToFloatDef(CsEnergy2Edit->Text, 0));
         IniFile->WriteFloat(L"EnergyRanges", BeEnergy1Edit->Name, Sysutils::StrToFloatDef(BeEnergy1Edit->Text, 0));
         IniFile->WriteFloat(L"EnergyRanges", BeEnergy2Edit->Name, Sysutils::StrToFloatDef(BeEnergy2Edit->Text, 0));
-
+    }
+    catch (Exception &)
+    {
+    }
+}
+//---------------------------------------------------------------------------
+void TSettingsForm::LoadBe7Params()
+{
+    try
+    {
+        Be7PhotopeakEffEdit->Text = IniFile->ReadString(L"Be7", Be7PhotopeakEffEdit->Name, L"");
+        Be7SystematicErrorEdit->Text = IniFile->ReadString(L"Be7", Be7SystematicErrorEdit->Name, L"10");
+    }
+    catch (Exception &)
+    {
+    }
+}
+//---------------------------------------------------------------------------
+void TSettingsForm::SaveBe7Params()
+{
+    try
+    {
         IniFile->WriteString(L"Be7", Be7PhotopeakEffEdit->Name, Be7PhotopeakEffEdit->Text);
+        IniFile->WriteString(L"Be7", Be7SystematicErrorEdit->Name, Be7SystematicErrorEdit->Text);
     }
     catch (Exception &)
     {
@@ -385,6 +406,7 @@ void __fastcall TSettingsForm::SaveButtonClick(TObject *Sender)
         SaveDensity_3_Data();
     }
     SaveEnergyRanges();
+    SaveBe7Params();
     IniFile->UpdateFile();
     ModalResult = mrOk;
 }
@@ -593,8 +615,10 @@ void TSettingsForm::ChangeUILanguage()
         Label33->Caption = Label40->Caption;
         Label9->Caption = L"keV dan";
         Label32->Caption = L"keV gacha";
-        Label2->Caption = L"Fotocho'qqi effektivligi, %";
+        Be7EffLabel->Caption = L"Be-7 uchun fotocho'qqi effektivligi, %:";
+        Be7PhotopeakEffEdit->TextHint = L"Mas: 4.1; 3.5; 3";
         Be7PhotopeakEffEdit->Hint = L"Uch xil zichliklar uchun. Har birini nuqta-vergul (;) bilan ajrating.";
+        Be7SystematicErrorLabel->Caption = L"Be-7 uchun sistematik xatolik, %:";
 
         SaveButton->Caption = L"&Saqlash";
         CloseButton->Caption = L"&Yopish";
@@ -628,8 +652,10 @@ void TSettingsForm::ChangeUILanguage()
         Label33->Caption = Label40->Caption;
         Label9->Caption = L"From keV";
         Label32->Caption = L"To keV";
-        Label2->Caption = L"Photopeak efficiency, %";
+        Be7EffLabel->Caption = L"Photopeak efficiency for Be-7, %:";
+        Be7PhotopeakEffEdit->TextHint = L"Ex: 4.1; 3.5; 3";
         Be7PhotopeakEffEdit->Hint = L"For three densities. Separate them by semicolon (;).";
+        Be7SystematicErrorLabel->Caption = L"Systematic error for Be-7, %:";
 
         SaveButton->Caption = L"&Save";
         CloseButton->Caption = L"&Close";

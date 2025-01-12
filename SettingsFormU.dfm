@@ -314,7 +314,7 @@ object SettingsForm: TSettingsForm
     ParentFont = False
   end
   object Title4Label: TLabel
-    Left = 156
+    Left = 5
     Top = 533
     Width = 357
     Height = 13
@@ -329,8 +329,8 @@ object SettingsForm: TSettingsForm
     ParentFont = False
   end
   object Label18: TLabel
-    Left = 5
-    Top = 576
+    Left = 13
+    Top = 577
     Width = 40
     Height = 13
     Caption = 'Th-232'
@@ -342,8 +342,8 @@ object SettingsForm: TSettingsForm
     ParentFont = False
   end
   object Label20: TLabel
-    Left = 5
-    Top = 600
+    Left = 13
+    Top = 601
     Width = 41
     Height = 13
     Caption = 'Ra-226'
@@ -355,8 +355,8 @@ object SettingsForm: TSettingsForm
     ParentFont = False
   end
   object Label22: TLabel
-    Left = 5
-    Top = 624
+    Left = 13
+    Top = 625
     Width = 26
     Height = 13
     Caption = 'K-40'
@@ -368,8 +368,8 @@ object SettingsForm: TSettingsForm
     ParentFont = False
   end
   object Label28: TLabel
-    Left = 5
-    Top = 648
+    Left = 13
+    Top = 649
     Width = 39
     Height = 13
     Caption = 'Cs-137'
@@ -381,22 +381,22 @@ object SettingsForm: TSettingsForm
     ParentFont = False
   end
   object Label9: TLabel
-    Left = 105
-    Top = 554
+    Left = 113
+    Top = 555
     Width = 38
     Height = 13
     Caption = 'keV dan'
   end
   object Label32: TLabel
-    Left = 186
-    Top = 554
+    Left = 194
+    Top = 555
     Width = 49
     Height = 13
     Caption = 'keV gacha'
   end
   object Label33: TLabel
-    Left = 5
-    Top = 554
+    Left = 13
+    Top = 555
     Width = 39
     Height = 13
     Caption = 'Namuna'
@@ -513,8 +513,8 @@ object SettingsForm: TSettingsForm
     Shape = bsTopLine
   end
   object Label1: TLabel
-    Left = 5
-    Top = 672
+    Left = 13
+    Top = 673
     Width = 26
     Height = 13
     Caption = 'Be-7'
@@ -525,12 +525,19 @@ object SettingsForm: TSettingsForm
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object Label2: TLabel
-    Left = 268
-    Top = 554
-    Width = 125
+  object Be7EffLabel: TLabel
+    Left = 413
+    Top = 533
+    Width = 184
     Height = 13
-    Caption = 'Fotocho'#39'qqi effektivligi, %'
+    Caption = 'Be-7 uchun fotocho'#39'qqi effektivligi, %:'
+  end
+  object Be7SystematicErrorLabel: TLabel
+    Left = 413
+    Top = 584
+    Width = 160
+    Height = 13
+    Caption = 'Be-7 uchun sistematik xatolik, %:'
   end
   object Th1ActivityEdit: TEdit
     Left = 105
@@ -550,16 +557,16 @@ object SettingsForm: TSettingsForm
     TabOrder = 2
   end
   object ThEnergy1Edit: TEdit
-    Left = 105
-    Top = 573
+    Left = 113
+    Top = 574
     Width = 58
     Height = 21
     TabOrder = 78
     Text = '2500'
   end
   object ThEnergy2Edit: TEdit
-    Left = 186
-    Top = 573
+    Left = 194
+    Top = 574
     Width = 58
     Height = 21
     TabOrder = 79
@@ -572,7 +579,7 @@ object SettingsForm: TSettingsForm
     Height = 25
     Caption = '&Saqlash'
     Default = True
-    TabOrder = 89
+    TabOrder = 90
     OnClick = SaveButtonClick
   end
   object CloseButton: TButton
@@ -583,7 +590,7 @@ object SettingsForm: TSettingsForm
     Cancel = True
     Caption = '&Yopish'
     ModalResult = 8
-    TabOrder = 90
+    TabOrder = 91
   end
   object Th1FileName: TEdit
     Left = 527
@@ -620,16 +627,16 @@ object SettingsForm: TSettingsForm
     OnChange = FileNameChange
   end
   object RaEnergy2Edit: TEdit
-    Left = 186
-    Top = 597
+    Left = 194
+    Top = 598
     Width = 58
     Height = 21
     TabOrder = 81
     Text = '1846'
   end
   object RaEnergy1Edit: TEdit
-    Left = 105
-    Top = 597
+    Left = 113
+    Top = 598
     Width = 58
     Height = 21
     TabOrder = 80
@@ -670,16 +677,16 @@ object SettingsForm: TSettingsForm
     OnChange = FileNameChange
   end
   object KEnergy2Edit: TEdit
-    Left = 186
-    Top = 621
+    Left = 194
+    Top = 622
     Width = 58
     Height = 21
     TabOrder = 83
     Text = '1540'
   end
   object KEnergy1Edit: TEdit
-    Left = 105
-    Top = 621
+    Left = 113
+    Top = 622
     Width = 58
     Height = 21
     TabOrder = 82
@@ -720,16 +727,16 @@ object SettingsForm: TSettingsForm
     OnChange = FileNameChange
   end
   object CsEnergy2Edit: TEdit
-    Left = 186
-    Top = 645
+    Left = 194
+    Top = 646
     Width = 58
     Height = 21
     TabOrder = 85
     Text = '709'
   end
   object CsEnergy1Edit: TEdit
-    Left = 105
-    Top = 645
+    Left = 113
+    Top = 646
     Width = 58
     Height = 21
     TabOrder = 84
@@ -1184,30 +1191,31 @@ object SettingsForm: TSettingsForm
     TabOrder = 73
   end
   object BeEnergy2Edit: TEdit
-    Left = 186
-    Top = 669
+    Left = 194
+    Top = 670
     Width = 58
     Height = 21
     TabOrder = 87
     Text = '525'
   end
   object BeEnergy1Edit: TEdit
-    Left = 105
-    Top = 669
+    Left = 113
+    Top = 670
     Width = 58
     Height = 21
     TabOrder = 86
     Text = '430'
   end
   object Be7PhotopeakEffEdit: TEdit
-    Left = 268
-    Top = 669
-    Width = 90
+    Left = 413
+    Top = 550
+    Width = 97
     Height = 21
     Hint = '3 xil zichliklar uchun. Har birini nuqta-vergul bilan ajrating.'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 88
+    TextHint = 'Mas: 4.1; 3.5; 3'
   end
   object Th1ErrorEdit: TEdit
     Left = 167
@@ -1304,6 +1312,15 @@ object SettingsForm: TSettingsForm
     Height = 21
     TabOrder = 71
     Text = '7'
+  end
+  object Be7SystematicErrorEdit: TEdit
+    Left = 413
+    Top = 601
+    Width = 97
+    Height = 21
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 89
   end
   object OpenDialog: TOpenDialog
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing, ofForceShowHidden]

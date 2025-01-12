@@ -559,7 +559,7 @@ void TBatchProcessingThread::CalculateActivities(
         Be7IsCalculated ? (System::Sqrt(SmpBeCount + (BkgBeCount + SmpBeThCount + SmpBeRaCount + SmpBeKCount + SmpBeCsCount)) / SmpBeCount) : 0;
 
     const double BeError =
-        Be7IsCalculated ? System::Sqrt(Utils::Sqr(BeError1) + Utils::Sqr(0.1)) : 0;
+        Be7IsCalculated ? System::Sqrt(Utils::Sqr(BeError1) + Utils::Sqr(BaseData.BeSysError)) : 0;
 
 
 
