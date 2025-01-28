@@ -45,7 +45,8 @@ __fastcall TMainForm::TMainForm(TComponent* Owner):
     CsDValEdit2->Text = 0.1;
 
     std::unique_ptr<TIniFile> SettingsFile(new TIniFile(L".\\Settings.ini"));
-    LangID = SettingsFile->ReadString(L"UILanguage", L"LangID", L"0").ToIntDef(0);
+    LanguageAction->Tag = SettingsFile->ReadString(L"UILanguage", L"LangID", L"0").ToIntDef(0);
+    LangID = LanguageAction->Tag;
     ChangeUILanguage();
     TSpectrum::SetLanguage();
 
@@ -453,6 +454,7 @@ bool TMainForm::ValidSpectra(const int Idx) const
 //---------------------------------------------------------------------------
 void TMainForm::CreateVirtualSpectra()
 {
+    const int __LangID = LangID;
     const double DensityInGramPerLitre = Sysutils::StrToFloatDef(SampleDensity->Text, 0);
     LOG("DensityInGramPerLitre = " + Sysutils::FloatToStrF(DensityInGramPerLitre, ffFixed, 15, 2));
 
@@ -468,7 +470,7 @@ void TMainForm::CreateVirtualSpectra()
         if (!DensityOK)
         {
             ErrorMsg = L"Th-232 etalon namunalari zichliklarida xatolik bor.";
-            if (LangID == 1)
+            if (__LangID == 1)
             {
                 ErrorMsg = L"Error in densities of Th-232 standard samples.";
             }
@@ -512,7 +514,7 @@ void TMainForm::CreateVirtualSpectra()
         if (!DensityOK)
         {
             ErrorMsg = L"Ra-226 etalon namunalari zichliklarida xatolik bor.";
-            if (LangID == 1)
+            if (__LangID == 1)
             {
                 ErrorMsg = L"Error in densities of Ra-226 standard samples.";
             }
@@ -556,7 +558,7 @@ void TMainForm::CreateVirtualSpectra()
         if (!DensityOK)
         {
             ErrorMsg = L"K-40 etalon namunalari zichliklarida xatolik bor.";
-            if (LangID == 1)
+            if (__LangID == 1)
             {
                 ErrorMsg = L"Error in densities of K-40 standard samples.";
             }
@@ -600,7 +602,7 @@ void TMainForm::CreateVirtualSpectra()
         if (!DensityOK)
         {
             ErrorMsg = L"Cs-137 etalon namunalari zichliklarida xatolik bor.";
-            if (LangID == 1)
+            if (__LangID == 1)
             {
                 ErrorMsg = L"Error in densities of Cs-137 standard samples.";
             }
@@ -644,7 +646,7 @@ void TMainForm::CreateVirtualSpectra()
         if (!DensityOK)
         {
             ErrorMsg = L"Tabiiy fon namunalari zichliklarida xatolik bor.";
-            if (LangID == 1)
+            if (__LangID == 1)
             {
                 ErrorMsg = L"Error in densities of background samples.";
             }
@@ -684,7 +686,7 @@ void TMainForm::CreateVirtualSpectra()
     else
     {
         ErrorMsg = L"Bir yoki undan ortiq etalon va/yoki fon namunalari spektrlari topilmadi.";
-        if (LangID == 1)
+        if (__LangID == 1)
         {
             ErrorMsg = L"One or more reference and/or background samples spectra not found.";
         }
@@ -1710,10 +1712,11 @@ void __fastcall TMainForm::SaveSpectraButtonClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SaveSpectraActionExecute(TObject *Sender)
 {
+    const int __LangID = LangID;
     if (!SampleSpc.IsValid() || SampleSpectrum->Count() == 0)
     {
         String ErrorMsg = L"Namuna spektri mavjud emas, yoki unda xatoliklar bor.";
-        if (LangID == 1)
+        if (__LangID == 1)
         {
             ErrorMsg = L"Spectrum does not exist, or there are one or more errors in it.";
         }
@@ -1740,7 +1743,7 @@ void __fastcall TMainForm::SaveSpectraActionExecute(TObject *Sender)
     if (FolderName.IsEmpty())
     {
         String ErrorMsg = L"Manzil tanlashda xatolik yuz berdi.";
-        if (LangID == 1)
+        if (__LangID == 1)
         {
             ErrorMsg = L"An error occurred upon selecting the directory.";
         }
@@ -1753,7 +1756,7 @@ void __fastcall TMainForm::SaveSpectraActionExecute(TObject *Sender)
     String ResultMsgTitle = L"Ma'lumot";
     String Smp = L"Nam";
     String Bkgn = L"Fon";
-    if (LangID == 1)
+    if (__LangID == 1)
     {
         Msg0 = L"The following spectrum couldn't be created:\r\n\r\n";
         ResultMsgText = L"All spectra saved successfully.";
@@ -1876,10 +1879,11 @@ void __fastcall TMainForm::SaveSpectraActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SaveParametersActionExecute(TObject *Sender)
 {
+    const int __LangID = LangID;
     if (!SampleSpc.IsValid() || SampleSpectrum->Count() == 0)
     {
         String ErrorMsg = L"Namuna spektri mavjud emas, yoki unda xatoliklar bor.";
-        if (LangID == 1)
+        if (__LangID == 1)
         {
             ErrorMsg = L"Spectrum does not exist, or there are one or more errors in it.";
         }
@@ -1888,7 +1892,7 @@ void __fastcall TMainForm::SaveParametersActionExecute(TObject *Sender)
     }
 
     SaveDialog->Filter = L"PAR fayllar (*.par)|*.par";
-    if (LangID == 1)
+    if (__LangID == 1)
     {
         SaveDialog->Filter = L"PAR files (*.par)|*.par";
     }
@@ -2098,12 +2102,14 @@ void TMainForm::OpenFromBatchResult(
 //---------------------------------------------------------------------------
 void TMainForm::ChangeUILanguage()
 {
-    if (LangID == 0)
+    const int __LangID = LangID;
+
+    if (__LangID == 0)
     {
         ErrorTitle = L"Xato";
         DirSelectionString = L"Manzil tanlash...";
 
-        LanguageAction->Caption = L"  O'ZB  ";
+        LanguageAction->Caption = L"  UZ  ";
 
         OpenButton->Caption = L"Ochish";
         OpenSpectrumAction->Caption = L"Spektrni ochish";
@@ -2302,7 +2308,7 @@ void TMainForm::ChangeUILanguage()
         CsCh2Label->Hint = L"  " + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + Str;
         CsChan2Edit->Hint = CsCh2Label->Hint;
     }
-    else if (LangID == 1)
+    else if (__LangID == 1)
     {
         ErrorTitle = L"Error";
         DirSelectionString = L"Selecting directory...";
@@ -2528,16 +2534,15 @@ void TMainForm::ChangeUILanguage()
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::LanguageActionExecute(TObject *Sender)
 {
-    int LID = LangID;
-    if (LID == 0)
+    if (LanguageAction->Tag == 0)
     {
-        LID = 1;
+        LanguageAction->Tag = 1;
     }
-    else if (LID == 1)
+    else if (LanguageAction->Tag == 1)
     {
-        LID = 0;
+        LanguageAction->Tag = 0;
     }
-    LangID = LID;
+    LangID = LanguageAction->Tag;
     ChangeUILanguage();
     TSpectrum::SetLanguage();
     ShiftingForm->ChangeUILanguage();
@@ -2546,7 +2551,7 @@ void __fastcall TMainForm::LanguageActionExecute(TObject *Sender)
         BatchProcessingResultsForm->ChangeUILanguage();
     }
     std::unique_ptr<TIniFile> SettingsFile(new TIniFile(L".\\Settings.ini"));
-    SettingsFile->WriteInteger(L"UILanguage", L"LangID", LID);
+    SettingsFile->WriteInteger(L"UILanguage", L"LangID", LanguageAction->Tag);
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::ThCoeffCalcLabelClick(TObject *Sender)
@@ -2716,10 +2721,12 @@ void TMainForm::SetSampleSpectrum(const TSpectrum &ShiftedSpc, const String &Ch1
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::BeActLabelClick(TObject *Sender)
 {
+    const int __LangID = LangID;
+
     BeActivityPerKgOrSq->Tag = !BeActivityPerKgOrSq->Tag;
     if (BeActivityPerKgOrSq->Tag)
     {
-        if (LangID == 0)
+        if (__LangID == 0)
         {
             BeActLabel->Caption = L"Aktivligi (Bk/kg):";
             BeErrorLabel->Caption = L"Xatolik (Bk/kg):";
@@ -2734,7 +2741,7 @@ void __fastcall TMainForm::BeActLabelClick(TObject *Sender)
     }
     else
     {
-        if (LangID == 0)
+        if (__LangID == 0)
         {
             BeActLabel->Caption = L"Aktivligi (Bk/m^2):";
             BeErrorLabel->Caption = L"Xatolik (Bk/m^2):";

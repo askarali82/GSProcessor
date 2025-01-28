@@ -77,11 +77,12 @@ void __fastcall TShiftingForm::LogLinButtonClick(TObject *Sender)
     }
     else
     {
-        if (LangID == 0)
+        const int __LangID = LangID;
+        if (__LangID == 0)
         {
             LogLinButton->Caption = L"Chiz.";
         }
-        else if (LangID == 1)
+        else if (__LangID == 1)
         {
             LogLinButton->Caption = L"Lin.";
         }
@@ -337,6 +338,7 @@ void __fastcall TShiftingForm::Spectrum2_MIClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void TShiftingForm::SaveToOriginalFile()
 {
+    const int __LangID = LangID;
     try
     {
         if (!Sysutils::FileExists(Sample2FileName) || !ShiftedSample2.IsValid())
@@ -422,9 +424,9 @@ void TShiftingForm::SaveToOriginalFile()
         }
         else
         {
-            if (LangID == 0)
+            if (__LangID == 0)
                 throw Exception(L"Faylning formati noto'g'ri.");
-            else if (LangID == 1)
+            else if (__LangID == 1)
                 throw Exception(L"File's format is not valid.");
         }
         BinaryData->Position = 0;
@@ -435,7 +437,7 @@ void TShiftingForm::SaveToOriginalFile()
         LOGEXCEPTION(E);
         String ErrorTitle = L"Xato";
         String ErrorMsg = L"Quyidagi xatolik yuz berdi:\r\n\r\n" + E.Message;
-        if (LangID == 1)
+        if (__LangID == 1)
         {
             ErrorTitle = L"Error";
             ErrorMsg = L"The following error occurred:\r\n\r\n" + E.Message;
@@ -564,7 +566,9 @@ void __fastcall TShiftingForm::SaveEnergiesAndCountsMIClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void TShiftingForm::ChangeUILanguage()
 {
-    if (LangID == 0)
+    const int __LangID = LangID;
+
+    if (__LangID == 0)
     {
         AppName = L"Spektrni siljitish";
         if (!Sample1FileName.IsEmpty() || !Sample2FileName.IsEmpty())
@@ -607,7 +611,7 @@ void TShiftingForm::ChangeUILanguage()
         Count1Str = L"Impuls 1: ";
         Count2Str = L"Impuls 2: ";
     }
-    else if (LangID == 1)
+    else if (__LangID == 1)
     {
         AppName = L"Spectrum shifting";
         if (!Sample1FileName.IsEmpty() || !Sample2FileName.IsEmpty())

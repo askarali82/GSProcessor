@@ -323,6 +323,8 @@ void TSettingsForm::SaveDensity_3_Data()
 //---------------------------------------------------------------------------
 bool TSettingsForm::VolumesAreValid(String &ErrorMessage) const
 {
+    const int __LangID = LangID;
+
     ErrorMessage = L"";
     std::vector<String> FileNames;
     FileNames.push_back(Th1FileName->Text);
@@ -349,7 +351,7 @@ bool TSettingsForm::VolumesAreValid(String &ErrorMessage) const
         if (!Spc.LoadFromFile(FileNames[i]))
         {
             ErrorMessage = QuotedStr(FileNames[i]) + L" faylini o'qishning imkoni bo'lmadi.";
-            if (LangID == 1)
+            if (__LangID == 1)
             {
                 ErrorMessage = L"Couldn't load file " + QuotedStr(FileNames[i]) + L".";
             }
@@ -363,7 +365,7 @@ bool TSettingsForm::VolumesAreValid(String &ErrorMessage) const
         {
             ErrorMessage =
                 QuotedStr(FileNames[i]) + L" spektrida namuna hajmi noto'g'ri.";
-            if (LangID == 1)
+            if (__LangID == 1)
             {
                 ErrorMessage = L"In spectrum " + QuotedStr(FileNames[i]) + L", sample volume is not valid.";
             }
@@ -586,7 +588,9 @@ String TSettingsForm::GetSetting(const String &Section, const String &Name) cons
 //---------------------------------------------------------------------------
 void TSettingsForm::ChangeUILanguage()
 {
-    if (LangID == 0)
+    const int __LangID = LangID;
+
+    if (__LangID == 0)
     {
         Caption = L"Etalon va fon namunalari";
 
@@ -623,7 +627,7 @@ void TSettingsForm::ChangeUILanguage()
         SaveButton->Caption = L"&Saqlash";
         CloseButton->Caption = L"&Yopish";
     }
-    else if (LangID == 1)
+    else if (__LangID == 1)
     {
         Caption = L"Reference and background samples";
 

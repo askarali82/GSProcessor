@@ -336,7 +336,9 @@ void __fastcall TBatchProcessingResultsForm::MoveToMainWindowActionUpdate(TObjec
 //---------------------------------------------------------------------------
 void TBatchProcessingResultsForm::ChangeUILanguage()
 {
-    if (LangID == 0)
+    const int __LangID = LangID;
+
+    if (__LangID == 0)
     {
         Caption = L"Ko'p sonli spektrlar tahlili - Natijalar";
         SaveToCSVFIleAction->Caption = L"CSV faylga saqlash";
@@ -366,7 +368,7 @@ void TBatchProcessingResultsForm::ChangeUILanguage()
             StatusBar->SimpleText = Str;
         }
     }
-    else if (LangID == 1)
+    else if (__LangID == 1)
     {
         Caption = L"Batch processing - Results";
         SaveToCSVFIleAction->Caption = L"Save to CSV file";
