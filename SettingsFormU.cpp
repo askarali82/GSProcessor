@@ -111,27 +111,31 @@ void TSettingsForm::LoadDensity_1_Data()
 {
     try
     {
-        Th1ActivityEdit->Text = IniFile->ReadFloat(L"Density_1", Th1ActivityEdit->Name, 6180);
-        Th1Date->Date = IniFile->ReadDate(L"Density_1", Th1Date->Name, TDateTime(1995, 9, 1));
-        Th1MesDate->Date = IniFile->ReadDate(L"Density_1", Th1MesDate->Name, TDateTime(1995, 9, 1));
+        Th1ActivityEdit->Text = IniFile->ReadString(L"Density_1", Th1ActivityEdit->Name, L"");
+        Th1ErrorEdit->Text = IniFile->ReadString(L"Density_1", Th1ErrorEdit->Name, L"");
+        Th1Date->Date = IniFile->ReadDate(L"Density_1", Th1Date->Name, Date());
+        Th1MesDate->Date = IniFile->ReadDate(L"Density_1", Th1MesDate->Name, Date());
         Th1FileName->Text = IniFile->ReadString(L"Density_1", Th1FileName->Name, L"");
         Th1FileName->Tag = Sysutils::FileExists(Th1FileName->Text);
 
-        Ra1ActivityEdit->Text = IniFile->ReadFloat(L"Density_1", Ra1ActivityEdit->Name, 5440);
-        Ra1Date->Date = IniFile->ReadDate(L"Density_1", Ra1Date->Name, TDateTime(1995, 9, 1));
-        Ra1MesDate->Date = IniFile->ReadDate(L"Density_1", Ra1MesDate->Name, TDateTime(1995, 9, 1));
+        Ra1ActivityEdit->Text = IniFile->ReadString(L"Density_1", Ra1ActivityEdit->Name, L"");
+        Ra1ErrorEdit->Text = IniFile->ReadString(L"Density_1", Ra1ErrorEdit->Name, L"");
+        Ra1Date->Date = IniFile->ReadDate(L"Density_1", Ra1Date->Name, Date());
+        Ra1MesDate->Date = IniFile->ReadDate(L"Density_1", Ra1MesDate->Name, Date());
         Ra1FileName->Text = IniFile->ReadString(L"Density_1", Ra1FileName->Name, L"");
         Ra1FileName->Tag = Sysutils::FileExists(Ra1FileName->Text);
 
-        K1ActivityEdit->Text = IniFile->ReadFloat(L"Density_1", K1ActivityEdit->Name, 3100);
-        K1Date->Date = IniFile->ReadDate(L"Density_1", K1Date->Name, TDateTime(1995, 9, 1));
-        K1MesDate->Date = IniFile->ReadDate(L"Density_1", K1MesDate->Name, TDateTime(1995, 9, 1));
+        K1ActivityEdit->Text = IniFile->ReadString(L"Density_1", K1ActivityEdit->Name, L"");
+        K1ErrorEdit->Text = IniFile->ReadString(L"Density_1", K1ErrorEdit->Name, L"");
+        K1Date->Date = IniFile->ReadDate(L"Density_1", K1Date->Name, Date());
+        K1MesDate->Date = IniFile->ReadDate(L"Density_1", K1MesDate->Name, Date());
         K1FileName->Text = IniFile->ReadString(L"Density_1", K1FileName->Name, L"");
         K1FileName->Tag = Sysutils::FileExists(K1FileName->Text);
 
-        Cs1ActivityEdit->Text = IniFile->ReadFloat(L"Density_1", Cs1ActivityEdit->Name, 3220);
-        Cs1Date->Date = IniFile->ReadDate(L"Density_1", Cs1Date->Name, TDateTime(1995, 9, 1));
-        Cs1MesDate->Date = IniFile->ReadDate(L"Density_1", Cs1MesDate->Name, TDateTime(1995, 9, 1));
+        Cs1ActivityEdit->Text = IniFile->ReadString(L"Density_1", Cs1ActivityEdit->Name, L"");
+        Cs1ErrorEdit->Text = IniFile->ReadString(L"Density_1", Cs1ErrorEdit->Name, L"");
+        Cs1Date->Date = IniFile->ReadDate(L"Density_1", Cs1Date->Name, Date());
+        Cs1MesDate->Date = IniFile->ReadDate(L"Density_1", Cs1MesDate->Name, Date());
         Cs1FileName->Text = IniFile->ReadString(L"Density_1", Cs1FileName->Name, L"");
         Cs1FileName->Tag = Sysutils::FileExists(Cs1FileName->Text);
 
@@ -147,27 +151,31 @@ void TSettingsForm::LoadDensity_2_Data()
 {
     try
     {
-        Th2ActivityEdit->Text = IniFile->ReadFloat(L"Density_2", Th2ActivityEdit->Name, 7350);
-        Th2Date->Date = IniFile->ReadDate(L"Density_2", Th2Date->Name, TDateTime(1995, 9, 1));
-        Th2MesDate->Date = IniFile->ReadDate(L"Density_2", Th2MesDate->Name, TDateTime(1995, 9, 1));
+        Th2ActivityEdit->Text = IniFile->ReadString(L"Density_2", Th2ActivityEdit->Name, L"");
+        Th2ErrorEdit->Text = IniFile->ReadString(L"Density_2", Th2ErrorEdit->Name, L"");
+        Th2Date->Date = IniFile->ReadDate(L"Density_2", Th2Date->Name, Date());
+        Th2MesDate->Date = IniFile->ReadDate(L"Density_2", Th2MesDate->Name, Date());
         Th2FileName->Text = IniFile->ReadString(L"Density_2", Th2FileName->Name, L"");
         Th2FileName->Tag = Sysutils::FileExists(Th2FileName->Text);
 
-        Ra2ActivityEdit->Text = IniFile->ReadFloat(L"Density_2", Ra2ActivityEdit->Name, 8180);
-        Ra2Date->Date = IniFile->ReadDate(L"Density_2", Ra2Date->Name, TDateTime(1995, 9, 1));
-        Ra2MesDate->Date = IniFile->ReadDate(L"Density_2", Ra2MesDate->Name, TDateTime(1995, 9, 1));
+        Ra2ActivityEdit->Text = IniFile->ReadString(L"Density_2", Ra2ActivityEdit->Name, L"");
+        Ra2ErrorEdit->Text = IniFile->ReadString(L"Density_2", Ra2ErrorEdit->Name, L"");
+        Ra2Date->Date = IniFile->ReadDate(L"Density_2", Ra2Date->Name, Date());
+        Ra2MesDate->Date = IniFile->ReadDate(L"Density_2", Ra2MesDate->Name, Date());
         Ra2FileName->Text = IniFile->ReadString(L"Density_2", Ra2FileName->Name, L"");
         Ra2FileName->Tag = Sysutils::FileExists(Ra2FileName->Text);
 
-        K2ActivityEdit->Text = IniFile->ReadFloat(L"Density_2", K2ActivityEdit->Name, 13790);
-        K2Date->Date = IniFile->ReadDate(L"Density_2", K2Date->Name, TDateTime(1995, 9, 1));
-        K2MesDate->Date = IniFile->ReadDate(L"Density_2", K2MesDate->Name, TDateTime(1995, 9, 1));
+        K2ActivityEdit->Text = IniFile->ReadString(L"Density_2", K2ActivityEdit->Name, L"");
+        K2ErrorEdit->Text = IniFile->ReadString(L"Density_2", K2ErrorEdit->Name, L"");
+        K2Date->Date = IniFile->ReadDate(L"Density_2", K2Date->Name, Date());
+        K2MesDate->Date = IniFile->ReadDate(L"Density_2", K2MesDate->Name, Date());
         K2FileName->Text = IniFile->ReadString(L"Density_2", K2FileName->Name, L"");
         K2FileName->Tag = Sysutils::FileExists(K2FileName->Text);
 
-        Cs2ActivityEdit->Text = IniFile->ReadFloat(L"Density_2", Cs2ActivityEdit->Name, 2570);
-        Cs2Date->Date = IniFile->ReadDate(L"Density_2", Cs2Date->Name, TDateTime(1995, 9, 1));
-        Cs2MesDate->Date = IniFile->ReadDate(L"Density_2", Cs2MesDate->Name, TDateTime(1995, 9, 1));
+        Cs2ActivityEdit->Text = IniFile->ReadString(L"Density_2", Cs2ActivityEdit->Name, L"");
+        Cs2ErrorEdit->Text = IniFile->ReadString(L"Density_2", Cs2ErrorEdit->Name, L"");
+        Cs2Date->Date = IniFile->ReadDate(L"Density_2", Cs2Date->Name, Date());
+        Cs2MesDate->Date = IniFile->ReadDate(L"Density_2", Cs2MesDate->Name, Date());
         Cs2FileName->Text = IniFile->ReadString(L"Density_2", Cs2FileName->Name, L"");
         Cs2FileName->Tag = Sysutils::FileExists(Cs2FileName->Text);
 
@@ -183,27 +191,31 @@ void TSettingsForm::LoadDensity_3_Data()
 {
     try
     {
-        Th3ActivityEdit->Text = IniFile->ReadFloat(L"Density_3", Th3ActivityEdit->Name, 6430);
-        Th3Date->Date = IniFile->ReadDate(L"Density_3", Th3Date->Name, TDateTime(1995, 9, 1));
-        Th3MesDate->Date = IniFile->ReadDate(L"Density_3", Th3MesDate->Name, TDateTime(1995, 9, 1));
+        Th3ActivityEdit->Text = IniFile->ReadString(L"Density_3", Th3ActivityEdit->Name, L"");
+        Th3ErrorEdit->Text = IniFile->ReadString(L"Density_3", Th3ErrorEdit->Name, L"");
+        Th3Date->Date = IniFile->ReadDate(L"Density_3", Th3Date->Name, Date());
+        Th3MesDate->Date = IniFile->ReadDate(L"Density_3", Th3MesDate->Name, Date());
         Th3FileName->Text = IniFile->ReadString(L"Density_3", Th3FileName->Name, L"");
         Th3FileName->Tag = Sysutils::FileExists(Th3FileName->Text);
 
-        Ra3ActivityEdit->Text = IniFile->ReadFloat(L"Density_3", Ra3ActivityEdit->Name, 5490);
-        Ra3Date->Date = IniFile->ReadDate(L"Density_3", Ra3Date->Name, TDateTime(1995, 9, 1));
-        Ra3MesDate->Date = IniFile->ReadDate(L"Density_3", Ra3MesDate->Name, TDateTime(1995, 9, 1));
+        Ra3ActivityEdit->Text = IniFile->ReadString(L"Density_3", Ra3ActivityEdit->Name, L"");
+        Ra3ErrorEdit->Text = IniFile->ReadString(L"Density_3", Ra3ErrorEdit->Name, L"");
+        Ra3Date->Date = IniFile->ReadDate(L"Density_3", Ra3Date->Name, Date());
+        Ra3MesDate->Date = IniFile->ReadDate(L"Density_3", Ra3MesDate->Name, Date());
         Ra3FileName->Text = IniFile->ReadString(L"Density_3", Ra3FileName->Name, L"");
         Ra3FileName->Tag = Sysutils::FileExists(Ra3FileName->Text);
 
-        K3ActivityEdit->Text = IniFile->ReadFloat(L"Density_3", K3ActivityEdit->Name, 13700);
-        K3Date->Date = IniFile->ReadDate(L"Density_3", K3Date->Name, TDateTime(1995, 9, 1));
-        K3MesDate->Date = IniFile->ReadDate(L"Density_3", K3MesDate->Name, TDateTime(1995, 9, 1));
+        K3ActivityEdit->Text = IniFile->ReadString(L"Density_3", K3ActivityEdit->Name, L"");
+        K3ErrorEdit->Text = IniFile->ReadString(L"Density_3", K3ErrorEdit->Name, L"");
+        K3Date->Date = IniFile->ReadDate(L"Density_3", K3Date->Name, Date());
+        K3MesDate->Date = IniFile->ReadDate(L"Density_3", K3MesDate->Name, Date());
         K3FileName->Text = IniFile->ReadString(L"Density_3", K3FileName->Name, L"");
         K3FileName->Tag = Sysutils::FileExists(K3FileName->Text);
 
-        Cs3ActivityEdit->Text = IniFile->ReadFloat(L"Density_3", Cs3ActivityEdit->Name, 3150);
-        Cs3Date->Date = IniFile->ReadDate(L"Density_3", Cs3Date->Name, TDateTime(1995, 9, 1));
-        Cs3MesDate->Date = IniFile->ReadDate(L"Density_3", Cs3MesDate->Name, TDateTime(1995, 9, 1));
+        Cs3ActivityEdit->Text = IniFile->ReadString(L"Density_3", Cs3ActivityEdit->Name, L"");
+        Cs3ErrorEdit->Text = IniFile->ReadString(L"Density_3", Cs3ErrorEdit->Name, L"");
+        Cs3Date->Date = IniFile->ReadDate(L"Density_3", Cs3Date->Name, Date());
+        Cs3MesDate->Date = IniFile->ReadDate(L"Density_3", Cs3MesDate->Name, Date());
         Cs3FileName->Text = IniFile->ReadString(L"Density_3", Cs3FileName->Name, L"");
         Cs3FileName->Tag = Sysutils::FileExists(Cs3FileName->Text);
 
@@ -256,25 +268,25 @@ void TSettingsForm::SaveDensity_2_Data()
     try
     {
         IniFile->WriteFloat(L"Density_2", Th2ActivityEdit->Name, Sysutils::StrToFloatDef(Th2ActivityEdit->Text, 0));
-        IniFile->WriteFloat(L"Density_1", Th2ErrorEdit->Name, Sysutils::StrToFloatDef(Th2ErrorEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_2", Th2ErrorEdit->Name, Sysutils::StrToFloatDef(Th2ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_2", Th2Date->Name, Th2Date->Date);
         IniFile->WriteDate(L"Density_2", Th2MesDate->Name, Th2MesDate->Date);
         IniFile->WriteString(L"Density_2", Th2FileName->Name, Th2FileName->Text);
 
         IniFile->WriteFloat(L"Density_2", Ra2ActivityEdit->Name, Sysutils::StrToFloatDef(Ra2ActivityEdit->Text, 0));
-        IniFile->WriteFloat(L"Density_1", Ra2ErrorEdit->Name, Sysutils::StrToFloatDef(Ra2ErrorEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_2", Ra2ErrorEdit->Name, Sysutils::StrToFloatDef(Ra2ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_2", Ra2Date->Name, Ra2Date->Date);
         IniFile->WriteDate(L"Density_2", Ra2MesDate->Name, Ra2MesDate->Date);
         IniFile->WriteString(L"Density_2", Ra2FileName->Name, Ra2FileName->Text);
 
         IniFile->WriteFloat(L"Density_2", K2ActivityEdit->Name, Sysutils::StrToFloatDef(K2ActivityEdit->Text, 0));
-        IniFile->WriteFloat(L"Density_1", K2ErrorEdit->Name, Sysutils::StrToFloatDef(K2ErrorEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_2", K2ErrorEdit->Name, Sysutils::StrToFloatDef(K2ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_2", K2Date->Name, K2Date->Date);
         IniFile->WriteDate(L"Density_2", K2MesDate->Name, K2MesDate->Date);
         IniFile->WriteString(L"Density_2", K2FileName->Name, K2FileName->Text);
 
         IniFile->WriteFloat(L"Density_2", Cs2ActivityEdit->Name, Sysutils::StrToFloatDef(Cs2ActivityEdit->Text, 0));
-        IniFile->WriteFloat(L"Density_1", Cs2ErrorEdit->Name, Sysutils::StrToFloatDef(Cs2ErrorEdit->Text, 0));
+        IniFile->WriteFloat(L"Density_2", Cs2ErrorEdit->Name, Sysutils::StrToFloatDef(Cs2ErrorEdit->Text, 0));
         IniFile->WriteDate(L"Density_2", Cs2Date->Name, Cs2Date->Date);
         IniFile->WriteDate(L"Density_2", Cs2MesDate->Name, Cs2MesDate->Date);
         IniFile->WriteString(L"Density_2", Cs2FileName->Name, Cs2FileName->Text);

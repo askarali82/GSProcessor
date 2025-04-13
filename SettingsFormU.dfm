@@ -545,14 +545,13 @@ object SettingsForm: TSettingsForm
     Width = 58
     Height = 21
     TabOrder = 0
-    Text = '6180'
   end
   object Th1Date: TDateTimePicker
     Left = 205
     Top = 54
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 2
   end
@@ -647,7 +646,7 @@ object SettingsForm: TSettingsForm
     Top = 78
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.380290173612593200
     TabOrder = 8
   end
@@ -657,7 +656,6 @@ object SettingsForm: TSettingsForm
     Width = 58
     Height = 21
     TabOrder = 6
-    Text = '5440'
   end
   object K1Button: TButton
     Left = 813
@@ -697,7 +695,7 @@ object SettingsForm: TSettingsForm
     Top = 102
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.380587037034274500
     TabOrder = 14
   end
@@ -707,7 +705,6 @@ object SettingsForm: TSettingsForm
     Width = 58
     Height = 21
     TabOrder = 12
-    Text = '3100'
   end
   object Cs1Button: TButton
     Left = 813
@@ -747,7 +744,7 @@ object SettingsForm: TSettingsForm
     Top = 126
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.380861782410647700
     TabOrder = 20
   end
@@ -757,7 +754,6 @@ object SettingsForm: TSettingsForm
     Width = 58
     Height = 21
     TabOrder = 18
-    Text = '3220'
   end
   object Cs2ActivityEdit: TEdit
     Left = 105
@@ -765,14 +761,13 @@ object SettingsForm: TSettingsForm
     Width = 58
     Height = 21
     TabOrder = 44
-    Text = '2570'
   end
   object Cs2Date: TDateTimePicker
     Left = 205
     Top = 300
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418708159719244600
     TabOrder = 46
   end
@@ -799,14 +794,13 @@ object SettingsForm: TSettingsForm
     Width = 58
     Height = 21
     TabOrder = 38
-    Text = '13790'
   end
   object K2Date: TDateTimePicker
     Left = 205
     Top = 276
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418708240744308600
     TabOrder = 40
   end
@@ -833,14 +827,13 @@ object SettingsForm: TSettingsForm
     Width = 58
     Height = 21
     TabOrder = 32
-    Text = '8180'
   end
   object Ra2Date: TDateTimePicker
     Left = 205
     Top = 252
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418708333330869200
     TabOrder = 34
   end
@@ -883,7 +876,7 @@ object SettingsForm: TSettingsForm
     Top = 228
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418708414348657200
     TabOrder = 28
   end
@@ -893,7 +886,6 @@ object SettingsForm: TSettingsForm
     Width = 58
     Height = 21
     TabOrder = 26
-    Text = '7350'
   end
   object Th3ActivityEdit: TEdit
     Left = 105
@@ -901,14 +893,13 @@ object SettingsForm: TSettingsForm
     Width = 58
     Height = 21
     TabOrder = 52
-    Text = '6430'
   end
   object Th3Date: TDateTimePicker
     Left = 205
     Top = 402
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418708518518542400
     TabOrder = 54
   end
@@ -951,7 +942,7 @@ object SettingsForm: TSettingsForm
     Top = 426
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418708599536330400
     TabOrder = 60
   end
@@ -961,7 +952,6 @@ object SettingsForm: TSettingsForm
     Width = 58
     Height = 21
     TabOrder = 58
-    Text = '5490'
   end
   object K3Button: TButton
     Left = 813
@@ -985,7 +975,7 @@ object SettingsForm: TSettingsForm
     Top = 450
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418708680554118500
     TabOrder = 66
   end
@@ -995,7 +985,6 @@ object SettingsForm: TSettingsForm
     Width = 58
     Height = 21
     TabOrder = 64
-    Text = '13700'
   end
   object Cs3Button: TButton
     Left = 813
@@ -1019,7 +1008,7 @@ object SettingsForm: TSettingsForm
     Top = 474
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418708784724003600
     TabOrder = 72
   end
@@ -1029,7 +1018,6 @@ object SettingsForm: TSettingsForm
     Width = 58
     Height = 21
     TabOrder = 70
-    Text = '3150'
   end
   object Bkg1FileName: TEdit
     Left = 527
@@ -1087,7 +1075,7 @@ object SettingsForm: TSettingsForm
     Top = 54
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 3
   end
@@ -1096,7 +1084,7 @@ object SettingsForm: TSettingsForm
     Top = 78
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 9
   end
@@ -1105,7 +1093,7 @@ object SettingsForm: TSettingsForm
     Top = 102
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 15
   end
@@ -1114,7 +1102,7 @@ object SettingsForm: TSettingsForm
     Top = 126
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 21
   end
@@ -1123,7 +1111,7 @@ object SettingsForm: TSettingsForm
     Top = 228
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 29
   end
@@ -1132,7 +1120,7 @@ object SettingsForm: TSettingsForm
     Top = 252
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 35
   end
@@ -1141,7 +1129,7 @@ object SettingsForm: TSettingsForm
     Top = 276
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 41
   end
@@ -1150,7 +1138,7 @@ object SettingsForm: TSettingsForm
     Top = 300
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 47
   end
@@ -1159,7 +1147,7 @@ object SettingsForm: TSettingsForm
     Top = 402
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 55
   end
@@ -1168,7 +1156,7 @@ object SettingsForm: TSettingsForm
     Top = 426
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 61
   end
@@ -1177,7 +1165,7 @@ object SettingsForm: TSettingsForm
     Top = 450
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 67
   end
@@ -1186,7 +1174,7 @@ object SettingsForm: TSettingsForm
     Top = 474
     Width = 117
     Height = 21
-    Date = 34943.000000000000000000
+    Date = 45742.000000000000000000
     Time = 0.418707719909434700
     TabOrder = 73
   end
@@ -1223,7 +1211,6 @@ object SettingsForm: TSettingsForm
     Width = 34
     Height = 21
     TabOrder = 1
-    Text = '7'
   end
   object Ra1ErrorEdit: TEdit
     Left = 167
@@ -1231,7 +1218,6 @@ object SettingsForm: TSettingsForm
     Width = 34
     Height = 21
     TabOrder = 7
-    Text = '7'
   end
   object K1ErrorEdit: TEdit
     Left = 167
@@ -1239,7 +1225,6 @@ object SettingsForm: TSettingsForm
     Width = 34
     Height = 21
     TabOrder = 13
-    Text = '7'
   end
   object Cs1ErrorEdit: TEdit
     Left = 167
@@ -1247,7 +1232,6 @@ object SettingsForm: TSettingsForm
     Width = 34
     Height = 21
     TabOrder = 19
-    Text = '7'
   end
   object Th2ErrorEdit: TEdit
     Left = 167
@@ -1255,7 +1239,6 @@ object SettingsForm: TSettingsForm
     Width = 34
     Height = 21
     TabOrder = 27
-    Text = '7'
   end
   object Ra2ErrorEdit: TEdit
     Left = 167
@@ -1263,7 +1246,6 @@ object SettingsForm: TSettingsForm
     Width = 34
     Height = 21
     TabOrder = 33
-    Text = '7'
   end
   object K2ErrorEdit: TEdit
     Left = 167
@@ -1271,7 +1253,6 @@ object SettingsForm: TSettingsForm
     Width = 34
     Height = 21
     TabOrder = 39
-    Text = '7'
   end
   object Cs2ErrorEdit: TEdit
     Left = 167
@@ -1279,7 +1260,6 @@ object SettingsForm: TSettingsForm
     Width = 34
     Height = 21
     TabOrder = 45
-    Text = '7'
   end
   object Th3ErrorEdit: TEdit
     Left = 167
@@ -1287,7 +1267,6 @@ object SettingsForm: TSettingsForm
     Width = 34
     Height = 21
     TabOrder = 53
-    Text = '7'
   end
   object Ra3ErrorEdit: TEdit
     Left = 167
@@ -1295,7 +1274,6 @@ object SettingsForm: TSettingsForm
     Width = 34
     Height = 21
     TabOrder = 59
-    Text = '7'
   end
   object K3ErrorEdit: TEdit
     Left = 167
@@ -1303,7 +1281,6 @@ object SettingsForm: TSettingsForm
     Width = 34
     Height = 21
     TabOrder = 65
-    Text = '7'
   end
   object Cs3ErrorEdit: TEdit
     Left = 167
@@ -1311,7 +1288,6 @@ object SettingsForm: TSettingsForm
     Width = 34
     Height = 21
     TabOrder = 71
-    Text = '7'
   end
   object Be7SystematicErrorEdit: TEdit
     Left = 413
