@@ -99,9 +99,10 @@ void __fastcall TShiftingForm::Spectrum1ButtonClick(TObject *Sender)
         return;
     }
     Sample1FileName = OpenDialog->FileName;
-    Caption =
-        AppName + L" - [1: " + Sysutils::ExtractFileName(Sample1FileName) + L", 2: " +
-        Sysutils::ExtractFileName(Sample2FileName) + L"]";
+    const String SpcLabel = LangID == 0 ? L"Spektr" : L"Spectrum";
+    Caption = AppName +
+        L" - [" + SpcLabel + L" 1:  " + Sysutils::ExtractFileName(Sample1FileName) +
+        L",  " + SpcLabel + L" 2:  " + Sysutils::ExtractFileName(Sample2FileName) + L"]";
     Sample1 = Spc;
     DrawSpectrum(Sample1, Spectrum1);
     Energy1Edit->Text = Sample1.Energy1;
@@ -124,9 +125,10 @@ void __fastcall TShiftingForm::Spectrum2ButtonClick(TObject *Sender)
         return;
     }
     Sample2FileName = OpenDialog->FileName;
-    Caption =
-        AppName + L" - [1: " + Sysutils::ExtractFileName(Sample1FileName) + L", 2: " +
-        Sysutils::ExtractFileName(Sample2FileName) + L"]";
+    const String SpcLabel = LangID == 0 ? L"Spektr" : L"Spectrum";
+    Caption = AppName +
+        L" - [" + SpcLabel + L" 1:  " + Sysutils::ExtractFileName(Sample1FileName) +
+        L",  " + SpcLabel + L" 2:  " + Sysutils::ExtractFileName(Sample2FileName) + L"]";
     Sample2 = Spc;
     ShiftedSample2 = Sample2;
     DrawSpectrum(Sample2, Spectrum2);
@@ -480,7 +482,7 @@ void __fastcall TShiftingForm::AboutButtonClick(TObject *Sender)
     }
     const String &Message =
         String(AppName + Version + L"\r\n") +
-        Char(169) + L" " + Copyright + L", 2021 - 2024.\r\n\r\n" +
+        Char(169) + L" " + Copyright + L", 2021 - 2025.\r\n\r\n" +
         Developer;
 
     Application->MessageBox(Message.c_str(), AboutStr.c_str(), MB_OK | MB_ICONINFORMATION);
@@ -574,15 +576,15 @@ void TShiftingForm::ChangeUILanguage()
         if (!Sample1FileName.IsEmpty() || !Sample2FileName.IsEmpty())
         {
             Caption =
-                AppName + L" - [1: " + Sysutils::ExtractFileName(Sample1FileName) + L", 2: " +
+                AppName + L" - [Spektr 1:  " + Sysutils::ExtractFileName(Sample1FileName) + L",  Spektr 2:  " +
                 Sysutils::ExtractFileName(Sample2FileName) + L"]";
         }
         else
         {
             Caption = AppName;
         }
-        Spectrum1Button->Caption = L"Spektr 1";
-        Spectrum2Button->Caption = L"Spektr 2 (Siljitiladigan)";
+        Spectrum1Button->Caption = L"Spektr 1 ni ochish";
+        Spectrum2Button->Caption = L"Spektr 2 ni ochish (siljitiladigan)";
         SaveSpectrum2->Caption = L"Spektr 2 ni saqlash";
         Spectrum1_MI->Caption = L"Spektr 1";
         Spectrum2_MI->Caption = L"Spektr 2";
@@ -617,15 +619,15 @@ void TShiftingForm::ChangeUILanguage()
         if (!Sample1FileName.IsEmpty() || !Sample2FileName.IsEmpty())
         {
             Caption =
-                AppName + L" - [1: " + Sysutils::ExtractFileName(Sample1FileName) + L", 2: " +
+                AppName + L" - [Spectrum 1:  " + Sysutils::ExtractFileName(Sample1FileName) + L",  Spectrum 2:  " +
                 Sysutils::ExtractFileName(Sample2FileName) + L"]";
         }
         else
         {
             Caption = AppName;
         }
-        Spectrum1Button->Caption = L"Spectrum 1";
-        Spectrum2Button->Caption = L"Spectrum 2 (Getting shifted)";
+        Spectrum1Button->Caption = L"Open spectrum 1";
+        Spectrum2Button->Caption = L"Open spectrum 2 (getting shifted)";
         SaveSpectrum2->Caption = L"Save Spectrum 2";
         Spectrum1_MI->Caption = L"Spectrum 1";
         Spectrum2_MI->Caption = L"Spectrum 2";

@@ -234,7 +234,7 @@ object ShiftingForm: TShiftingForm
     Height = 26
     AutoSize = True
     ButtonHeight = 26
-    ButtonWidth = 141
+    ButtonWidth = 184
     DoubleBuffered = True
     DrawingStyle = dsGradient
     Font.Charset = DEFAULT_CHARSET
@@ -252,13 +252,13 @@ object ShiftingForm: TShiftingForm
       Left = 0
       Top = 0
       AutoSize = True
-      Caption = 'Spektr 1'
+      Caption = 'Spektr 1 ni ochish'
       ImageIndex = 0
       Style = tbsTextButton
       OnClick = Spectrum1ButtonClick
     end
     object ToolButton2: TToolButton
-      Left = 79
+      Left = 123
       Top = 0
       Width = 8
       Caption = 'ToolButton2'
@@ -266,16 +266,16 @@ object ShiftingForm: TShiftingForm
       Style = tbsSeparator
     end
     object Spectrum2Button: TToolButton
-      Left = 87
+      Left = 131
       Top = 0
       AutoSize = True
-      Caption = 'Spektr 2 (Siljitiladigan)'
+      Caption = 'Spektr 2 ni ochish (siljitiladigan)'
       ImageIndex = 1
       Style = tbsTextButton
       OnClick = Spectrum2ButtonClick
     end
     object ToolButton1: TToolButton
-      Left = 232
+      Left = 319
       Top = 0
       Width = 8
       Caption = 'ToolButton1'
@@ -283,7 +283,7 @@ object ShiftingForm: TShiftingForm
       Style = tbsSeparator
     end
     object SaveSpectrum2: TToolButton
-      Left = 240
+      Left = 327
       Top = 0
       AutoSize = True
       Caption = 'Spektr 2 ni saqlash'
@@ -293,7 +293,7 @@ object ShiftingForm: TShiftingForm
       Style = tbsTextButton
     end
     object AboutBtnSeparator: TToolButton
-      Left = 341
+      Left = 428
       Top = 0
       Width = 8
       Caption = 'AboutBtnSeparator'
@@ -302,7 +302,7 @@ object ShiftingForm: TShiftingForm
       Style = tbsSeparator
     end
     object AboutButton: TToolButton
-      Left = 349
+      Left = 436
       Top = 0
       AutoSize = True
       Caption = '  ?  '
