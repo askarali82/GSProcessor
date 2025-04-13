@@ -272,7 +272,7 @@ __published:
     TLabel *BeSmpLabel;
     void __fastcall FormResize(TObject *Sender);
     void __fastcall StandardSamplesButtonClick(TObject *Sender);
-    void __fastcall SpectraLoadTimerTimer(TObject *Sender);
+    void __fastcall OnSpectraLoadTimer(TObject *Sender);
     void __fastcall OnParamChange(TObject *Sender);
     void __fastcall OnChartMouseMove(TObject *Sender, TShiftState Shift, int X,
           int Y);

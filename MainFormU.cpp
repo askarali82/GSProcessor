@@ -384,7 +384,7 @@ void TMainForm::SubtractBkgFromStandardSources(const int Idx)
     Css[Idx] = Spc;
 }
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::SpectraLoadTimerTimer(TObject *Sender)
+void __fastcall TMainForm::OnSpectraLoadTimer(TObject *Sender)
 {
     SpectraLoadTimer->Enabled = false;
     std::unique_ptr<TSettingsForm> Form(new TSettingsForm(Application));
@@ -1695,14 +1695,77 @@ void __fastcall TMainForm::OpenButtonClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::OpenSpectrumActionExecute(TObject *Sender)
 {
-    OpenDialog->Filter = Utils::GetDialogBoxFilterForSpectraFiles();
+    OpenDialog->Filter = Utils::GetDialogBoxFilterForSpectraFiles(true);
     OpenDialog->Options = OpenDialog->Options >> ofAllowMultiSelect;
     OpenDialog->FileName = L"";
     if (!OpenDialog->Execute(Handle))
     {
         return;
     }
-    OpenSampleSpectrum(OpenDialog->FileName);
+    if (Sysutils::ExtractFileExt(OpenDialog->FileName).LowerCase() == L".par")
+    {
+        OpenParametersAction->Execute();
+    }
+    else
+    {
+        OpenSampleSpectrum(OpenDialog->FileName);
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::OpenParametersActionExecute(TObject *Sender)
+{
+    std::unique_ptr<TIniFile> IniFile(new TIniFile(OpenDialog->FileName));
+
+    const bool OK = OpenSampleSpectrum(IniFile->ReadString(L"Path", L"FileName", L""));
+
+    ThSnSe2->Text = IniFile->ReadString(L"Input", ThSnSe2->Name, L"");
+    RaSnSe2->Text = IniFile->ReadString(L"Input", RaSnSe2->Name, L"");
+    KSnSe2->Text = IniFile->ReadString(L"Input", KSnSe2->Name, L"");
+    CsSnSe2->Text = IniFile->ReadString(L"Input", CsSnSe2->Name, L"");
+
+    SampleDensity->Text = IniFile->ReadString(L"Input", SampleDensity->Name, L"");
+    SampleOrigMass->Text = IniFile->ReadString(L"Input", SampleOrigMass->Name, L"");
+    SampleSquare->Text = IniFile->ReadString(L"Input", SampleSquare->Name, L"");
+
+    SmpChan1Edit->Text = IniFile->ReadString(L"Input", SmpChan1Edit->Name, L"");
+    SmpChan2Edit->Text = IniFile->ReadString(L"Input", SmpChan2Edit->Name, L"");
+    SmpDValEdit1->Text = IniFile->ReadString(L"Input", SmpDValEdit1->Name, L"");
+    SmpDValEdit2->Text = IniFile->ReadString(L"Input", SmpDValEdit2->Name, L"");
+
+    BkgChan1Edit->Text = IniFile->ReadString(L"Input", BkgChan1Edit->Name, L"");
+    BkgChan2Edit->Text = IniFile->ReadString(L"Input", BkgChan2Edit->Name, L"");
+    BkgDValEdit1->Text = IniFile->ReadString(L"Input", BkgDValEdit1->Name, L"");
+    BkgDValEdit2->Text = IniFile->ReadString(L"Input", BkgDValEdit2->Name, L"");
+
+    ThChan1Edit->Text = IniFile->ReadString(L"Input", ThChan1Edit->Name, L"");
+    ThChan2Edit->Text = IniFile->ReadString(L"Input", ThChan2Edit->Name, L"");
+    ThDValEdit1->Text = IniFile->ReadString(L"Input", ThDValEdit1->Name, L"");
+    ThDValEdit2->Text = IniFile->ReadString(L"Input", ThDValEdit2->Name, L"");
+
+    RaChan1Edit->Text = IniFile->ReadString(L"Input", RaChan1Edit->Name, L"");
+    RaChan2Edit->Text = IniFile->ReadString(L"Input", RaChan2Edit->Name, L"");
+    RaDValEdit1->Text = IniFile->ReadString(L"Input", RaDValEdit1->Name, L"");
+    RaDValEdit2->Text = IniFile->ReadString(L"Input", RaDValEdit2->Name, L"");
+
+    KChan1Edit->Text = IniFile->ReadString(L"Input", KChan1Edit->Name, L"");
+    KChan2Edit->Text = IniFile->ReadString(L"Input", KChan2Edit->Name, L"");
+    KDValEdit1->Text = IniFile->ReadString(L"Input", KDValEdit1->Name, L"");
+    KDValEdit2->Text = IniFile->ReadString(L"Input", KDValEdit2->Name, L"");
+
+    CsChan1Edit->Text = IniFile->ReadString(L"Input", CsChan1Edit->Name, L"");
+    CsChan2Edit->Text = IniFile->ReadString(L"Input", CsChan2Edit->Name, L"");
+    CsDValEdit1->Text = IniFile->ReadString(L"Input", CsDValEdit1->Name, L"");
+    CsDValEdit2->Text = IniFile->ReadString(L"Input", CsDValEdit2->Name, L"");
+
+    if (OK)
+    {
+        CreateVirtualSpectra();
+        if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
+            RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
+        {
+            DecomposeSampleSpectrum();
+        }
+    }
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SaveSpectraButtonClick(TObject *Sender)
@@ -1957,73 +2020,6 @@ void TMainForm::SaveParametersFile(const String &FileName)
     }
 }
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::OpenParametersActionExecute(TObject *Sender)
-{
-    OpenDialog->Filter = L"PAR fayllar (*.par)|*.par";
-    if (LangID == 1)
-    {
-        OpenDialog->Filter = L"PAR files (*.par)|*.par";
-    }
-    OpenDialog->Options = OpenDialog->Options >> ofAllowMultiSelect;
-    OpenDialog->FileName = L"";
-    if (!OpenDialog->Execute(Handle))
-    {
-        return;
-    }
-    std::unique_ptr<TIniFile> IniFile(new TIniFile(OpenDialog->FileName));
-
-    const bool OK = OpenSampleSpectrum(IniFile->ReadString(L"Path", L"FileName", L""));
-
-    ThSnSe2->Text = IniFile->ReadString(L"Input", ThSnSe2->Name, L"");
-    RaSnSe2->Text = IniFile->ReadString(L"Input", RaSnSe2->Name, L"");
-    KSnSe2->Text = IniFile->ReadString(L"Input", KSnSe2->Name, L"");
-    CsSnSe2->Text = IniFile->ReadString(L"Input", CsSnSe2->Name, L"");
-
-    SampleDensity->Text = IniFile->ReadString(L"Input", SampleDensity->Name, L"");
-    SampleOrigMass->Text = IniFile->ReadString(L"Input", SampleOrigMass->Name, L"");
-    SampleSquare->Text = IniFile->ReadString(L"Input", SampleSquare->Name, L"");
-
-    SmpChan1Edit->Text = IniFile->ReadString(L"Input", SmpChan1Edit->Name, L"");
-    SmpChan2Edit->Text = IniFile->ReadString(L"Input", SmpChan2Edit->Name, L"");
-    SmpDValEdit1->Text = IniFile->ReadString(L"Input", SmpDValEdit1->Name, L"");
-    SmpDValEdit2->Text = IniFile->ReadString(L"Input", SmpDValEdit2->Name, L"");
-
-    BkgChan1Edit->Text = IniFile->ReadString(L"Input", BkgChan1Edit->Name, L"");
-    BkgChan2Edit->Text = IniFile->ReadString(L"Input", BkgChan2Edit->Name, L"");
-    BkgDValEdit1->Text = IniFile->ReadString(L"Input", BkgDValEdit1->Name, L"");
-    BkgDValEdit2->Text = IniFile->ReadString(L"Input", BkgDValEdit2->Name, L"");
-
-    ThChan1Edit->Text = IniFile->ReadString(L"Input", ThChan1Edit->Name, L"");
-    ThChan2Edit->Text = IniFile->ReadString(L"Input", ThChan2Edit->Name, L"");
-    ThDValEdit1->Text = IniFile->ReadString(L"Input", ThDValEdit1->Name, L"");
-    ThDValEdit2->Text = IniFile->ReadString(L"Input", ThDValEdit2->Name, L"");
-
-    RaChan1Edit->Text = IniFile->ReadString(L"Input", RaChan1Edit->Name, L"");
-    RaChan2Edit->Text = IniFile->ReadString(L"Input", RaChan2Edit->Name, L"");
-    RaDValEdit1->Text = IniFile->ReadString(L"Input", RaDValEdit1->Name, L"");
-    RaDValEdit2->Text = IniFile->ReadString(L"Input", RaDValEdit2->Name, L"");
-
-    KChan1Edit->Text = IniFile->ReadString(L"Input", KChan1Edit->Name, L"");
-    KChan2Edit->Text = IniFile->ReadString(L"Input", KChan2Edit->Name, L"");
-    KDValEdit1->Text = IniFile->ReadString(L"Input", KDValEdit1->Name, L"");
-    KDValEdit2->Text = IniFile->ReadString(L"Input", KDValEdit2->Name, L"");
-
-    CsChan1Edit->Text = IniFile->ReadString(L"Input", CsChan1Edit->Name, L"");
-    CsChan2Edit->Text = IniFile->ReadString(L"Input", CsChan2Edit->Name, L"");
-    CsDValEdit1->Text = IniFile->ReadString(L"Input", CsDValEdit1->Name, L"");
-    CsDValEdit2->Text = IniFile->ReadString(L"Input", CsDValEdit2->Name, L"");
-
-    if (OK)
-    {
-        CreateVirtualSpectra();
-        if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
-            RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
-        {
-            DecomposeSampleSpectrum();
-        }
-    }
-}
-//---------------------------------------------------------------------------
 void __fastcall TMainForm::SelectFilesActionExecute(TObject *Sender)
 {
     OpenDialog->Filter = Utils::GetDialogBoxFilterForSpectraFiles();
@@ -2203,9 +2199,9 @@ void TMainForm::ChangeUILanguage()
 
         FinalSpcChart->Title->Text->Text = L"Natijaviy spektr";
         FinalSpcChart->LeftAxis->Title->Caption = L"Impuls";
-        SampleChart->Title->Text->Text = L"Namuna";
+        SampleChart->Title->Text->Text = L"Oʻrganilayotgan Namuna";
         SampleChart->LeftAxis->Title->Caption = FinalSpcChart->LeftAxis->Title->Caption;
-        BkgChart->Title->Text->Text = L"Fon";
+        BkgChart->Title->Text->Text = L"Tabiiy Fon";
         BkgChart->LeftAxis->Title->Caption = SampleChart->LeftAxis->Title->Caption;
         ThChart->LeftAxis->Title->Caption = SampleChart->LeftAxis->Title->Caption;
         RaChart->LeftAxis->Title->Caption = SampleChart->LeftAxis->Title->Caption;

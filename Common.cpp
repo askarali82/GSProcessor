@@ -102,18 +102,30 @@ void Utils::NormalizeStandardSources(
     Spc2.ExtraStringData = Spc1.ExtraStringData;
 }
 //---------------------------------------------------------------------------
-String Utils::GetDialogBoxFilterForSpectraFiles()
+String Utils::GetDialogBoxFilterForSpectraFiles(const bool IncludeParFiles)
 {
+    String ParStr1;
+    String ParStr2;
+    if (IncludeParFiles)
+    {
+        ParStr1 = L";*.par";
+        ParStr2 = L"|PAR fayllar (*.par)|*.par";
+    }
+
     String Result =
-        L"Spektr fayllari (*.gsp;*.asw)|*.gsp;*.asw|"
+        L"Spektr fayllari (*.gsp;*.asw" + ParStr1 + L")|*.gsp;*.asw" + ParStr1 + L"|"
         L"GSP fayllar (*.gsp)|*.gsp|"
-        L"ASW fayllar (*.asw)|*.asw";
+        L"ASW fayllar (*.asw)|*.asw" + ParStr2;
     if (LangID == 1)
     {
+        if (IncludeParFiles)
+        {
+            ParStr2 = L"|PAR files (*.par)|*.par";
+        }
         Result =
-            L"Spectra files (*.gsp;*.asw)|*.gsp;*.asw|"
+            L"Spectra files (*.gsp;*.asw" + ParStr1 + L")|*.gsp;*.asw" + ParStr1 + L"|"
             L"GSP files (*.gsp)|*.gsp|"
-            L"ASW files (*.asw)|*.asw";
+            L"ASW files (*.asw)|*.asw" + ParStr2;
     }
     return Result;
 }

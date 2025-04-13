@@ -4290,15 +4290,13 @@ object MainForm: TMainForm
         Top = 0
         AutoSize = True
         Caption = 'Ochish'
-        DropdownMenu = OpenPopupMenu
-        EnableDropdown = True
         ImageIndex = 0
         Indeterminate = True
-        Style = tbsDropDown
+        Style = tbsTextButton
         OnClick = OpenButtonClick
       end
       object SaveSpectraButton: TToolButton
-        Left = 92
+        Left = 71
         Top = 0
         AutoSize = True
         Caption = 'Saqlash'
@@ -4310,7 +4308,7 @@ object MainForm: TMainForm
         OnClick = SaveSpectraButtonClick
       end
       object BatchProcessButton: TToolButton
-        Left = 189
+        Left = 168
         Top = 0
         AutoSize = True
         Caption = 'Ko'#39'p sonli spektrlar tahlili'
@@ -4322,7 +4320,7 @@ object MainForm: TMainForm
         OnClick = BatchProcessButtonClick
       end
       object ShiftingButton: TToolButton
-        Left = 365
+        Left = 344
         Top = 0
         AutoSize = True
         Caption = 'Spektrni siljitish'
@@ -4331,7 +4329,7 @@ object MainForm: TMainForm
         OnClick = ShiftingButtonClick
       end
       object StandardSamplesButton: TToolButton
-        Left = 477
+        Left = 456
         Top = 0
         AutoSize = True
         Caption = 'Etalon namunalar'
@@ -4340,7 +4338,7 @@ object MainForm: TMainForm
         OnClick = StandardSamplesButtonClick
       end
       object HelpButton: TToolButton
-        Left = 599
+        Left = 578
         Top = 0
         AutoSize = True
         Caption = 'Dastur haqida'
@@ -4357,7 +4355,7 @@ object MainForm: TMainForm
   object SpectraLoadTimer: TTimer
     Enabled = False
     Interval = 300
-    OnTimer = SpectraLoadTimerTimer
+    OnTimer = OnSpectraLoadTimer
     Left = 112
     Top = 520
   end

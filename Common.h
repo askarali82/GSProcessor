@@ -88,7 +88,7 @@ public:
         }
     }
 
-    static String GetDialogBoxFilterForSpectraFiles();
+    static String GetDialogBoxFilterForSpectraFiles(const bool IncludeParFiles = false);
 
     static double CalcBe7Effectivity(const double Eff1, const double Eff2, const double Eff3, const double SmpDensity);
 
