@@ -142,211 +142,333 @@ void __fastcall TBatchProcessingThread::Execute()
     }
 }
 //---------------------------------------------------------------------------
+bool TBatchProcessingThread::CreateVirtualSpectraFrom3Set(const double DensityInGramPerLitre)
+{
+    // Th-232
+    bool DensityOK =
+        BaseData.Ths[1].DensityInGramPerLitre > BaseData.Ths[0].DensityInGramPerLitre &&
+        BaseData.Ths[1].DensityInGramPerLitre < BaseData.Ths[2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Th-232 etalon namunalari zichliklarida xatolik bor.";
+        if (LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of Th-232 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+    //Utils::NormalizeStandardSources(BaseData.Ths[1], const_cast<TSpectrum &>(BaseData.Ths[0]), BaseData.ThEn1, BaseData.ThEn2);
+    //Utils::NormalizeStandardSources(BaseData.Ths[1], const_cast<TSpectrum &>(BaseData.Ths[2]), BaseData.ThEn1, BaseData.ThEn2);
+    if (DensityInGramPerLitre <= BaseData.Ths[1].DensityInGramPerLitre)
+    {
+        const double X = ((BaseData.Ths[1].DensityInGramPerLitre - DensityInGramPerLitre) /
+            (BaseData.Ths[1].DensityInGramPerLitre - BaseData.Ths[0].DensityInGramPerLitre));
+
+        ThSpc = BaseData.Ths[1].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(ThSpc.Add(BaseData.Ths[0].Multiply(X), Sum), ThSpc.ErrorMessage);
+        ThSpc = Sum;
+    }
+    else
+    {
+        const double X = ((BaseData.Ths[2].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (BaseData.Ths[2].DensityInGramPerLitre - BaseData.Ths[1].DensityInGramPerLitre));
+
+        ThSpc = BaseData.Ths[2].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(ThSpc.Add(BaseData.Ths[1].Multiply(X), Sum), ThSpc.ErrorMessage);
+        ThSpc = Sum;
+    }
+
+    // Ra-226
+    DensityOK =
+        BaseData.Ras[1].DensityInGramPerLitre > BaseData.Ras[0].DensityInGramPerLitre &&
+        BaseData.Ras[1].DensityInGramPerLitre < BaseData.Ras[2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Ra-226 etalon namunalari zichliklarida xatolik bor.";
+        if (LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of Ra-226 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+    //Utils::NormalizeStandardSources(BaseData.Ras[1], const_cast<TSpectrum &>(BaseData.Ras[0]), BaseData.RaEn1, BaseData.RaEn2);
+    //Utils::NormalizeStandardSources(BaseData.Ras[1], const_cast<TSpectrum &>(BaseData.Ras[2]), BaseData.RaEn1, BaseData.RaEn2);
+    if (DensityInGramPerLitre <= BaseData.Ras[1].DensityInGramPerLitre)
+    {
+        const double X = ((BaseData.Ras[1].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (BaseData.Ras[1].DensityInGramPerLitre - BaseData.Ras[0].DensityInGramPerLitre));
+
+        RaSpc = BaseData.Ras[1].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(RaSpc.Add(BaseData.Ras[0].Multiply(X), Sum), RaSpc.ErrorMessage);
+        RaSpc = Sum;
+    }
+    else
+    {
+        const double X = ((BaseData.Ras[2].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (BaseData.Ras[2].DensityInGramPerLitre - BaseData.Ras[1].DensityInGramPerLitre));
+
+        RaSpc = BaseData.Ras[2].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(RaSpc.Add(BaseData.Ras[1].Multiply(X), Sum), RaSpc.ErrorMessage);
+        RaSpc = Sum;
+    }
+
+    // K-40
+    DensityOK =
+        BaseData.Ks[1].DensityInGramPerLitre > BaseData.Ks[0].DensityInGramPerLitre &&
+        BaseData.Ks[1].DensityInGramPerLitre < BaseData.Ks[2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"K-40 etalon namunalari zichliklarida xatolik bor.";
+        if (LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of K-40 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+    //Utils::NormalizeStandardSources(BaseData.Ks[1], const_cast<TSpectrum &>(BaseData.Ks[0]), BaseData.KEn1, BaseData.KEn2);
+    //Utils::NormalizeStandardSources(BaseData.Ks[1], const_cast<TSpectrum &>(BaseData.Ks[2]), BaseData.KEn1, BaseData.KEn2);
+    if (DensityInGramPerLitre <= BaseData.Ks[1].DensityInGramPerLitre)
+    {
+        const double X = ((BaseData.Ks[1].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (BaseData.Ks[1].DensityInGramPerLitre - BaseData.Ks[0].DensityInGramPerLitre));
+
+        KSpc = BaseData.Ks[1].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(KSpc.Add(BaseData.Ks[0].Multiply(X), Sum), KSpc.ErrorMessage);
+        KSpc = Sum;
+    }
+    else
+    {
+        const double X = ((BaseData.Ks[2].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (BaseData.Ks[2].DensityInGramPerLitre - BaseData.Ks[1].DensityInGramPerLitre));
+
+        KSpc = BaseData.Ks[2].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(KSpc.Add(BaseData.Ks[1].Multiply(X), Sum), KSpc.ErrorMessage);
+        KSpc = Sum;
+    }
+
+    // Cs-137
+    DensityOK =
+        BaseData.Css[1].DensityInGramPerLitre > BaseData.Css[0].DensityInGramPerLitre &&
+        BaseData.Css[1].DensityInGramPerLitre < BaseData.Css[2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Cs-137 etalon namunalari zichliklarida xatolik bor.";
+        if (LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of Cs-137 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+    //Utils::NormalizeStandardSources(BaseData.Css[1], const_cast<TSpectrum &>(BaseData.Css[0]), BaseData.CsEn1, BaseData.CsEn2);
+    //Utils::NormalizeStandardSources(BaseData.Css[1], const_cast<TSpectrum &>(BaseData.Css[2]), BaseData.CsEn1, BaseData.CsEn2);
+    if (DensityInGramPerLitre <= BaseData.Css[1].DensityInGramPerLitre)
+    {
+        const double X = ((BaseData.Css[1].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (BaseData.Css[1].DensityInGramPerLitre - BaseData.Css[0].DensityInGramPerLitre));
+
+        CsSpc = BaseData.Css[1].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(CsSpc.Add(BaseData.Css[0].Multiply(X), Sum), CsSpc.ErrorMessage);
+        CsSpc = Sum;
+    }
+    else
+    {
+        const double X = ((BaseData.Css[2].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (BaseData.Css[2].DensityInGramPerLitre - BaseData.Css[1].DensityInGramPerLitre));
+
+        CsSpc = BaseData.Css[2].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(CsSpc.Add(BaseData.Css[1].Multiply(X), Sum), CsSpc.ErrorMessage);
+        CsSpc = Sum;
+    }
+
+    // Fon
+    DensityOK =
+        BaseData.Bkgs[1].DensityInGramPerLitre > BaseData.Bkgs[0].DensityInGramPerLitre &&
+        BaseData.Bkgs[1].DensityInGramPerLitre < BaseData.Bkgs[2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Tabiiy fon namunalari zichliklarida xatolik bor.";
+        if (LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of background samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+    if (DensityInGramPerLitre <= BaseData.Bkgs[1].DensityInGramPerLitre)
+    {
+        const double X = ((BaseData.Bkgs[1].DensityInGramPerLitre - DensityInGramPerLitre) /
+                BaseData.Bkgs[1].DensityInGramPerLitre);
+
+        BkgSpc = BaseData.Bkgs[1].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(BkgSpc.Add(BaseData.Bkgs[0].Multiply(X), Sum), BkgSpc.ErrorMessage);
+        BkgSpc = Sum;
+    }
+    else
+    {
+        const double X = ((BaseData.Bkgs[2].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (BaseData.Bkgs[2].DensityInGramPerLitre - BaseData.Bkgs[1].DensityInGramPerLitre));
+
+        BkgSpc = BaseData.Bkgs[2].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(BkgSpc.Add(BaseData.Bkgs[1].Multiply(X), Sum), BkgSpc.ErrorMessage);
+        BkgSpc = Sum;
+    }
+    return true;
+}
+//---------------------------------------------------------------------------
+bool TBatchProcessingThread::CreateVirtualSpectraFrom2Set(
+    const double DensityInGramPerLitre, const int I1, const int I2)
+{
+    // Th-232
+    bool DensityOK = BaseData.Ths[I1].DensityInGramPerLitre < BaseData.Ths[I2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Th-232 etalon namunalari zichliklarida xatolik bor.";
+        if (LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of Th-232 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+    double X = ((BaseData.Ths[I2].DensityInGramPerLitre - DensityInGramPerLitre) /
+            (BaseData.Ths[I2].DensityInGramPerLitre - BaseData.Ths[I1].DensityInGramPerLitre));
+
+    ThSpc = BaseData.Ths[I2].Multiply(1 - X);
+    TSpectrum Sum;
+    TSpectrum::CheckError(ThSpc.Add(BaseData.Ths[I1].Multiply(X), Sum), ThSpc.ErrorMessage);
+    ThSpc = Sum;
+
+    // Ra-226
+    DensityOK = BaseData.Ras[I1].DensityInGramPerLitre < BaseData.Ras[I2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Ra-226 etalon namunalari zichliklarida xatolik bor.";
+        if (LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of Ra-226 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+    X = ((BaseData.Ras[I2].DensityInGramPerLitre - DensityInGramPerLitre) /
+            (BaseData.Ras[I2].DensityInGramPerLitre - BaseData.Ras[I1].DensityInGramPerLitre));
+
+    RaSpc = BaseData.Ras[I2].Multiply(1 - X);
+    Sum = TSpectrum();
+    TSpectrum::CheckError(RaSpc.Add(BaseData.Ras[I1].Multiply(X), Sum), RaSpc.ErrorMessage);
+    RaSpc = Sum;
+
+    // K-40
+    DensityOK = BaseData.Ks[I1].DensityInGramPerLitre < BaseData.Ks[I2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"K-40 etalon namunalari zichliklarida xatolik bor.";
+        if (LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of K-40 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+    X = ((BaseData.Ks[I2].DensityInGramPerLitre - DensityInGramPerLitre) /
+            (BaseData.Ks[I2].DensityInGramPerLitre - BaseData.Ks[I1].DensityInGramPerLitre));
+
+    KSpc = BaseData.Ks[I2].Multiply(1 - X);
+    Sum = TSpectrum();
+    TSpectrum::CheckError(KSpc.Add(BaseData.Ks[I1].Multiply(X), Sum), KSpc.ErrorMessage);
+    KSpc = Sum;
+
+    // Cs-137
+    DensityOK = BaseData.Css[I1].DensityInGramPerLitre < BaseData.Css[I2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Cs-137 etalon namunalari zichliklarida xatolik bor.";
+        if (LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of Cs-137 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+    X = ((BaseData.Css[I2].DensityInGramPerLitre - DensityInGramPerLitre) /
+            (BaseData.Css[I2].DensityInGramPerLitre - BaseData.Css[I1].DensityInGramPerLitre));
+
+    CsSpc = BaseData.Css[I2].Multiply(1 - X);
+    Sum = TSpectrum();
+    TSpectrum::CheckError(CsSpc.Add(BaseData.Css[I1].Multiply(X), Sum), CsSpc.ErrorMessage);
+    CsSpc = Sum;
+
+    // Fon
+    DensityOK = BaseData.Bkgs[I1].DensityInGramPerLitre < BaseData.Bkgs[I2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Tabiiy fon namunalari zichliklarida xatolik bor.";
+        if (LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of background samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+    X = ((BaseData.Bkgs[I2].DensityInGramPerLitre - DensityInGramPerLitre) /
+            (BaseData.Bkgs[I2].DensityInGramPerLitre - BaseData.Bkgs[I1].DensityInGramPerLitre));
+
+    BkgSpc = BaseData.Bkgs[I2].Multiply(1 - X);
+    Sum = TSpectrum();
+    TSpectrum::CheckError(BkgSpc.Add(BaseData.Bkgs[I1].Multiply(X), Sum), BkgSpc.ErrorMessage);
+    BkgSpc = Sum;
+    return true;
+}
+//---------------------------------------------------------------------------
 bool TBatchProcessingThread::CreateVirtualSpectra(const TSpectrum &Spectrum)
 {
     const double DensityInGramPerLitre = Spectrum.DensityInGramPerLitre;
 
     if (BaseData.ValidSpectra(0) && BaseData.ValidSpectra(1) && BaseData.ValidSpectra(2))
     {
-        String ErrorMsg;
-
-        // Th-232
-        bool DensityOK =
-            BaseData.Ths[1].DensityInGramPerLitre > BaseData.Ths[0].DensityInGramPerLitre &&
-            BaseData.Ths[1].DensityInGramPerLitre < BaseData.Ths[2].DensityInGramPerLitre;
-        if (!DensityOK)
-        {
-            ErrorMsg = L"Th-232 etalon namunalari zichliklarida xatolik bor.";
-            if (LangID == 1)
-            {
-                ErrorMsg = L"Error in densities of Th-232 standard samples.";
-            }
-            throw Exception(ErrorMsg);
-        }
-        Utils::NormalizeStandardSources(BaseData.Ths[1], const_cast<TSpectrum &>(BaseData.Ths[0]), BaseData.ThEn1, BaseData.ThEn2);
-        Utils::NormalizeStandardSources(BaseData.Ths[1], const_cast<TSpectrum &>(BaseData.Ths[2]), BaseData.ThEn1, BaseData.ThEn2);
-        if (DensityInGramPerLitre <= BaseData.Ths[1].DensityInGramPerLitre)
-        {
-            const double K1 = (1 - ((BaseData.Ths[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                (BaseData.Ths[1].DensityInGramPerLitre - BaseData.Ths[0].DensityInGramPerLitre)));
-            const double K2 = ((BaseData.Ths[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                (BaseData.Ths[1].DensityInGramPerLitre - BaseData.Ths[0].DensityInGramPerLitre));
-
-            ThSpc = BaseData.Ths[1].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(ThSpc.Add(BaseData.Ths[0].Multiply(K2), Sum), ThSpc.ErrorMessage);
-            ThSpc = Sum;
-        }
-        else
-        {
-            const double K1 = (1 - ((BaseData.Ths[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Ths[2].DensityInGramPerLitre - BaseData.Ths[1].DensityInGramPerLitre)));
-            const double K2 = ((BaseData.Ths[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Ths[2].DensityInGramPerLitre - BaseData.Ths[1].DensityInGramPerLitre));
-
-            ThSpc = BaseData.Ths[2].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(ThSpc.Add(BaseData.Ths[1].Multiply(K2), Sum), ThSpc.ErrorMessage);
-            ThSpc = Sum;
-        }
-
-        // Ra-226
-        DensityOK =
-            BaseData.Ras[1].DensityInGramPerLitre > BaseData.Ras[0].DensityInGramPerLitre &&
-            BaseData.Ras[1].DensityInGramPerLitre < BaseData.Ras[2].DensityInGramPerLitre;
-        if (!DensityOK)
-        {
-            ErrorMsg = L"Ra-226 etalon namunalari zichliklarida xatolik bor.";
-            if (LangID == 1)
-            {
-                ErrorMsg = L"Error in densities of Ra-226 standard samples.";
-            }
-            throw Exception(ErrorMsg);
-        }
-        Utils::NormalizeStandardSources(BaseData.Ras[1], const_cast<TSpectrum &>(BaseData.Ras[0]), BaseData.RaEn1, BaseData.RaEn2);
-        Utils::NormalizeStandardSources(BaseData.Ras[1], const_cast<TSpectrum &>(BaseData.Ras[2]), BaseData.RaEn1, BaseData.RaEn2);
-        if (DensityInGramPerLitre <= BaseData.Ras[1].DensityInGramPerLitre)
-        {
-            const double K1 = (1 - ((BaseData.Ras[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Ras[1].DensityInGramPerLitre - BaseData.Ras[0].DensityInGramPerLitre)));
-            const double K2 = ((BaseData.Ras[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Ras[1].DensityInGramPerLitre - BaseData.Ras[0].DensityInGramPerLitre));
-
-            RaSpc = BaseData.Ras[1].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(RaSpc.Add(BaseData.Ras[0].Multiply(K2), Sum), RaSpc.ErrorMessage);
-            RaSpc = Sum;
-        }
-        else
-        {
-            const double K1 = (1 - ((BaseData.Ras[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Ras[2].DensityInGramPerLitre - BaseData.Ras[1].DensityInGramPerLitre)));
-            const double K2 = ((BaseData.Ras[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Ras[2].DensityInGramPerLitre - BaseData.Ras[1].DensityInGramPerLitre));
-
-            RaSpc = BaseData.Ras[2].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(RaSpc.Add(BaseData.Ras[1].Multiply(K2), Sum), RaSpc.ErrorMessage);
-            RaSpc = Sum;
-        }
-
-        // K-40
-        DensityOK =
-            BaseData.Ks[1].DensityInGramPerLitre > BaseData.Ks[0].DensityInGramPerLitre &&
-            BaseData.Ks[1].DensityInGramPerLitre < BaseData.Ks[2].DensityInGramPerLitre;
-        if (!DensityOK)
-        {
-            ErrorMsg = L"K-40 etalon namunalari zichliklarida xatolik bor.";
-            if (LangID == 1)
-            {
-                ErrorMsg = L"Error in densities of K-40 standard samples.";
-            }
-            throw Exception(ErrorMsg);
-        }
-        Utils::NormalizeStandardSources(BaseData.Ks[1], const_cast<TSpectrum &>(BaseData.Ks[0]), BaseData.KEn1, BaseData.KEn2);
-        Utils::NormalizeStandardSources(BaseData.Ks[1], const_cast<TSpectrum &>(BaseData.Ks[2]), BaseData.KEn1, BaseData.KEn2);
-        if (DensityInGramPerLitre <= BaseData.Ks[1].DensityInGramPerLitre)
-        {
-            const double K1 = (1 - ((BaseData.Ks[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Ks[1].DensityInGramPerLitre - BaseData.Ks[0].DensityInGramPerLitre)));
-            const double K2 = ((BaseData.Ks[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Ks[1].DensityInGramPerLitre - BaseData.Ks[0].DensityInGramPerLitre));
-
-            KSpc = BaseData.Ks[1].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(KSpc.Add(BaseData.Ks[0].Multiply(K2), Sum), KSpc.ErrorMessage);
-            KSpc = Sum;
-        }
-        else
-        {
-            const double K1 = (1 - ((BaseData.Ks[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Ks[2].DensityInGramPerLitre - BaseData.Ks[1].DensityInGramPerLitre)));
-            const double K2 = ((BaseData.Ks[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Ks[2].DensityInGramPerLitre - BaseData.Ks[1].DensityInGramPerLitre));
-
-            KSpc = BaseData.Ks[2].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(KSpc.Add(BaseData.Ks[1].Multiply(K2), Sum), KSpc.ErrorMessage);
-            KSpc = Sum;
-        }
-
-        // Cs-137
-        DensityOK =
-            BaseData.Css[1].DensityInGramPerLitre > BaseData.Css[0].DensityInGramPerLitre &&
-            BaseData.Css[1].DensityInGramPerLitre < BaseData.Css[2].DensityInGramPerLitre;
-        if (!DensityOK)
-        {
-            ErrorMsg = L"Cs-137 etalon namunalari zichliklarida xatolik bor.";
-            if (LangID == 1)
-            {
-                ErrorMsg = L"Error in densities of Cs-137 standard samples.";
-            }
-            throw Exception(ErrorMsg);
-        }
-        Utils::NormalizeStandardSources(BaseData.Css[1], const_cast<TSpectrum &>(BaseData.Css[0]), BaseData.CsEn1, BaseData.CsEn2);
-        Utils::NormalizeStandardSources(BaseData.Css[1], const_cast<TSpectrum &>(BaseData.Css[2]), BaseData.CsEn1, BaseData.CsEn2);
-        if (DensityInGramPerLitre <= BaseData.Css[1].DensityInGramPerLitre)
-        {
-            const double K1 = (1 - ((BaseData.Css[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Css[1].DensityInGramPerLitre - BaseData.Css[0].DensityInGramPerLitre)));
-            const double K2 = ((BaseData.Css[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Css[1].DensityInGramPerLitre - BaseData.Css[0].DensityInGramPerLitre));
-
-            CsSpc = BaseData.Css[1].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(CsSpc.Add(BaseData.Css[0].Multiply(K2), Sum), CsSpc.ErrorMessage);
-            CsSpc = Sum;
-        }
-        else
-        {
-            const double K1 = (1 - ((BaseData.Css[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Css[2].DensityInGramPerLitre - BaseData.Css[1].DensityInGramPerLitre)));
-            const double K2 = ((BaseData.Css[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Css[2].DensityInGramPerLitre - BaseData.Css[1].DensityInGramPerLitre));
-
-            CsSpc = BaseData.Css[2].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(CsSpc.Add(BaseData.Css[1].Multiply(K2), Sum), CsSpc.ErrorMessage);
-            CsSpc = Sum;
-        }
-
-        // Fon
-        DensityOK =
-            BaseData.Bkgs[1].DensityInGramPerLitre > BaseData.Bkgs[0].DensityInGramPerLitre &&
-            BaseData.Bkgs[1].DensityInGramPerLitre < BaseData.Bkgs[2].DensityInGramPerLitre;
-        if (!DensityOK)
-        {
-            ErrorMsg = L"Tabiiy fon namunalari zichliklarida xatolik bor.";
-            if (LangID == 1)
-            {
-                ErrorMsg = L"Error in densities of background samples.";
-            }
-            throw Exception(ErrorMsg);
-        }
-        if (DensityInGramPerLitre <= BaseData.Bkgs[1].DensityInGramPerLitre)
-        {
-            const double K1 = (1 - ((BaseData.Bkgs[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    BaseData.Bkgs[1].DensityInGramPerLitre));
-            const double K2 = ((BaseData.Bkgs[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    BaseData.Bkgs[1].DensityInGramPerLitre);
-
-            BkgSpc = BaseData.Bkgs[1].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(BkgSpc.Add(BaseData.Bkgs[0].Multiply(K2), Sum), BkgSpc.ErrorMessage);
-            BkgSpc = Sum;
-        }
-        else
-        {
-            const double K1 = (1 - ((BaseData.Bkgs[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Bkgs[2].DensityInGramPerLitre - BaseData.Bkgs[1].DensityInGramPerLitre)));
-            const double K2 = ((BaseData.Bkgs[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (BaseData.Bkgs[2].DensityInGramPerLitre - BaseData.Bkgs[1].DensityInGramPerLitre));
-
-            BkgSpc = BaseData.Bkgs[2].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(BkgSpc.Add(BaseData.Bkgs[1].Multiply(K2), Sum), BkgSpc.ErrorMessage);
-            BkgSpc = Sum;
-        }
+        return CreateVirtualSpectraFrom3Set(DensityInGramPerLitre);
+    }
+    else if (BaseData.ValidSpectra(0) && BaseData.ValidSpectra(1))
+    {
+        return CreateVirtualSpectraFrom2Set(DensityInGramPerLitre, 0, 1);
+    }
+    else if (BaseData.ValidSpectra(0) && BaseData.ValidSpectra(2))
+    {
+        return CreateVirtualSpectraFrom2Set(DensityInGramPerLitre, 0, 2);
+    }
+    else if (BaseData.ValidSpectra(1) && BaseData.ValidSpectra(2))
+    {
+        return CreateVirtualSpectraFrom2Set(DensityInGramPerLitre, 1, 2);
+    }
+    else if (BaseData.ValidSpectra(0))
+    {
+        ThSpc = BaseData.Ths[0];
+        RaSpc = BaseData.Ras[0];
+        KSpc = BaseData.Ks[0];
+        CsSpc = BaseData.Css[0];
+        BkgSpc = BaseData.Bkgs[0];
+        return true;
+    }
+    else if (BaseData.ValidSpectra(1))
+    {
+        ThSpc = BaseData.Ths[1];
+        RaSpc = BaseData.Ras[1];
+        KSpc = BaseData.Ks[1];
+        CsSpc = BaseData.Css[1];
+        BkgSpc = BaseData.Bkgs[1];
+        return true;
+    }
+    else if (BaseData.ValidSpectra(2))
+    {
+        ThSpc = BaseData.Ths[2];
+        RaSpc = BaseData.Ras[2];
+        KSpc = BaseData.Ks[2];
+        CsSpc = BaseData.Css[2];
+        BkgSpc = BaseData.Bkgs[2];
         return true;
     }
     else

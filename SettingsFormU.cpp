@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
 
@@ -339,23 +339,31 @@ bool TSettingsForm::VolumesAreValid(String &ErrorMessage) const
 
     ErrorMessage = L"";
     std::vector<String> FileNames;
-    FileNames.push_back(Th1FileName->Text);
-    FileNames.push_back(Ra1FileName->Text);
-    FileNames.push_back(K1FileName->Text);
-    FileNames.push_back(Cs1FileName->Text);
-    FileNames.push_back(Bkg1FileName->Text);
 
-    FileNames.push_back(Th2FileName->Text);
-    FileNames.push_back(Ra2FileName->Text);
-    FileNames.push_back(K2FileName->Text);
-    FileNames.push_back(Cs2FileName->Text);
-    FileNames.push_back(Bkg2FileName->Text);
-
-    FileNames.push_back(Th3FileName->Text);
-    FileNames.push_back(Ra3FileName->Text);
-    FileNames.push_back(K3FileName->Text);
-    FileNames.push_back(Cs3FileName->Text);
-    FileNames.push_back(Bkg3FileName->Text);
+    if (Density_1_SamplesValid())
+    {
+        FileNames.push_back(Th1FileName->Text);
+        FileNames.push_back(Ra1FileName->Text);
+        FileNames.push_back(K1FileName->Text);
+        FileNames.push_back(Cs1FileName->Text);
+        FileNames.push_back(Bkg1FileName->Text);
+    }
+    if (Density_2_SamplesValid())
+    {
+        FileNames.push_back(Th2FileName->Text);
+        FileNames.push_back(Ra2FileName->Text);
+        FileNames.push_back(K2FileName->Text);
+        FileNames.push_back(Cs2FileName->Text);
+        FileNames.push_back(Bkg2FileName->Text);
+    }
+    if (Density_3_SamplesValid())
+    {
+        FileNames.push_back(Th3FileName->Text);
+        FileNames.push_back(Ra3FileName->Text);
+        FileNames.push_back(K3FileName->Text);
+        FileNames.push_back(Cs3FileName->Text);
+        FileNames.push_back(Bkg3FileName->Text);
+    }
     double Volume = 0;
     for (size_t i = 0; i < FileNames.size(); i++)
     {
@@ -390,14 +398,14 @@ bool TSettingsForm::VolumesAreValid(String &ErrorMessage) const
 void __fastcall TSettingsForm::SaveButtonClick(TObject *Sender)
 {
     String ErrorMessage =
-        L"3 xil zichlikli etalon va fon namunalarining barcha ma'lumotlari to'ldirilishi shart.";
+        L"Iltimos, etalon va fon namunalari maʼlumotlarini kiriting.";
     String Title = L"Xato";
     if (LangID == 1)
     {
-        ErrorMessage = L"Please fill in the all fields.";
+        ErrorMessage = L"Please enter standard and background samples data.";
         Title = L"Error";
     }
-    if (!Density_1_SamplesValid() || !Density_2_SamplesValid() || !Density_3_SamplesValid())
+    if (!Density_1_SamplesValid() && !Density_2_SamplesValid() && !Density_3_SamplesValid())
     {
         Application->MessageBox(ErrorMessage.c_str(), Title.c_str(), MB_OK | MB_ICONERROR);
         return;

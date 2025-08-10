@@ -77,9 +77,7 @@ public:
     String ExtraStringData;
     double ExtraFloatData = 0;
 
-
     // ******************* Member functions *******************
-
     static void SetLanguage()
     {
         FileExistenceError = L" fayli mavjud emas.";

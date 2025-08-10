@@ -2078,10 +2078,13 @@ object MainForm: TMainForm
     TopAxis.Ticks.Visible = False
     View3D = False
     Zoom.Allow = False
+    OnAfterDraw = FinalSpcChartAfterDraw
     Color = clMedGray
     TabStop = False
     TabOrder = 11
+    OnMouseDown = FinalSpcChartMouseDown
     OnMouseMove = OnChartMouseMove
+    OnMouseUp = FinalSpcChartMouseUp
     DefaultCanvas = 'TGDIPlusCanvas'
     PrintMargins = (
       15

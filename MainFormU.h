@@ -304,6 +304,11 @@ __published:
     void __fastcall OnEditDownButtonClick(TObject *Sender);
     void __fastcall SampleChartDblClick(TObject *Sender);
     void __fastcall BeActLabelClick(TObject *Sender);
+    void __fastcall FinalSpcChartMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y);
+    void __fastcall FinalSpcChartMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+    void __fastcall FinalSpcChartAfterDraw(TObject *Sender);
 
 
 private:
@@ -388,9 +393,11 @@ private:
     wchar_t DispName[MAX_PATH];
     BROWSEINFOW BrowseInfo;
     String SampleFileName;
-
+    int VI = 1; // Valid Index
+    bool Selecting = false;
+    int SelectStartX = 0;
+    int SelectEndX = 0;
     std::unique_ptr<TBatchProcessingThread> BatchProcessingThread;
-    TData GetData() const;
 
     // Strings
     String ErrorTitle;
@@ -405,7 +412,11 @@ private:
 
     void InitStdSamples(TSettingsForm *Form);
     void SubtractBkgFromStandardSources(const int Idx);
+
     void CreateVirtualSpectra();
+    void CreateVirtualSpectraFrom3Set(const int __LangID, const double DensityInGramPerLitre);
+    void CreateVirtualSpectraFrom2Set(const int __LangID, const double DensityInGramPerLitre, const int I1, const int I2);
+
     void CalculateCountsInStdSamples();
     void DrawSpectrum(const TSpectrum &Spc, TLineSeries *LineSeries);
     bool OpenSampleSpectrum(const String &FileName);
@@ -425,6 +436,7 @@ private:
     int CalcCenterOfPeak(const TSpectrum &Spc, const double Energy) const;
     void SaveParametersFile(const String &FileName);
     void ChangeUILanguage();
+    TData GetData() const;
     void __fastcall OnAppException(TObject* Sender, Exception* E);
 
 public:

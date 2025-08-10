@@ -31,18 +31,18 @@ __fastcall TMainForm::TMainForm(TComponent* Owner):
     FormatSettings.DateSeparator = L'.';
     FormatSettings.DecimalSeparator = L'.';
     FormatSettings.ShortDateFormat = L"dd.mm.yyyy";
-    SmpDValEdit1->Text = 0.1;
-    SmpDValEdit2->Text = 0.1;
-    BkgDValEdit1->Text = 0.1;
-    BkgDValEdit2->Text = 0.1;
-    ThDValEdit1->Text = 0.1;
-    ThDValEdit2->Text = 0.1;
-    RaDValEdit1->Text = 0.1;
-    RaDValEdit2->Text = 0.1;
-    KDValEdit1->Text = 0.1;
-    KDValEdit2->Text = 0.1;
-    CsDValEdit1->Text = 0.1;
-    CsDValEdit2->Text = 0.1;
+    SmpDValEdit1->Text = 0.01;
+    SmpDValEdit2->Text = 0.01;
+    BkgDValEdit1->Text = 0.01;
+    BkgDValEdit2->Text = 0.01;
+    ThDValEdit1->Text = 0.01;
+    ThDValEdit2->Text = 0.01;
+    RaDValEdit1->Text = 0.01;
+    RaDValEdit2->Text = 0.01;
+    KDValEdit1->Text = 0.01;
+    KDValEdit2->Text = 0.01;
+    CsDValEdit1->Text = 0.01;
+    CsDValEdit2->Text = 0.01;
 
     std::unique_ptr<TIniFile> SettingsFile(new TIniFile(L".\\Settings.ini"));
     LanguageAction->Tag = SettingsFile->ReadString(L"UILanguage", L"LangID", L"0").ToIntDef(0);
@@ -70,8 +70,8 @@ __fastcall TMainForm::TMainForm(TComponent* Owner):
             L"Folder browsing dialog box will not work.");
         MessageBox(Handle, Msg.c_str(), 0, MB_ICONERROR | MB_OK);
     }
+
     FormResize(nullptr);
-    SpectraLoadTimer->Enabled = true;
 
     ThUpButton->Tag = reinterpret_cast<NativeInt>(ThSnSe2);
     ThDownButton->Tag = reinterpret_cast<NativeInt>(ThSnSe2);
@@ -84,6 +84,8 @@ __fastcall TMainForm::TMainForm(TComponent* Owner):
 
     CsUpButton->Tag = reinterpret_cast<NativeInt>(CsSnSe2);
     CsDownButton->Tag = reinterpret_cast<NativeInt>(CsSnSe2);
+
+    SpectraLoadTimer->Enabled = true;
 }
 //---------------------------------------------------------------------------
 __fastcall TMainForm::~TMainForm()
@@ -200,7 +202,7 @@ void TMainForm::DrawSpectrum(const TSpectrum &Spc, TLineSeries *LineSeries)
 //---------------------------------------------------------------------------
 TData TMainForm::GetData() const
 {
-    if (!(ValidSpectra(0) && ValidSpectra(1) && ValidSpectra(2)))
+    if (!ValidSpectra(0) && !ValidSpectra(1) && !ValidSpectra(2))
     {
         String StdSamplesSpectraError = L"Etalon namunalar spektrlarida xatolik bor.";
         if (LangID == 1)
@@ -337,14 +339,56 @@ void TMainForm::InitStdSamples(TSettingsForm *Form)
         SubtractBkgFromStandardSources(2);
     }
     SetEnergyRanges(Form);
-    Utils::NormalizeStandardSources(Ths[1], Ths[0], ThEn1, ThEn2);
-    Utils::NormalizeStandardSources(Ths[1], Ths[2], ThEn1, ThEn2);
-    Utils::NormalizeStandardSources(Ras[1], Ras[0], RaEn1, RaEn2);
-    Utils::NormalizeStandardSources(Ras[1], Ras[2], RaEn1, RaEn2);
-    Utils::NormalizeStandardSources(Ks[1], Ks[0], KEn1, KEn2);
-    Utils::NormalizeStandardSources(Ks[1], Ks[2], KEn1, KEn2);
-    Utils::NormalizeStandardSources(Css[1], Css[0], CsEn1, CsEn2);
-    Utils::NormalizeStandardSources(Css[1], Css[2], CsEn1, CsEn2);
+    if (ValidSpectra(0) && ValidSpectra(1) && ValidSpectra(2))
+    {
+        VI = 1;
+        Utils::NormalizeStandardSources(Ths[1], Ths[0], ThEn1, ThEn2);
+        Utils::NormalizeStandardSources(Ths[1], Ths[2], ThEn1, ThEn2);
+        Utils::NormalizeStandardSources(Ras[1], Ras[0], RaEn1, RaEn2);
+        Utils::NormalizeStandardSources(Ras[1], Ras[2], RaEn1, RaEn2);
+        Utils::NormalizeStandardSources(Ks[1], Ks[0], KEn1, KEn2);
+        Utils::NormalizeStandardSources(Ks[1], Ks[2], KEn1, KEn2);
+        Utils::NormalizeStandardSources(Css[1], Css[0], CsEn1, CsEn2);
+        Utils::NormalizeStandardSources(Css[1], Css[2], CsEn1, CsEn2);
+    }
+    else if (ValidSpectra(0) && ValidSpectra(1))
+    {
+        VI = 1;
+        Utils::NormalizeStandardSources(Ths[1], Ths[0], ThEn1, ThEn2);
+        Utils::NormalizeStandardSources(Ras[1], Ras[0], RaEn1, RaEn2);
+        Utils::NormalizeStandardSources(Ks[1], Ks[0], KEn1, KEn2);
+        Utils::NormalizeStandardSources(Css[1], Css[0], CsEn1, CsEn2);
+    }
+    else if (ValidSpectra(0) && ValidSpectra(2))
+    {
+        VI = 2;
+        Utils::NormalizeStandardSources(Ths[2], Ths[0], ThEn1, ThEn2);
+        Utils::NormalizeStandardSources(Ras[2], Ras[0], RaEn1, RaEn2);
+        Utils::NormalizeStandardSources(Ks[2], Ks[0], KEn1, KEn2);
+        Utils::NormalizeStandardSources(Css[2], Css[0], CsEn1, CsEn2);
+    }
+    else if (ValidSpectra(1) && ValidSpectra(2))
+    {
+        VI = 1;
+        Utils::NormalizeStandardSources(Ths[1], Ths[2], ThEn1, ThEn2);
+        Utils::NormalizeStandardSources(Ras[1], Ras[2], RaEn1, RaEn2);
+        Utils::NormalizeStandardSources(Ks[1], Ks[2], KEn1, KEn2);
+        Utils::NormalizeStandardSources(Css[1], Css[2], CsEn1, CsEn2);
+    }
+    else if (ValidSpectra(0))
+    {
+        VI = 0;
+    }
+    else if (ValidSpectra(1))
+    {
+        VI = 1;
+    }
+    else if (ValidSpectra(2))
+    {
+        VI = 2;
+    }
+    Energy1Edit->Text = Ths[VI].Energy1;
+    Energy2Edit->Text = Ths[VI].Energy2;
     CreateVirtualSpectra();
     CalculateCountsInStdSamples();
     PopulateStandardSourcesInfo(Form);
@@ -389,9 +433,7 @@ void __fastcall TMainForm::OnSpectraLoadTimer(TObject *Sender)
     SpectraLoadTimer->Enabled = false;
     std::unique_ptr<TSettingsForm> Form(new TSettingsForm(Application));
     String ErrorMessage;
-    if (!Form->Density_1_SamplesValid() ||
-        !Form->Density_2_SamplesValid() ||
-        !Form->Density_3_SamplesValid() ||
+    if ((!Form->Density_1_SamplesValid() && !Form->Density_2_SamplesValid() && !Form->Density_3_SamplesValid()) ||
         !Form->VolumesAreValid(ErrorMessage))
     {
         if (!ErrorMessage.IsEmpty())
@@ -409,12 +451,7 @@ void __fastcall TMainForm::OnSpectraLoadTimer(TObject *Sender)
         BatchProcessingResultsForm->ChangeUILanguage();
     }
     InitStdSamples(Form.get());
-    if (Ths[1].IsValid())
-    {
-        Energy1Edit->Text = Ths[1].Energy1;
-        Energy2Edit->Text = Ths[1].Energy2;
-        ChangeUILanguage();
-    }
+    ChangeUILanguage();
 }
 //---------------------------------------------------------------------------
 void TMainForm::SetEnergyRanges(TSettingsForm *Settings)
@@ -452,240 +489,373 @@ bool TMainForm::ValidSpectra(const int Idx) const
         Css[Idx].IsValid();
 }
 //---------------------------------------------------------------------------
+void TMainForm::CreateVirtualSpectraFrom3Set(const int __LangID, const double DensityInGramPerLitre)
+{
+    // Th-232
+    LOG(L"Creating Th...");
+    bool DensityOK =
+        Ths[1].DensityInGramPerLitre > Ths[0].DensityInGramPerLitre &&
+        Ths[1].DensityInGramPerLitre < Ths[2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Th-232 etalon namunalari zichliklarida xatolik bor.";
+        if (__LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of Th-232 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+
+    if (DensityInGramPerLitre <= Ths[1].DensityInGramPerLitre)
+    {
+        TSpectrum &Result = OrigThSpc;
+        const double X = ((Ths[1].DensityInGramPerLitre - DensityInGramPerLitre) /
+            (Ths[1].DensityInGramPerLitre - Ths[0].DensityInGramPerLitre));
+
+        Result = Ths[1].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(Result.Add(Ths[0].Multiply(X), Sum), Result.ErrorMessage);
+        Result = Sum;
+    }
+    else
+    {
+        TSpectrum &Result = OrigThSpc;
+        const double X = ((Ths[2].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (Ths[2].DensityInGramPerLitre - Ths[1].DensityInGramPerLitre));
+
+        Result = Ths[2].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(Result.Add(Ths[1].Multiply(X), Sum), Result.ErrorMessage);
+        Result = Sum;
+    }
+    LOG(L"Shifting Th...");
+    ShiftTh();
+
+    // Ra-226
+    LOG(L"Creating Ra...");
+    DensityOK =
+        Ras[1].DensityInGramPerLitre > Ras[0].DensityInGramPerLitre &&
+        Ras[1].DensityInGramPerLitre < Ras[2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Ra-226 etalon namunalari zichliklarida xatolik bor.";
+        if (__LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of Ra-226 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+
+    if (DensityInGramPerLitre <= Ras[1].DensityInGramPerLitre)
+    {
+        TSpectrum &Result = OrigRaSpc;
+        const double X = ((Ras[1].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (Ras[1].DensityInGramPerLitre - Ras[0].DensityInGramPerLitre));
+
+        Result = Ras[1].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(Result.Add(Ras[0].Multiply(X), Sum), Result.ErrorMessage);
+        Result = Sum;
+    }
+    else
+    {
+        TSpectrum &Result = OrigRaSpc;
+        const double X = ((Ras[2].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (Ras[2].DensityInGramPerLitre - Ras[1].DensityInGramPerLitre));
+
+        Result = Ras[2].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(Result.Add(Ras[1].Multiply(X), Sum), Result.ErrorMessage);
+        Result = Sum;
+    }
+    LOG(L"Shifting Ra...");
+    ShiftRa();
+
+    // K-40
+    LOG(L"Creating K...");
+    DensityOK =
+        Ks[1].DensityInGramPerLitre > Ks[0].DensityInGramPerLitre &&
+        Ks[1].DensityInGramPerLitre < Ks[2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"K-40 etalon namunalari zichliklarida xatolik bor.";
+        if (__LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of K-40 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+
+    if (DensityInGramPerLitre <= Ks[1].DensityInGramPerLitre)
+    {
+        TSpectrum &Result = OrigKSpc;
+        const double X = ((Ks[1].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (Ks[1].DensityInGramPerLitre - Ks[0].DensityInGramPerLitre));
+
+        Result = Ks[1].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(Result.Add(Ks[0].Multiply(X), Sum), Result.ErrorMessage);
+        Result = Sum;
+    }
+    else
+    {
+        TSpectrum &Result = OrigKSpc;
+        const double X = ((Ks[2].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (Ks[2].DensityInGramPerLitre - Ks[1].DensityInGramPerLitre));
+
+        Result = Ks[2].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(Result.Add(Ks[1].Multiply(X), Sum), Result.ErrorMessage);
+        Result = Sum;
+    }
+    LOG(L"Shifting K...");
+    ShiftK();
+
+    // Cs-137
+    LOG(L"Creating Cs...");
+    DensityOK =
+        Css[1].DensityInGramPerLitre > Css[0].DensityInGramPerLitre &&
+        Css[1].DensityInGramPerLitre < Css[2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Cs-137 etalon namunalari zichliklarida xatolik bor.";
+        if (__LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of Cs-137 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+
+    if (DensityInGramPerLitre <= Css[1].DensityInGramPerLitre)
+    {
+        TSpectrum &Result = OrigCsSpc;
+        const double X = ((Css[1].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (Css[1].DensityInGramPerLitre - Css[0].DensityInGramPerLitre));
+
+        Result = Css[1].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(Result.Add(Css[0].Multiply(X), Sum), Result.ErrorMessage);
+        Result = Sum;
+    }
+    else
+    {
+        TSpectrum &Result = OrigCsSpc;
+        const double X = ((Css[2].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (Css[2].DensityInGramPerLitre - Css[1].DensityInGramPerLitre));
+
+        Result = Css[2].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(Result.Add(Css[1].Multiply(X), Sum), Result.ErrorMessage);
+        Result = Sum;
+    }
+    LOG(L"Shifting Cs...");
+    ShiftCs();
+
+    // Fon
+    LOG(L"Creating Bkg...");
+    DensityOK =
+        Bkgs[1].DensityInGramPerLitre > Bkgs[0].DensityInGramPerLitre &&
+        Bkgs[1].DensityInGramPerLitre < Bkgs[2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Tabiiy fon namunalari zichliklarida xatolik bor.";
+        if (__LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of background samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+
+    if (DensityInGramPerLitre <= Bkgs[1].DensityInGramPerLitre)
+    {
+        TSpectrum &Result = OrigBkgSpc;
+        const double X = ((Bkgs[1].DensityInGramPerLitre - DensityInGramPerLitre) /
+                Bkgs[1].DensityInGramPerLitre);
+
+        Result = Bkgs[1].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(Result.Add(Bkgs[0].Multiply(X), Sum), Result.ErrorMessage);
+        Result = Sum;
+    }
+    else
+    {
+        TSpectrum &Result = OrigBkgSpc;
+        const double X = ((Bkgs[2].DensityInGramPerLitre - DensityInGramPerLitre) /
+                (Bkgs[2].DensityInGramPerLitre - Bkgs[1].DensityInGramPerLitre));
+
+        Result = Bkgs[2].Multiply(1 - X);
+        TSpectrum Sum;
+        TSpectrum::CheckError(Result.Add(Bkgs[1].Multiply(X), Sum), Result.ErrorMessage);
+        Result = Sum;
+    }
+    LOG(L"Shifting Bkg...");
+    ShiftBkg();
+    LOG(L"Virtual spectra created from 3 set.");
+}
+//---------------------------------------------------------------------------
+void TMainForm::CreateVirtualSpectraFrom2Set(
+    const int __LangID, const double DensityInGramPerLitre, const int I1, const int I2)
+{
+    // Th-232
+    LOG(L"Creating Th...");
+    bool DensityOK = Ths[I1].DensityInGramPerLitre < Ths[I2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Th-232 etalon namunalari zichliklarida xatolik bor.";
+        if (__LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of Th-232 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+
+    TSpectrum &ResultTh = OrigThSpc;
+    double X = ((Ths[I2].DensityInGramPerLitre - DensityInGramPerLitre) /
+            (Ths[I2].DensityInGramPerLitre - Ths[I1].DensityInGramPerLitre));
+
+    ResultTh = Ths[I2].Multiply(1 - X);
+    TSpectrum Sum;
+    TSpectrum::CheckError(ResultTh.Add(Ths[I1].Multiply(X), Sum), ResultTh.ErrorMessage);
+    ResultTh = Sum;
+    LOG(L"Shifting Th...");
+    ShiftTh();
+
+    // Ra-226
+    LOG(L"Creating Ra...");
+    DensityOK = Ras[I1].DensityInGramPerLitre < Ras[I2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Ra-226 etalon namunalari zichliklarida xatolik bor.";
+        if (__LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of Ra-226 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+
+    TSpectrum &ResultRa = OrigRaSpc;
+    X = ((Ras[I2].DensityInGramPerLitre - DensityInGramPerLitre) /
+            (Ras[I2].DensityInGramPerLitre - Ras[I1].DensityInGramPerLitre));
+
+    ResultRa = Ras[I2].Multiply(1 - X);
+    Sum = TSpectrum();
+    TSpectrum::CheckError(ResultRa.Add(Ras[I1].Multiply(X), Sum), ResultRa.ErrorMessage);
+    ResultRa = Sum;
+    LOG(L"Shifting Ra...");
+    ShiftRa();
+
+    // K-40
+    LOG(L"Creating K...");
+    DensityOK = Ks[I1].DensityInGramPerLitre < Ks[I2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"K-40 etalon namunalari zichliklarida xatolik bor.";
+        if (__LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of K-40 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+
+    TSpectrum &ResultK = OrigKSpc;
+    X = ((Ks[I2].DensityInGramPerLitre - DensityInGramPerLitre) /
+            (Ks[I2].DensityInGramPerLitre - Ks[I1].DensityInGramPerLitre));
+
+    ResultK = Ks[I2].Multiply(1 - X);
+    Sum = TSpectrum();
+    TSpectrum::CheckError(ResultK.Add(Ks[I1].Multiply(X), Sum), ResultK.ErrorMessage);
+    ResultK = Sum;
+    LOG(L"Shifting K...");
+    ShiftK();
+
+    // Cs-137
+    LOG(L"Creating Cs...");
+    DensityOK = Css[I1].DensityInGramPerLitre < Css[I2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Cs-137 etalon namunalari zichliklarida xatolik bor.";
+        if (__LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of Cs-137 standard samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+
+    TSpectrum &ResultCs = OrigCsSpc;
+    X = ((Css[I2].DensityInGramPerLitre - DensityInGramPerLitre) /
+            (Css[I2].DensityInGramPerLitre - Css[I1].DensityInGramPerLitre));
+
+    ResultCs = Css[I2].Multiply(1 - X);
+    Sum = TSpectrum();
+    TSpectrum::CheckError(ResultCs.Add(Css[I1].Multiply(X), Sum), ResultCs.ErrorMessage);
+    ResultCs = Sum;
+    LOG(L"Shifting Cs...");
+    ShiftCs();
+
+    // Fon
+    LOG(L"Creating Bkg...");
+    DensityOK = Bkgs[I1].DensityInGramPerLitre < Bkgs[I2].DensityInGramPerLitre;
+    if (!DensityOK)
+    {
+        String ErrorMsg = L"Tabiiy fon namunalari zichliklarida xatolik bor.";
+        if (__LangID == 1)
+        {
+            ErrorMsg = L"Error in densities of background samples.";
+        }
+        throw Exception(ErrorMsg);
+    }
+
+    TSpectrum &ResultBkg = OrigBkgSpc;
+    X = ((Bkgs[I2].DensityInGramPerLitre - DensityInGramPerLitre) /
+            (Bkgs[I2].DensityInGramPerLitre - Bkgs[I1].DensityInGramPerLitre));
+
+    ResultBkg = Bkgs[I2].Multiply(1 - X);
+    Sum = TSpectrum();
+    TSpectrum::CheckError(ResultBkg.Add(Bkgs[I1].Multiply(X), Sum), ResultBkg.ErrorMessage);
+    ResultBkg = Sum;
+    LOG(L"Shifting Bkg...");
+    ShiftBkg();
+    LOG(L"Virtual spectra created from 2 set.");
+}
+//---------------------------------------------------------------------------
 void TMainForm::CreateVirtualSpectra()
 {
     const int __LangID = LangID;
     const double DensityInGramPerLitre = Sysutils::StrToFloatDef(SampleDensity->Text, 0);
     LOG("DensityInGramPerLitre = " + Sysutils::FloatToStrF(DensityInGramPerLitre, ffFixed, 15, 2));
 
-    String ErrorMsg;
-
     if (ValidSpectra(0) && ValidSpectra(1) && ValidSpectra(2))
     {
-        // Th-232
-        LOG(L"Creating Th...");
-        bool DensityOK =
-            Ths[1].DensityInGramPerLitre > Ths[0].DensityInGramPerLitre &&
-            Ths[1].DensityInGramPerLitre < Ths[2].DensityInGramPerLitre;
-        if (!DensityOK)
-        {
-            ErrorMsg = L"Th-232 etalon namunalari zichliklarida xatolik bor.";
-            if (__LangID == 1)
-            {
-                ErrorMsg = L"Error in densities of Th-232 standard samples.";
-            }
-            throw Exception(ErrorMsg);
-        }
-
-        if (DensityInGramPerLitre <= Ths[1].DensityInGramPerLitre)
-        {
-            TSpectrum &Result = OrigThSpc;
-            const double K1 = (1 - ((Ths[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                (Ths[1].DensityInGramPerLitre - Ths[0].DensityInGramPerLitre)));
-            const double K2 = ((Ths[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                (Ths[1].DensityInGramPerLitre - Ths[0].DensityInGramPerLitre));
-
-            Result = Ths[1].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(Result.Add(Ths[0].Multiply(K2), Sum), Result.ErrorMessage);
-            Result = Sum;
-        }
-        else
-        {
-            TSpectrum &Result = OrigThSpc;
-            const double K1 = (1 - ((Ths[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Ths[2].DensityInGramPerLitre - Ths[1].DensityInGramPerLitre)));
-            const double K2 = ((Ths[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Ths[2].DensityInGramPerLitre - Ths[1].DensityInGramPerLitre));
-
-            Result = Ths[2].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(Result.Add(Ths[1].Multiply(K2), Sum), Result.ErrorMessage);
-            Result = Sum;
-        }
-        LOG(L"Shifting Th...");
+        CreateVirtualSpectraFrom3Set(__LangID, DensityInGramPerLitre);
+    }
+    else if (ValidSpectra(0) && ValidSpectra(1))
+    {
+        CreateVirtualSpectraFrom2Set(__LangID, DensityInGramPerLitre, 0, 1);
+    }
+    else if (ValidSpectra(0) && ValidSpectra(2))
+    {
+        CreateVirtualSpectraFrom2Set(__LangID, DensityInGramPerLitre, 0, 2);
+    }
+    else if (ValidSpectra(1) && ValidSpectra(2))
+    {
+        CreateVirtualSpectraFrom2Set(__LangID, DensityInGramPerLitre, 1, 2);
+    }
+    else if (ValidSpectra(0) || ValidSpectra(1) || ValidSpectra(2))
+    {
+        OrigThSpc = Ths[VI];
         ShiftTh();
-
-        // Ra-226
-        LOG(L"Creating Ra...");
-        DensityOK =
-            Ras[1].DensityInGramPerLitre > Ras[0].DensityInGramPerLitre &&
-            Ras[1].DensityInGramPerLitre < Ras[2].DensityInGramPerLitre;
-        if (!DensityOK)
-        {
-            ErrorMsg = L"Ra-226 etalon namunalari zichliklarida xatolik bor.";
-            if (__LangID == 1)
-            {
-                ErrorMsg = L"Error in densities of Ra-226 standard samples.";
-            }
-            throw Exception(ErrorMsg);
-        }
-
-        if (DensityInGramPerLitre <= Ras[1].DensityInGramPerLitre)
-        {
-            TSpectrum &Result = OrigRaSpc;
-            const double K1 = (1 - ((Ras[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Ras[1].DensityInGramPerLitre - Ras[0].DensityInGramPerLitre)));
-            const double K2 = ((Ras[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Ras[1].DensityInGramPerLitre - Ras[0].DensityInGramPerLitre));
-
-            Result = Ras[1].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(Result.Add(Ras[0].Multiply(K2), Sum), Result.ErrorMessage);
-            Result = Sum;
-        }
-        else
-        {
-            TSpectrum &Result = OrigRaSpc;
-            const double K1 = (1 - ((Ras[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Ras[2].DensityInGramPerLitre - Ras[1].DensityInGramPerLitre)));
-            const double K2 = ((Ras[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Ras[2].DensityInGramPerLitre - Ras[1].DensityInGramPerLitre));
-
-            Result = Ras[2].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(Result.Add(Ras[1].Multiply(K2), Sum), Result.ErrorMessage);
-            Result = Sum;
-        }
-        LOG(L"Shifting Ra...");
+        OrigRaSpc = Ras[VI];
         ShiftRa();
-
-        // K-40
-        LOG(L"Creating K...");
-        DensityOK =
-            Ks[1].DensityInGramPerLitre > Ks[0].DensityInGramPerLitre &&
-            Ks[1].DensityInGramPerLitre < Ks[2].DensityInGramPerLitre;
-        if (!DensityOK)
-        {
-            ErrorMsg = L"K-40 etalon namunalari zichliklarida xatolik bor.";
-            if (__LangID == 1)
-            {
-                ErrorMsg = L"Error in densities of K-40 standard samples.";
-            }
-            throw Exception(ErrorMsg);
-        }
-
-        if (DensityInGramPerLitre <= Ks[1].DensityInGramPerLitre)
-        {
-            TSpectrum &Result = OrigKSpc;
-            const double K1 = (1 - ((Ks[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Ks[1].DensityInGramPerLitre - Ks[0].DensityInGramPerLitre)));
-            const double K2 = ((Ks[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Ks[1].DensityInGramPerLitre - Ks[0].DensityInGramPerLitre));
-
-            Result = Ks[1].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(Result.Add(Ks[0].Multiply(K2), Sum), Result.ErrorMessage);
-            Result = Sum;
-        }
-        else
-        {
-            TSpectrum &Result = OrigKSpc;
-            const double K1 = (1 - ((Ks[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Ks[2].DensityInGramPerLitre - Ks[1].DensityInGramPerLitre)));
-            const double K2 = ((Ks[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Ks[2].DensityInGramPerLitre - Ks[1].DensityInGramPerLitre));
-
-            Result = Ks[2].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(Result.Add(Ks[1].Multiply(K2), Sum), Result.ErrorMessage);
-            Result = Sum;
-        }
-        LOG(L"Shifting K...");
+        OrigKSpc = Ks[VI];
         ShiftK();
-
-        // Cs-137
-        LOG(L"Creating Cs...");
-        DensityOK =
-            Css[1].DensityInGramPerLitre > Css[0].DensityInGramPerLitre &&
-            Css[1].DensityInGramPerLitre < Css[2].DensityInGramPerLitre;
-        if (!DensityOK)
-        {
-            ErrorMsg = L"Cs-137 etalon namunalari zichliklarida xatolik bor.";
-            if (__LangID == 1)
-            {
-                ErrorMsg = L"Error in densities of Cs-137 standard samples.";
-            }
-            throw Exception(ErrorMsg);
-        }
-
-        if (DensityInGramPerLitre <= Css[1].DensityInGramPerLitre)
-        {
-            TSpectrum &Result = OrigCsSpc;
-            const double K1 = (1 - ((Css[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Css[1].DensityInGramPerLitre - Css[0].DensityInGramPerLitre)));
-            const double K2 = ((Css[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Css[1].DensityInGramPerLitre - Css[0].DensityInGramPerLitre));
-
-            Result = Css[1].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(Result.Add(Css[0].Multiply(K2), Sum), Result.ErrorMessage);
-            Result = Sum;
-        }
-        else
-        {
-            TSpectrum &Result = OrigCsSpc;
-            const double K1 = (1 - ((Css[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Css[2].DensityInGramPerLitre - Css[1].DensityInGramPerLitre)));
-            const double K2 = ((Css[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Css[2].DensityInGramPerLitre - Css[1].DensityInGramPerLitre));
-
-            Result = Css[2].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(Result.Add(Css[1].Multiply(K2), Sum), Result.ErrorMessage);
-            Result = Sum;
-        }
-        LOG(L"Shifting Cs...");
+        OrigCsSpc = Css[VI];
         ShiftCs();
-
-        // Fon
-        LOG(L"Creating Bkg...");
-        DensityOK =
-            Bkgs[1].DensityInGramPerLitre > Bkgs[0].DensityInGramPerLitre &&
-            Bkgs[1].DensityInGramPerLitre < Bkgs[2].DensityInGramPerLitre;
-        if (!DensityOK)
-        {
-            ErrorMsg = L"Tabiiy fon namunalari zichliklarida xatolik bor.";
-            if (__LangID == 1)
-            {
-                ErrorMsg = L"Error in densities of background samples.";
-            }
-            throw Exception(ErrorMsg);
-        }
-
-        if (DensityInGramPerLitre <= Bkgs[1].DensityInGramPerLitre)
-        {
-            TSpectrum &Result = OrigBkgSpc;
-            const double K1 = (1 - ((Bkgs[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    Bkgs[1].DensityInGramPerLitre));
-            const double K2 = ((Bkgs[1].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    Bkgs[1].DensityInGramPerLitre);
-
-            Result = Bkgs[1].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(Result.Add(Bkgs[0].Multiply(K2), Sum), Result.ErrorMessage);
-            Result = Sum;
-        }
-        else
-        {
-            TSpectrum &Result = OrigBkgSpc;
-            const double K1 = (1 - ((Bkgs[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Bkgs[2].DensityInGramPerLitre - Bkgs[1].DensityInGramPerLitre)));
-            const double K2 = ((Bkgs[2].DensityInGramPerLitre - DensityInGramPerLitre) /
-                    (Bkgs[2].DensityInGramPerLitre - Bkgs[1].DensityInGramPerLitre));
-
-            Result = Bkgs[2].Multiply(K1);
-            TSpectrum Sum;
-            TSpectrum::CheckError(Result.Add(Bkgs[1].Multiply(K2), Sum), Result.ErrorMessage);
-            Result = Sum;
-        }
-        LOG(L"Shifting Bkg...");
+        OrigBkgSpc = Bkgs[VI];
         ShiftBkg();
-        LOG(L"Virtual spectra created.");
     }
     else
     {
-        ErrorMsg = L"Bir yoki undan ortiq etalon va/yoki fon namunalari spektrlari topilmadi.";
+        String ErrorMsg = L"Bir yoki undan ortiq etalon va/yoki fon namunalari spektrlari topilmadi.";
         if (__LangID == 1)
         {
             ErrorMsg = L"One or more reference and/or background samples spectra not found.";
@@ -941,45 +1111,47 @@ void TMainForm::PopulateStandardSourcesInfo(TSettingsForm *Settings)
     ThTime->Text = Utils::RoundFloatValue(ThSpc.Duration);
     ThSum->Text = Utils::RoundFloatValue(ThCount);
     double Act =
-        StrToFloat(ThSpc.ExtraStringData) *
+        StrToFloatDef(ThSpc.ExtraStringData, 0) *
         System::Exp(-(System::Ln(2) / 1.405E10) * ThSpc.ExtraFloatData);
     ThActivity->Text = Utils::RoundFloatValue(Act, 2, false);
 
     RaTime->Text = Utils::RoundFloatValue(RaSpc.Duration);
     RaSum->Text = Utils::RoundFloatValue(RaCount);
     Act =
-        StrToFloat(RaSpc.ExtraStringData) *
+        StrToFloatDef(RaSpc.ExtraStringData, 0) *
         System::Exp(-(System::Ln(2) / 1602) * RaSpc.ExtraFloatData);
     RaActivity->Text = Utils::RoundFloatValue(Act, 2, false);
 
     KTime->Text = Utils::RoundFloatValue(KSpc.Duration);
     KSum->Text = Utils::RoundFloatValue(KCount);
     Act =
-        StrToFloat(KSpc.ExtraStringData) *
+        StrToFloatDef(KSpc.ExtraStringData, 0) *
         System::Exp(-(System::Ln(2) / 1.251E9) * KSpc.ExtraFloatData);
     KActivity->Text = Utils::RoundFloatValue(Act, 2, false);
 
     CsTime->Text = Utils::RoundFloatValue(CsSpc.Duration);
     CsSum->Text = Utils::RoundFloatValue(CsCount);
     Act =
-        StrToFloat(CsSpc.ExtraStringData) *
+        StrToFloatDef(CsSpc.ExtraStringData, 0) *
         System::Exp(-(System::Ln(2) / 30) * CsSpc.ExtraFloatData);
     CsActivity->Text = Utils::RoundFloatValue(Act, 2, false);
 
-    BkgChan1Edit->Text = CalcCenterOfPeak(BkgSpc, Ths[1].Energy1);
-    BkgChan2Edit->Text = CalcCenterOfPeak(BkgSpc, Ths[1].Energy2);
+    const double Energy1 = Ths[VI].Energy1;
+    const double Energy2 = Ths[VI].Energy2;
+    BkgChan1Edit->Text = CalcCenterOfPeak(BkgSpc, Energy1);
+    BkgChan2Edit->Text = CalcCenterOfPeak(BkgSpc, Energy2);
 
-    ThChan1Edit->Text = CalcCenterOfPeak(ThSpc, Ths[1].Energy1);
-    ThChan2Edit->Text = CalcCenterOfPeak(ThSpc, Ths[1].Energy2);
+    ThChan1Edit->Text = CalcCenterOfPeak(ThSpc, Energy1);
+    ThChan2Edit->Text = CalcCenterOfPeak(ThSpc, Energy2);
 
-    RaChan1Edit->Text = CalcCenterOfPeak(RaSpc, Ths[1].Energy1);
-    RaChan2Edit->Text = CalcCenterOfPeak(RaSpc, Ths[1].Energy2);
+    RaChan1Edit->Text = CalcCenterOfPeak(RaSpc, Energy1);
+    RaChan2Edit->Text = CalcCenterOfPeak(RaSpc, Energy2);
 
-    KChan1Edit->Text = CalcCenterOfPeak(KSpc, Ths[1].Energy1);
-    KChan2Edit->Text = CalcCenterOfPeak(KSpc, Ths[1].Energy2);
+    KChan1Edit->Text = CalcCenterOfPeak(KSpc, Energy1);
+    KChan2Edit->Text = CalcCenterOfPeak(KSpc, Energy2);
 
-    CsChan1Edit->Text = CalcCenterOfPeak(CsSpc, Ths[1].Energy1);
-    CsChan2Edit->Text = CalcCenterOfPeak(CsSpc, Ths[1].Energy2);
+    CsChan1Edit->Text = CalcCenterOfPeak(CsSpc, Energy1);
+    CsChan2Edit->Text = CalcCenterOfPeak(CsSpc, Energy2);
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::OnParamChange(TObject *Sender)
@@ -998,6 +1170,82 @@ void __fastcall TMainForm::OnParamChange(TObject *Sender)
         RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
     {
         DecomposeSampleSpectrum();
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::FinalSpcChartMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y)
+{
+    if (Button == mbLeft)
+    {
+        Selecting = true;
+        SelectStartX = X;
+        SelectEndX = X;
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::FinalSpcChartMouseUp(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y)
+{
+    if (Selecting && Button == mbLeft)
+    {
+        Selecting = false;
+        SelectEndX = X;
+        if (SelectStartX == SelectEndX)
+        {
+            return;
+        }
+        FinalSpcChart->Repaint();
+
+        double StartVal = FinalSpectrum->XScreenToValue(SelectStartX);
+        double EndVal   = FinalSpectrum->XScreenToValue(SelectEndX);
+        if (StartVal > EndVal)
+        {
+            std::swap(StartVal, EndVal);
+        }
+
+        double TotalCounts = 0;
+        double Centroid = 0;
+        int ChannelCount = 0;
+        for (int i = 0; i < FinalSpectrum->Count(); i++)
+        {
+            const double xv = FinalSpectrum->XValue[i];
+            if (xv >= StartVal && xv <= EndVal)
+            {
+                const double N = FinalSpectrum->YValue[i];
+                Centroid += (xv * N);
+                TotalCounts += N;
+                ChannelCount++;
+            }
+        }
+        if (TotalCounts > 0)
+        {
+            Centroid /= TotalCounts;
+        }
+
+        String StatInfo;
+        const int StartCh = FindChannelByEnergy(StartVal, FinalSpectrum);
+        const int EndCh = FindChannelByEnergy(EndVal, FinalSpectrum);
+
+        if (LangID == 0)
+        {
+            StatInfo.sprintf(L"Tanlangan soha: %d - %d / %.2f keV - %.2f keV (%d kanallar / %.2f keV)\n"
+                             L"Jami hisob: %.0f\n"
+                             L"Markaz: %.2f keV",
+                             StartCh, EndCh, StartVal, EndVal, ChannelCount, EndVal - StartVal, TotalCounts, Centroid);
+        }
+        else
+        {
+            StatInfo.sprintf(L"Selected area: %d - %d / %.2f keV - %.2f keV (%d channels / %.2f keV)\n"
+                             L"Total counts: %.0f\n"
+                             L"Center: %.2f keV",
+                             StartCh, EndCh, StartVal, EndVal, ChannelCount, EndVal - StartVal, TotalCounts, Centroid);
+        }
+        Application->MessageBox(StatInfo.c_str(), L"Information", MB_OK | MB_ICONINFORMATION);
+
+        SelectStartX = 0;
+        SelectEndX = 0;
+        FinalSpcChart->Repaint();
     }
 }
 //---------------------------------------------------------------------------
@@ -1048,6 +1296,61 @@ void __fastcall TMainForm::OnChartMouseMove(TObject *Sender, TShiftState Shift,
         R.bottom = Chart->ClientHeight;
         InvalidateRect(Chart->Handle, &R, TRUE);
         Chart->Tag = X;
+    }
+
+    if (Chart == FinalSpcChart && Selecting)
+    {
+        SelectEndX = X;
+        Chart->Repaint();
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::FinalSpcChartAfterDraw(TObject *Sender)
+{
+    if (SelectStartX == SelectEndX)
+    {
+        return;
+    }
+
+    int X1 = SelectStartX;
+    int X2 = SelectEndX;
+    if (X1 > X2)
+    {
+        std::swap(X1, X2);
+    }
+
+    auto C = FinalSpcChart->Canvas;
+    C->Brush->Style = bsSolid;
+    C->Brush->Color = clDkGray;
+    C->Pen->Style = psClear;
+
+    const TRect &PlotRect = FinalSpcChart->ChartRect;
+    C->FillRect(Rect(X1, PlotRect.Top, X2, PlotRect.Bottom));
+
+    const double StartVal = FinalSpectrum->XScreenToValue(X1);
+    const double EndVal   = FinalSpectrum->XScreenToValue(X2);
+
+    C->Pen->Color = clRed;
+    C->Pen->Style = psSolid;
+
+    bool FirstPoint = true;
+    for (int i = 0; i < FinalSpectrum->Count(); i++)
+    {
+        const double xv = FinalSpectrum->XValue[i];
+        if (xv >= StartVal && xv <= EndVal)
+        {
+            const int px = FinalSpectrum->CalcXPos(i);
+            const int py = FinalSpectrum->CalcYPos(i);
+            if (FirstPoint)
+            {
+                C->MoveTo(px, py);
+                FirstPoint = false;
+            }
+            else
+            {
+                C->LineTo(px, py);
+            }
+        }
     }
 }
 //---------------------------------------------------------------------------
@@ -1148,8 +1451,8 @@ bool TMainForm::ShiftSrc()
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
-    const double SrcCh1 = Ths[1].Channel1;
-    const double SrcCh2 = Ths[1].Channel2;
+    const double SrcCh1 = Ths[VI].Channel1;
+    const double SrcCh2 = Ths[VI].Channel2;
     const double SmpCh1 = Sysutils::StrToFloatDef(SmpChan1Edit->Text, 0);
     const double SmpCh2 = Sysutils::StrToFloatDef(SmpChan2Edit->Text, 0);
     if (En1    > 0 && En2    > En1    &&
@@ -1176,8 +1479,8 @@ bool TMainForm::ShiftBkg()
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
-    const double SrcCh1 = Ths[1].Channel1;
-    const double SrcCh2 = Ths[1].Channel2;
+    const double SrcCh1 = Ths[VI].Channel1;
+    const double SrcCh2 = Ths[VI].Channel2;
     const double BkgCh1 = Sysutils::StrToFloatDef(BkgChan1Edit->Text, 0);
     const double BkgCh2 = Sysutils::StrToFloatDef(BkgChan2Edit->Text, 0);
     if (En1    > 0 && En2    > En1 &&
@@ -1204,8 +1507,8 @@ bool TMainForm::ShiftTh()
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
-    const double SrcCh1 = Ths[1].Channel1;
-    const double SrcCh2 = Ths[1].Channel2;
+    const double SrcCh1 = Ths[VI].Channel1;
+    const double SrcCh2 = Ths[VI].Channel2;
     const double ThCh1 = Sysutils::StrToFloatDef(ThChan1Edit->Text, 0);
     const double ThCh2 = Sysutils::StrToFloatDef(ThChan2Edit->Text, 0);
     if (En1    > 0 && En2    > En1 &&
@@ -1232,8 +1535,8 @@ bool TMainForm::ShiftRa()
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
-    const double SrcCh1 = Ths[1].Channel1;
-    const double SrcCh2 = Ths[1].Channel2;
+    const double SrcCh1 = Ths[VI].Channel1;
+    const double SrcCh2 = Ths[VI].Channel2;
     const double RaCh1 = Sysutils::StrToFloatDef(RaChan1Edit->Text, 0);
     const double RaCh2 = Sysutils::StrToFloatDef(RaChan2Edit->Text, 0);
     if (En1    > 0 && En2    > En1 &&
@@ -1260,8 +1563,8 @@ bool TMainForm::ShiftK()
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
-    const double SrcCh1 = Ths[1].Channel1;
-    const double SrcCh2 = Ths[1].Channel2;
+    const double SrcCh1 = Ths[VI].Channel1;
+    const double SrcCh2 = Ths[VI].Channel2;
     const double KCh1 = Sysutils::StrToFloatDef(KChan1Edit->Text, 0);
     const double KCh2 = Sysutils::StrToFloatDef(KChan2Edit->Text, 0);
     if (En1    > 0 && En2    > En1 &&
@@ -1288,8 +1591,8 @@ bool TMainForm::ShiftCs()
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
-    const double SrcCh1 = Ths[1].Channel1;
-    const double SrcCh2 = Ths[1].Channel2;
+    const double SrcCh1 = Ths[VI].Channel1;
+    const double SrcCh2 = Ths[VI].Channel2;
     const double CsCh1 = Sysutils::StrToFloatDef(CsChan1Edit->Text, 0);
     const double CsCh2 = Sysutils::StrToFloatDef(CsChan2Edit->Text, 0);
     if (En1    > 0 && En2    > En1 &&
@@ -1644,7 +1947,7 @@ bool TMainForm::OpenSampleSpectrum(const String &FileName)
     {
         return false;
     }
-    else if (!Utils::IsEqual(Spc.Volume, Ths[1].Volume))
+    else if (!Utils::IsEqual(Spc.Volume, Ths[VI].Volume))
     {
         String ErrorMessage = L"Spektrda namuna hajmi noto'g'ri.";
         if (LangID == 1)
@@ -1667,8 +1970,8 @@ bool TMainForm::OpenSampleSpectrum(const String &FileName)
     SmpChan2Edit->OnChange = 0;
     try
     {
-        SmpChan1Edit->Text = CalcCenterOfPeak(OrigSampleSpc, Ths[1].Energy1);
-        SmpChan2Edit->Text = CalcCenterOfPeak(OrigSampleSpc, Ths[1].Energy2);
+        SmpChan1Edit->Text = CalcCenterOfPeak(OrigSampleSpc, Ths[VI].Energy1);
+        SmpChan2Edit->Text = CalcCenterOfPeak(OrigSampleSpc, Ths[VI].Energy2);
     }
     __finally
     {
@@ -2032,7 +2335,8 @@ void __fastcall TMainForm::SelectFilesActionExecute(TObject *Sender)
             BatchProcessingResultsForm->Close();
         }
         BatchProcessingResultsForm = new TBatchProcessingResultsForm(Application);
-        BatchProcessingThread.reset(new TBatchProcessingThread(GetData(), L"", OpenDialog->Files, BatchProcessingResultsForm->Handle));
+        BatchProcessingThread.reset(new TBatchProcessingThread(
+            GetData(), L"", OpenDialog->Files, BatchProcessingResultsForm->Handle));
     }
 }
 //---------------------------------------------------------------------------
@@ -2075,7 +2379,8 @@ void __fastcall TMainForm::SelectDirectoryActionExecute(TObject *Sender)
         BatchProcessingResultsForm->Close();
     }
     BatchProcessingResultsForm = new TBatchProcessingResultsForm(Application);
-    BatchProcessingThread.reset(new TBatchProcessingThread(GetData(), FolderName, OpenDialog->Files, BatchProcessingResultsForm->Handle));
+    BatchProcessingThread.reset(new TBatchProcessingThread(
+        GetData(), FolderName, OpenDialog->Files, BatchProcessingResultsForm->Handle));
 }
 //---------------------------------------------------------------------------
 void TMainForm::OpenFromBatchResult(
@@ -2681,7 +2986,7 @@ void __fastcall TMainForm::SampleChartDblClick(TObject *Sender)
     ShiftingForm->SaveSpectrum2->OnClick = ShiftingForm->SaveSpectrum2Click;
     ShiftingForm->SaveSpectrum2->DropdownMenu = 0;
     ShiftingForm->Load(
-        ThSpc.IsValid() ? ThSpc : Ths[1],
+        ThSpc.IsValid() ? ThSpc : Ths[VI],
         OrigSampleSpc,
         Sysutils::StrToFloatDef(Energy1Edit->Text, 0),
         Sysutils::StrToFloatDef(Energy2Edit->Text, 0),

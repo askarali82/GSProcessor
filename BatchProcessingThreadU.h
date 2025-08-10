@@ -18,11 +18,11 @@ extern std::atomic<int> LangID;
 struct TData
 {
     // Experimental spectra
-    TSpectrum Bkgs[3];
-    TSpectrum Ths[3];
-    TSpectrum Ras[3];
-    TSpectrum Ks[3];
-    TSpectrum Css[3];
+    const TSpectrum Bkgs[3];
+    const TSpectrum Ths[3];
+    const TSpectrum Ras[3];
+    const TSpectrum Ks[3];
+    const TSpectrum Css[3];
 
     // Energy ranges
     double ThEn1;
@@ -109,6 +109,8 @@ private:
 
     void GetFilesList();
     bool CreateVirtualSpectra(const TSpectrum &Spectrum);
+    bool CreateVirtualSpectraFrom3Set(const double DensityInGramPerLitre);
+    bool CreateVirtualSpectraFrom2Set(const double DensityInGramPerLitre, const int I1, const int I2);
 
     void CalculateCountsAndActivitiesInStdSamples();
     void CalculateActivities(
