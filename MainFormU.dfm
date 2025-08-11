@@ -263,6 +263,7 @@ object MainForm: TMainForm
       TopAxis.Ticks.Visible = False
       View3D = False
       Zoom.Allow = False
+      OnAfterDraw = OnChartAfterDraw
       Align = alLeft
       Color = clMedGray
       TabStop = False
@@ -585,6 +586,7 @@ object MainForm: TMainForm
       TopAxis.Visible = False
       View3D = False
       Zoom.Allow = False
+      OnAfterDraw = OnChartAfterDraw
       Align = alLeft
       Color = clMedGray
       TabStop = False
@@ -673,6 +675,18 @@ object MainForm: TMainForm
       ShowHint = True
       TabOrder = 0
       OnChange = OnShiftingDataChange
+    end
+    object IsBkgSubtracted: TCheckBox
+      Left = 444
+      Top = 75
+      Width = 133
+      Height = 17
+      Anchors = [akTop, akRight]
+      Caption = 'Fon ayriladi'
+      Checked = True
+      State = cbChecked
+      TabOrder = 5
+      OnClick = IsBkgSubtractedClick
     end
   end
   object ThPanel: TPanel
@@ -931,6 +945,7 @@ object MainForm: TMainForm
       TopAxis.Visible = False
       View3D = False
       Zoom.Allow = False
+      OnAfterDraw = OnChartAfterDraw
       Align = alLeft
       Color = clMedGray
       TabStop = False
@@ -1283,6 +1298,7 @@ object MainForm: TMainForm
       TopAxis.Visible = False
       View3D = False
       Zoom.Allow = False
+      OnAfterDraw = OnChartAfterDraw
       Align = alLeft
       Color = clMedGray
       TabStop = False
@@ -1603,6 +1619,7 @@ object MainForm: TMainForm
       TopAxis.Visible = False
       View3D = False
       Zoom.Allow = False
+      OnAfterDraw = OnChartAfterDraw
       Align = alLeft
       Color = clMedGray
       TabStop = False
@@ -1923,6 +1940,7 @@ object MainForm: TMainForm
       TopAxis.Visible = False
       View3D = False
       Zoom.Allow = False
+      OnAfterDraw = OnChartAfterDraw
       Align = alLeft
       Color = clMedGray
       TabStop = False
@@ -2060,7 +2078,7 @@ object MainForm: TMainForm
     LeftAxis.LabelsFormat.Margins.Top = 0
     LeftAxis.LabelsFormat.Margins.Right = 0
     LeftAxis.LabelsFormat.Margins.Bottom = 0
-    LeftAxis.Minimum = -500.000000000000000000
+    LeftAxis.Minimum = -300.000000000000000000
     LeftAxis.Title.Caption = 'Impuls'
     LeftAxis.Title.Font.Name = 'Tahoma'
     Panning.MouseWheel = pmwNone
@@ -2078,8 +2096,9 @@ object MainForm: TMainForm
     TopAxis.Ticks.Visible = False
     View3D = False
     Zoom.Allow = False
-    OnAfterDraw = FinalSpcChartAfterDraw
+    OnAfterDraw = OnChartAfterDraw
     Color = clMedGray
+    PopupMenu = FinalSpcPopupMenu
     TabStop = False
     TabOrder = 11
     OnMouseDown = FinalSpcChartMouseDown
@@ -5049,11 +5068,24 @@ object MainForm: TMainForm
       ShortCut = 16460
       OnExecute = LanguageActionExecute
     end
+    object ChangeFinalSpcScaleAction: TAction
+      Caption = 'Logarifmli masshtabda'
+      ShortCut = 120
+      OnExecute = ChangeFinalSpcScaleActionExecute
+      OnUpdate = ChangeFinalSpcScaleActionUpdate
+    end
   end
   object SaveDialog: TSaveDialog
     DefaultExt = 'par'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofEnableSizing]
     Left = 416
     Top = 376
+  end
+  object FinalSpcPopupMenu: TPopupMenu
+    Left = 391
+    Top = 561
+    object Logarifmlimasshtabda1: TMenuItem
+      Action = ChangeFinalSpcScaleAction
+    end
   end
 end

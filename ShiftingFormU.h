@@ -102,6 +102,7 @@ __published:    // IDE-managed Components
     void __fastcall SaveEnergiesAndCountsMIClick(TObject *Sender);
     void __fastcall SaveToGSPMIClick(TObject *Sender);
     void __fastcall SaveSpectrum2Click(TObject *Sender);
+    void __fastcall SpcChartAfterDraw(TObject *Sender);
 
 protected:
     void __fastcall CreateParams(TCreateParams &Params);

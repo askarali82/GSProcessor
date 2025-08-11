@@ -233,41 +233,43 @@ void __fastcall TShiftingForm::Ch2RightShiftBtnClick(TObject *Sender)
 void __fastcall TShiftingForm::SpcChartMouseMove(TObject *Sender, TShiftState Shift,
           int X, int Y)
 {
-    if (Spectrum1->Count() <= 0 && Spectrum2->Count() <= 0)
+    if ((Spectrum1->Count() <= 0 && Spectrum2->Count() <= 0) ||
+        X < SpcChart->ChartRect.Left || X > SpcChart->ChartRect.Right ||
+        Y < SpcChart->ChartRect.Top  || Y > SpcChart->ChartRect.Bottom)
     {
         return;
     }
-    if (SpcChart->Tag != X)
+
+    const int Ch = SpcChart->BottomAxis->CalcPosPoint(X);
+    if (Ch >= 0 && Ch < Sample1.Energies.size())
     {
-        if (X < SpcChart->ChartRect.Left || X > SpcChart->ChartRect.Right ||
-            Y < SpcChart->ChartRect.Top  || Y > SpcChart->ChartRect.Bottom)
-        {
-            return;
-        }
-        const int Ch = SpcChart->BottomAxis->CalcPosPoint(X);
-        if (Ch >= 0 && Ch < Sample1.Energies.size())
-        {
-            StatusBar->Panels->Items[0]->Text = ChannelStr + String(Ch);
-            StatusBar->Panels->Items[1]->Text =
-                EnergyStr + Utils::RoundFloatValue(Sample1.Energies[Ch]);
-        }
-        if (Ch >= 0 && Ch < Sample1.Counts.size())
-        {
-            StatusBar->Panels->Items[2]->Text = Count1Str + String(Sample1.Counts[Ch]);
-        }
-        if (Ch >= 0 && Ch < ShiftedSample2.Counts.size())
-        {
-            StatusBar->Panels->Items[3]->Text = Count2Str + String(ShiftedSample2.Counts[Ch]);
-        }
-        SpcChart->Canvas->MoveTo(X, SpcChart->ChartRect.Top);
-        SpcChart->Canvas->LineTo(X, SpcChart->ChartRect.Bottom);
-        RECT R;
-        R.left = SpcChart->Tag;
-        R.top = 0;
-        R.right = SpcChart->Tag + 1;
-        R.bottom = SpcChart->ClientHeight;
-        InvalidateRect(SpcChart->Handle, &R, TRUE);
-        SpcChart->Tag = X;
+        StatusBar->Panels->Items[0]->Text = ChannelStr + String(Ch);
+        StatusBar->Panels->Items[1]->Text =
+            EnergyStr + Utils::RoundFloatValue(Sample1.Energies[Ch]);
+    }
+    if (Ch >= 0 && Ch < Sample1.Counts.size())
+    {
+        StatusBar->Panels->Items[2]->Text = Count1Str + String(Sample1.Counts[Ch]);
+    }
+    if (Ch >= 0 && Ch < ShiftedSample2.Counts.size())
+    {
+        StatusBar->Panels->Items[3]->Text = Count2Str + String(ShiftedSample2.Counts[Ch]);
+    }
+    SpcChart->Tag = X;
+    SpcChart->Repaint();
+}
+//---------------------------------------------------------------------------
+void __fastcall TShiftingForm::SpcChartAfterDraw(TObject *Sender)
+{
+    if ((Spectrum1->Count() > 0 || Spectrum2->Count() > 0) &&
+        SpcChart->Tag >= SpcChart->ChartRect.Left && SpcChart->Tag <= SpcChart->ChartRect.Right)
+    {
+        auto Canvas = SpcChart->Canvas;
+        Canvas->Pen->Color = clBlack;
+        Canvas->Pen->Width = 1;
+
+        Canvas->MoveTo(SpcChart->Tag, SpcChart->ChartRect.Top);
+        Canvas->LineTo(SpcChart->Tag, SpcChart->ChartRect.Bottom);
     }
 }
 //---------------------------------------------------------------------------
@@ -718,3 +720,5 @@ void TShiftingForm::Reset()
     SmpChan1Edit->Text = L"";
     ChangeUILanguage();
 }
+//---------------------------------------------------------------------------
+

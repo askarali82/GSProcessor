@@ -934,7 +934,7 @@ void TMainForm::DecomposeSampleSpectrum()
 
         DrawSpectrum(SampleSpc, SampleSpectrum);
         CalculateCountsInStdSamples();
-        TSpectrum TMPSpc = BkgSpc.Multiply(SampleSpc.Duration / BkgSpc.Duration);
+        TSpectrum TMPSpc = BkgSpc.Multiply(int(IsBkgSubtracted->Checked) * SampleSpc.Duration / BkgSpc.Duration);
         BkgSpcWithCoeff = TMPSpc;
         DrawSpectrum(TMPSpc, BkgSpectrum);
         bool OK = SampleSpc.Subtract(TMPSpc, Sample_M_Bkg);
@@ -1204,44 +1204,37 @@ void __fastcall TMainForm::FinalSpcChartMouseUp(TObject *Sender, TMouseButton Bu
             std::swap(StartVal, EndVal);
         }
 
-        double TotalCounts = 0;
-        double Centroid = 0;
-        int ChannelCount = 0;
-        for (int i = 0; i < FinalSpectrum->Count(); i++)
-        {
-            const double xv = FinalSpectrum->XValue[i];
-            if (xv >= StartVal && xv <= EndVal)
-            {
-                const double N = FinalSpectrum->YValue[i];
-                Centroid += (xv * N);
-                TotalCounts += N;
-                ChannelCount++;
-            }
-        }
-        if (TotalCounts > 0)
-        {
-            Centroid /= TotalCounts;
-        }
-
-        String StatInfo;
         const int StartCh = FindChannelByEnergy(StartVal, FinalSpectrum);
         const int EndCh = FindChannelByEnergy(EndVal, FinalSpectrum);
 
-        if (LangID == 0)
+        if (StartCh >= 0 && EndCh > StartCh)
         {
-            StatInfo.sprintf(L"Tanlangan soha: %d - %d / %.2f keV - %.2f keV (%d kanallar / %.2f keV)\n"
-                             L"Jami hisob: %.0f\n"
-                             L"Markaz: %.2f keV",
-                             StartCh, EndCh, StartVal, EndVal, ChannelCount, EndVal - StartVal, TotalCounts, Centroid);
+            const int ChannelCount = EndCh - StartCh;
+            const double TotalCounts = Sample_M_Cs.CalculateCountByChannelRange(StartCh, EndCh);
+            const double NetCounts = Sample_M_Cs.CalculateNetCountByChannelRange(StartCh, EndCh);
+            const auto Centroid = Sample_M_Cs.CalculateCentroidByChannelRange(StartCh, EndCh);;
+
+            String StatInfo;
+            if (LangID == 0)
+            {
+                StatInfo.sprintf(L"Tanlangan soha: %d - %d / %.2f keV - %.2f keV (%d kanallar / %.2f keV)\n"
+                                 L"Markaz: %.2f / %.2f keV\n"
+                                 L"Jami hisob: %.0f\n"
+                                 L"Fotocho'qqi yuzasi: %.0f",
+                                 StartCh, EndCh, StartVal, EndVal, ChannelCount,
+                                 EndVal - StartVal, Centroid.first, Centroid.second, TotalCounts, NetCounts);
+            }
+            else
+            {
+                StatInfo.sprintf(L"Selected area: %d - %d / %.2f keV - %.2f keV (%d channels / %.2f keV)\n"
+                                 L"Center: %.2f / %.2f keV\n"
+                                 L"Total counts: %.0f\n"
+                                 L"Photopeak area: %.0f",
+                                 StartCh, EndCh, StartVal, EndVal, ChannelCount,
+                                 EndVal - StartVal, Centroid.first, Centroid.second, TotalCounts, NetCounts);
+            }
+            Application->MessageBox(StatInfo.c_str(), L"Information", MB_OK | MB_ICONINFORMATION);
         }
-        else
-        {
-            StatInfo.sprintf(L"Selected area: %d - %d / %.2f keV - %.2f keV (%d channels / %.2f keV)\n"
-                             L"Total counts: %.0f\n"
-                             L"Center: %.2f keV",
-                             StartCh, EndCh, StartVal, EndVal, ChannelCount, EndVal - StartVal, TotalCounts, Centroid);
-        }
-        Application->MessageBox(StatInfo.c_str(), L"Information", MB_OK | MB_ICONINFORMATION);
 
         SelectStartX = 0;
         SelectEndX = 0;
@@ -1254,60 +1247,66 @@ void __fastcall TMainForm::OnChartMouseMove(TObject *Sender, TShiftState Shift,
 {
     TChart *Chart = dynamic_cast<TChart *>(Sender);
     TLineSeries *Series = dynamic_cast<TLineSeries *>(Chart->SeriesList->Items[0]);
-    if (Series->Count() <= 0)
+    if (Series->Count() <= 0 || X < Chart->ChartRect.Left || X > Chart->ChartRect.Right ||
+        Y < Chart->ChartRect.Top  || Y > Chart->ChartRect.Bottom)
     {
         return;
     }
+
     StatusBar->Panels->Items[0]->Text = Chart->Title->Text->Strings[0];
-    if (Chart->Tag != X)
+
+    String EnergyStr = L"Energiya: ";
+    String ChannelStr = L"Kanal: ";
+    String CountStr = L"Impuls: ";
+    if (LangID == 1)
     {
-        if (X < Chart->ChartRect.Left || X > Chart->ChartRect.Right ||
-            Y < Chart->ChartRect.Top  || Y > Chart->ChartRect.Bottom)
-        {
-            return;
-        }
-
-        String EnergyStr = L"Energiya: ";
-        String ChannelStr = L"Kanal: ";
-        String CountStr = L"Impuls: ";
-        if (LangID == 1)
-        {
-            EnergyStr = L"Energy: ";
-            ChannelStr = L"Channel: ";
-            CountStr = L"Count: ";
-        }
-
-        const double En = Chart->BottomAxis->CalcPosPoint(X);
-        const int Ch = FindChannelByEnergy(En, Series);
-        StatusBar->Panels->Items[2]->Text = EnergyStr + Utils::RoundFloatValue(En);
-        if (Ch >= 0 && Ch < Series->Count())
-        {
-            const double N = Series->YValues->Value[Ch];
-            StatusBar->Panels->Items[1]->Text = ChannelStr + IntToStr(Ch);
-            StatusBar->Panels->Items[3]->Text = CountStr + Utils::RoundFloatValue(N);
-        }
-
-        Chart->Canvas->MoveTo(X, Chart->ChartRect.Top);
-        Chart->Canvas->LineTo(X, Chart->ChartRect.Bottom);
-        RECT R;
-        R.left = Chart->Tag;
-        R.top = 0;
-        R.right = Chart->Tag + 1;
-        R.bottom = Chart->ClientHeight;
-        InvalidateRect(Chart->Handle, &R, TRUE);
-        Chart->Tag = X;
+        EnergyStr = L"Energy: ";
+        ChannelStr = L"Channel: ";
+        CountStr = L"Count: ";
     }
+
+    const double En = Series->XScreenToValue(X);
+    const int Ch = FindChannelByEnergy(En, Series);
+    StatusBar->Panels->Items[2]->Text = EnergyStr + Utils::RoundFloatValue(En);
+    if (Ch >= 0 && Ch < Series->Count())
+    {
+        const double N = Series->YValues->Value[Ch];
+        StatusBar->Panels->Items[1]->Text = ChannelStr + IntToStr(Ch);
+        StatusBar->Panels->Items[3]->Text = CountStr + Utils::RoundFloatValue(N);
+    }
+
+    Chart->Tag = X;
 
     if (Chart == FinalSpcChart && Selecting)
     {
         SelectEndX = X;
         Chart->Repaint();
     }
+    else
+    {
+        Chart->Repaint();
+    }
 }
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::FinalSpcChartAfterDraw(TObject *Sender)
+void __fastcall TMainForm::OnChartAfterDraw(TObject *Sender)
 {
-    if (SelectStartX == SelectEndX)
+    TChart *Chart = dynamic_cast<TChart *>(Sender);
+    TLineSeries *Series = dynamic_cast<TLineSeries *>(Chart->SeriesList->Items[0]);
+    if (Series->Count() <= 0)
+    {
+        return;
+    }
+    if (Chart->Tag >= Chart->ChartRect.Left && Chart->Tag <= Chart->ChartRect.Right)
+    {
+        auto Canvas = Chart->Canvas;
+        Canvas->Pen->Color = clBlack;
+        Canvas->Pen->Width = 1;
+
+        Canvas->MoveTo(Chart->Tag, Chart->ChartRect.Top);
+        Canvas->LineTo(Chart->Tag, Chart->ChartRect.Bottom);
+    }
+
+    if (Chart != FinalSpcChart || SelectStartX == SelectEndX)
     {
         return;
     }
@@ -1356,14 +1355,19 @@ void __fastcall TMainForm::FinalSpcChartAfterDraw(TObject *Sender)
 //---------------------------------------------------------------------------
 int TMainForm::FindChannelByEnergy(const double En, TLineSeries *Spc) const
 {
+    int Nearest = -1;
+    double MinDiff = 1e99;
+
     for (int i = 0; i < Spc->Count(); i++)
     {
-        if (Spc->XValues->Value[i] >= En)
+        const double Diff = fabs(Spc->XValue[i] - En);
+        if (Diff < MinDiff)
         {
-            return i;
+            MinDiff = Diff;
+            Nearest = i;
         }
     }
-    return -1;
+    return Nearest;
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::ParamEditClick(TObject *Sender)
@@ -2005,6 +2009,12 @@ void __fastcall TMainForm::OpenSpectrumActionExecute(TObject *Sender)
     {
         return;
     }
+    if (!IsBkgSubtracted->Checked)
+    {
+        IsBkgSubtracted->OnClick = nullptr;
+        IsBkgSubtracted->Checked = true;
+        IsBkgSubtracted->OnClick = IsBkgSubtractedClick;
+    }
     if (Sysutils::ExtractFileExt(OpenDialog->FileName).LowerCase() == L".par")
     {
         OpenParametersAction->Execute();
@@ -2153,7 +2163,7 @@ void __fastcall TMainForm::SaveSpectraActionExecute(TObject *Sender)
         AllOK = false;
     }
 
-    if (BkgSpcWithCoeff.IsValid() && BkgSpectrum->Count() &&
+    if (BkgSpcWithCoeff.IsValid() && BkgSpectrum->Count() > 0 &&
         !BkgSpcWithCoeff.WriteCountsToTextFile(Bkg, false, true))
     {
         const String &Msg = Msg0 + Bkg;
@@ -2525,6 +2535,7 @@ void TMainForm::ChangeUILanguage()
         KCh2Label->Caption = SmpCh2Label->Caption;
         CsCh1Label->Caption = SmpCh1Label->Caption;
         CsCh2Label->Caption = SmpCh2Label->Caption;
+        IsBkgSubtracted->Caption = L"Fon ayriladi";
 
         const String MDA(L"<MDA");
         const String AMA(L"<AMA");
@@ -2608,6 +2619,8 @@ void TMainForm::ChangeUILanguage()
         CsChan1Edit->Hint = CsCh1Label->Hint;
         CsCh2Label->Hint = L"  " + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + Str;
         CsChan2Edit->Hint = CsCh2Label->Hint;
+
+        ChangeFinalSpcScaleAction->Caption = L"Logarifmli masshtabda";
     }
     else if (__LangID == 1)
     {
@@ -2729,6 +2742,7 @@ void TMainForm::ChangeUILanguage()
         KCh2Label->Caption = SmpCh2Label->Caption;
         CsCh1Label->Caption = SmpCh1Label->Caption;
         CsCh2Label->Caption = SmpCh2Label->Caption;
+        IsBkgSubtracted->Caption = L"Background subtracted";
 
         const String MDA(L"<MDA");
         const String AMA(L"<AMA");
@@ -2812,6 +2826,8 @@ void TMainForm::ChangeUILanguage()
         CsChan1Edit->Hint = CsCh1Label->Hint;
         CsCh2Label->Hint = Str + (Energy2Edit->Text.IsEmpty() ? E2 : Energy2Edit->Text + keV) + L" energy  ";
         CsChan2Edit->Hint = CsCh2Label->Hint;
+
+        ChangeFinalSpcScaleAction->Caption = L"Logarithmic scale";
     }
     else
     {
@@ -3055,6 +3071,36 @@ void __fastcall TMainForm::BeActLabelClick(TObject *Sender)
         BeActivityPerKgOrSq->Text = BeActivityPerSquare;
         SampleBeError->Text = BeErrorPerSquare;
     }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::IsBkgSubtractedClick(TObject *Sender)
+{
+    if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
+        RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
+    {
+        DecomposeSampleSpectrum();
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::ChangeFinalSpcScaleActionExecute(TObject *Sender)
+{
+    if (!FinalSpcChart->LeftAxis->Logarithmic)
+    {
+        FinalSpcChart->LeftAxis->Minimum = 0;
+        FinalSpcChart->LeftAxis->Increment = 0;
+    }
+    FinalSpcChart->LeftAxis->Logarithmic = !FinalSpcChart->LeftAxis->Logarithmic;
+    if (!FinalSpcChart->LeftAxis->Logarithmic)
+    {
+        FinalSpcChart->LeftAxis->Minimum = -300;
+        FinalSpcChart->LeftAxis->Increment = 300;
+    }
+    ChangeFinalSpcScaleAction->Checked = FinalSpcChart->LeftAxis->Logarithmic;
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::ChangeFinalSpcScaleActionUpdate(TObject *Sender)
+{
+    ChangeFinalSpcScaleAction->Enabled = FinalSpectrum->Count() > 0;
 }
 //---------------------------------------------------------------------------
 

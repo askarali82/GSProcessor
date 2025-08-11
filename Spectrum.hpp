@@ -163,6 +163,12 @@ public:
 
     double CalculateCountByEnergyRange(const double Start, const double End) const;
 
+    double CalculateCountByChannelRange(const size_t Start, const size_t End) const;
+
+    double CalculateNetCountByChannelRange(const size_t Start, const size_t End) const;
+
+    std::pair<double, double> CalculateCentroidByChannelRange(const size_t Start, const size_t End) const;
+
     double CalculateTotalCount() const;
 
     bool WriteCountsToTextFile(
@@ -198,6 +204,10 @@ public:
     TSpectrum Smooth() const;
 
     TSpectrum FirstDerivative() const;
+
+    double GetEnergyValueByIndex(const size_t I) const;
+
+    double GetCountValueByIndex(const size_t I) const;
 };
 //---------------------------------------------------------------------------
 String TSpectrum::FileExistenceError;
@@ -417,6 +427,52 @@ double TSpectrum::CalculateCountByEnergyRange(const double Start, const double E
         }
     }
     return Result;
+}
+//---------------------------------------------------------------------------
+double TSpectrum::CalculateCountByChannelRange(const size_t Start, const size_t End) const
+{
+    double Result = 0;
+    for (size_t i = Start; i <= End && i < Counts.size(); i++)
+    {
+        Result += Counts[i];
+    }
+    return Result;
+}
+//---------------------------------------------------------------------------
+double TSpectrum::CalculateNetCountByChannelRange(const size_t Start, const size_t End) const
+{
+    double Result = 0;
+    double Bkg = 0;
+    if (Start < Counts.size() && End < Counts.size() && End > Start)
+    {
+        Bkg = ((Counts[Start] + Counts[End]) / 2.0) * (End - Start);
+    }
+    for (size_t i = Start; i <= End && i < Counts.size(); i++)
+    {
+        Result += Counts[i];
+    }
+    return Result - Bkg;
+}
+//---------------------------------------------------------------------------
+std::pair<double, double> TSpectrum::CalculateCentroidByChannelRange(const size_t Start, const size_t End) const
+{
+    double SumOfMulCh = 0;
+    double SumOfMulEn = 0;
+    double Sum = 0;
+    for (size_t i = Start; i <= End && i < Counts.size(); i++)
+    {
+        SumOfMulCh += (i * Counts[i]);
+        SumOfMulEn += (Energies[i] * Counts[i]);
+        Sum += Counts[i];
+    }
+    if (Sum != 0)
+    {
+        return std::make_pair(SumOfMulCh / Sum, SumOfMulEn / Sum);
+    }
+    else
+    {
+        return std::make_pair(0.0, 0.0);
+    }
 }
 //---------------------------------------------------------------------------
 double TSpectrum::CalculateTotalCount() const
@@ -778,6 +834,30 @@ TSpectrum TSpectrum::FirstDerivative() const
         ErrorMessage = E.Message;
     }
     return *this;
+}
+//---------------------------------------------------------------------------
+double TSpectrum::GetEnergyValueByIndex(const size_t I) const
+{
+    if (I < Energies.size())
+    {
+        return Energies[I];
+    }
+    else
+    {
+        return 0.0;
+    }
+}
+//---------------------------------------------------------------------------
+double TSpectrum::GetCountValueByIndex(const size_t I) const
+{
+    if (I < Counts.size())
+    {
+        return Counts[I];
+    }
+    else
+    {
+        return 0.0;
+    }
 }
 
 #endif

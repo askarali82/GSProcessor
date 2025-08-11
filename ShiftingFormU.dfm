@@ -366,6 +366,7 @@ object ShiftingForm: TShiftingForm
     View3D = False
     Zoom.FullRepaint = True
     ZoomWheel = pmwNormal
+    OnAfterDraw = SpcChartAfterDraw
     Color = clMedGray
     PopupMenu = PopupMenu
     TabStop = False
