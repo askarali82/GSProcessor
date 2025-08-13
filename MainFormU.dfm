@@ -676,18 +676,6 @@ object MainForm: TMainForm
       TabOrder = 0
       OnChange = OnShiftingDataChange
     end
-    object IsBkgSubtracted: TCheckBox
-      Left = 444
-      Top = 75
-      Width = 133
-      Height = 17
-      Anchors = [akTop, akRight]
-      Caption = 'Fon ayriladi'
-      Checked = True
-      State = cbChecked
-      TabOrder = 5
-      OnClick = IsBkgSubtractedClick
-    end
   end
   object ThPanel: TPanel
     Left = 805
@@ -4367,6 +4355,15 @@ object MainForm: TMainForm
         ImageIndex = 5
         OnClick = HelpButtonClick
       end
+      object ToolButton1: TToolButton
+        Left = 684
+        Top = 0
+        AutoSize = True
+        Caption = 'Test'
+        ImageIndex = 6
+        Style = tbsTextButton
+        Visible = False
+      end
     end
   end
   object OpenDialog: TOpenDialog
@@ -5074,6 +5071,17 @@ object MainForm: TMainForm
       OnExecute = ChangeFinalSpcScaleActionExecute
       OnUpdate = ChangeFinalSpcScaleActionUpdate
     end
+    object SubtractBkgAction: TAction
+      Caption = 'Fon ayriladi'
+      Checked = True
+      OnExecute = SubtractBkgActionExecute
+      OnUpdate = SubtractBkgActionUpdate
+    end
+    object SmoothFInalSpectrumAction: TAction
+      Caption = 'Silliqlangan'
+      OnExecute = SmoothFInalSpectrumActionExecute
+      OnUpdate = SmoothFInalSpectrumActionUpdate
+    end
   end
   object SaveDialog: TSaveDialog
     DefaultExt = 'par'
@@ -5086,6 +5094,12 @@ object MainForm: TMainForm
     Top = 561
     object Logarifmlimasshtabda1: TMenuItem
       Action = ChangeFinalSpcScaleAction
+    end
+    object Fonayriladi1: TMenuItem
+      Action = SubtractBkgAction
+    end
+    object Silliqlangan1: TMenuItem
+      Action = SmoothFInalSpectrumAction
     end
   end
 end

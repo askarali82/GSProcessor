@@ -203,6 +203,8 @@ public:
 
     TSpectrum Smooth() const;
 
+    TSpectrum SavitzkyGolaySmooth(const int windowSize = 7, const int polyOrder = 2) const;
+
     TSpectrum FirstDerivative() const;
 
     double GetEnergyValueByIndex(const size_t I) const;
@@ -858,6 +860,128 @@ double TSpectrum::GetCountValueByIndex(const size_t I) const
     {
         return 0.0;
     }
+}
+//---------------------------------------------------------------------------
+// Savitzky–Golay smoothing
+// windowSize - must be odd (e.g., 5, 7, 9)
+// polyOrder  - polynomial order (usually 2 or 3)
+TSpectrum TSpectrum::SavitzkyGolaySmooth(const int windowSize, const int polyOrder) const
+{
+    try
+    {
+        if (windowSize % 2 == 0 || windowSize < 3)
+        {
+            throw Exception("Window size must be odd and >= 3");
+        }
+        if (polyOrder >= windowSize)
+        {
+            throw Exception("Polynomial order must be less than window size");
+        }
+
+        int halfWindow = windowSize / 2;
+        TSpectrum Result = *this;
+        const int n = Counts.size();
+
+        // Precompute convolution coefficients
+        std::vector<double> coeff(windowSize, 0.0);
+
+        // Compute least-squares matrix (V^T * V) and its inverse
+        std::vector<std::vector<double>> A(windowSize, std::vector<double>(polyOrder + 1, 0.0));
+        for (int i = -halfWindow; i <= halfWindow; ++i)
+        {
+            double val = 1.0;
+            for (int j = 0; j <= polyOrder; ++j)
+            {
+                A[i + halfWindow][j] = val;
+                val *= i;
+            }
+        }
+
+        std::vector<std::vector<double>> ATA(polyOrder + 1, std::vector<double>(polyOrder + 1, 0.0));
+        for (int i = 0; i <= polyOrder; ++i)
+        {
+            for (int j = 0; j <= polyOrder; ++j)
+            {
+                double sum = 0.0;
+                for (int k = 0; k < windowSize; ++k)
+                {
+                    sum += A[k][i] * A[k][j];
+                }
+                ATA[i][j] = sum;
+            }
+        }
+
+        // Invert ATA (small matrix, so we can use Gaussian elimination)
+        std::vector<std::vector<double>> invATA = ATA;
+        int m = polyOrder + 1;
+        std::vector<std::vector<double>> I(m, std::vector<double>(m, 0.0));
+        for (int i = 0; i < m; ++i)
+        {
+            I[i][i] = 1.0;
+        }
+
+        for (int i = 0; i < m; ++i)
+        {
+            double pivot = invATA[i][i];
+            if (pivot == 0.0)
+            {
+                throw std::runtime_error("Singular matrix in Savitzky-Golay");
+            }
+            double invPivot = 1.0 / pivot;
+            for (int j = 0; j < m; ++j)
+            {
+                invATA[i][j] *= invPivot;
+                I[i][j] *= invPivot;
+            }
+            for (int k = 0; k < m; ++k)
+            {
+                if (k == i) continue;
+                double factor = invATA[k][i];
+                for (int j = 0; j < m; ++j)
+                {
+                    invATA[k][j] -= factor * invATA[i][j];
+                    I[k][j] -= factor * I[i][j];
+                }
+            }
+        }
+
+        // Convolution coefficients for smoothing (centered at 0th derivative)
+        for (int k = 0; k < windowSize; ++k)
+        {
+            coeff[k] = 0.0;
+            for (int j = 0; j <= polyOrder; ++j)
+            {
+                coeff[k] += I[0][j] * A[k][j];
+            }
+        }
+
+        // Apply convolution
+        for (int i = 0; i < n; ++i)
+        {
+            double sum = 0.0;
+            for (int j = -halfWindow; j <= halfWindow; ++j)
+            {
+                int idx = i + j;
+                if (idx < 0)
+                {
+                    idx = 0; // clamp at edges
+                }
+                else if (idx >= n)
+                {
+                    idx = n - 1;
+                }
+                sum += coeff[j + halfWindow] * Counts[idx];
+            }
+            Result.Counts[i] = sum;
+        }
+
+        return Result;
+    }
+    catch (const Exception &E)
+    {
+        ErrorMessage = E.Message;
+    }
+    return *this;
 }
 
 #endif

@@ -934,7 +934,7 @@ void TMainForm::DecomposeSampleSpectrum()
 
         DrawSpectrum(SampleSpc, SampleSpectrum);
         CalculateCountsInStdSamples();
-        TSpectrum TMPSpc = BkgSpc.Multiply(int(IsBkgSubtracted->Checked) * SampleSpc.Duration / BkgSpc.Duration);
+        TSpectrum TMPSpc = BkgSpc.Multiply(int(SubtractBkgAction->Checked) * SampleSpc.Duration / BkgSpc.Duration);
         BkgSpcWithCoeff = TMPSpc;
         DrawSpectrum(TMPSpc, BkgSpectrum);
         bool OK = SampleSpc.Subtract(TMPSpc, Sample_M_Bkg);
@@ -1056,8 +1056,12 @@ void TMainForm::DecomposeSampleSpectrum()
             System::Sqrt(Utils::Sqr(CsError1) + Utils::Sqr(CountError) + Utils::Sqr(CsActivityError));
         SampleCsError->Text = Activity >= MDACs ? Utils::RoundFloatValue(Activity * CsError, 2, false) : String();
 
-        DrawSpectrum(Sample_M_Cs, FinalSpectrum);
         Count = Sample_M_Cs.CalculateCountByEnergyRange(BeEn1, BeEn2);
+        if (SmoothFInalSpectrumAction->Checked)
+        {
+            Sample_M_Cs = Sample_M_Cs.SavitzkyGolaySmooth();
+        }
+        DrawSpectrum(Sample_M_Cs, FinalSpectrum);
         BeSum->Text = Utils::RoundFloatValue(Count);
         if (MDABe > 0)
         {
@@ -2009,11 +2013,9 @@ void __fastcall TMainForm::OpenSpectrumActionExecute(TObject *Sender)
     {
         return;
     }
-    if (!IsBkgSubtracted->Checked)
+    if (!SubtractBkgAction->Checked)
     {
-        IsBkgSubtracted->OnClick = nullptr;
-        IsBkgSubtracted->Checked = true;
-        IsBkgSubtracted->OnClick = IsBkgSubtractedClick;
+        SubtractBkgAction->Checked = true;
     }
     if (Sysutils::ExtractFileExt(OpenDialog->FileName).LowerCase() == L".par")
     {
@@ -2535,7 +2537,7 @@ void TMainForm::ChangeUILanguage()
         KCh2Label->Caption = SmpCh2Label->Caption;
         CsCh1Label->Caption = SmpCh1Label->Caption;
         CsCh2Label->Caption = SmpCh2Label->Caption;
-        IsBkgSubtracted->Caption = L"Fon ayriladi";
+        SubtractBkgAction->Caption = L"Fon ayriladi";
 
         const String MDA(L"<MDA");
         const String AMA(L"<AMA");
@@ -2621,6 +2623,7 @@ void TMainForm::ChangeUILanguage()
         CsChan2Edit->Hint = CsCh2Label->Hint;
 
         ChangeFinalSpcScaleAction->Caption = L"Logarifmli masshtabda";
+        SmoothFInalSpectrumAction->Caption = L"Silliqlangan";
     }
     else if (__LangID == 1)
     {
@@ -2742,7 +2745,7 @@ void TMainForm::ChangeUILanguage()
         KCh2Label->Caption = SmpCh2Label->Caption;
         CsCh1Label->Caption = SmpCh1Label->Caption;
         CsCh2Label->Caption = SmpCh2Label->Caption;
-        IsBkgSubtracted->Caption = L"Background subtracted";
+        SubtractBkgAction->Caption = L"Background subtracted";
 
         const String MDA(L"<MDA");
         const String AMA(L"<AMA");
@@ -2828,6 +2831,7 @@ void TMainForm::ChangeUILanguage()
         CsChan2Edit->Hint = CsCh2Label->Hint;
 
         ChangeFinalSpcScaleAction->Caption = L"Logarithmic scale";
+        SmoothFInalSpectrumAction->Caption = L"Smoothed";
     }
     else
     {
@@ -3073,15 +3077,6 @@ void __fastcall TMainForm::BeActLabelClick(TObject *Sender)
     }
 }
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::IsBkgSubtractedClick(TObject *Sender)
-{
-    if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
-        RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
-    {
-        DecomposeSampleSpectrum();
-    }
-}
-//---------------------------------------------------------------------------
 void __fastcall TMainForm::ChangeFinalSpcScaleActionExecute(TObject *Sender)
 {
     if (!FinalSpcChart->LeftAxis->Logarithmic)
@@ -3101,6 +3096,36 @@ void __fastcall TMainForm::ChangeFinalSpcScaleActionExecute(TObject *Sender)
 void __fastcall TMainForm::ChangeFinalSpcScaleActionUpdate(TObject *Sender)
 {
     ChangeFinalSpcScaleAction->Enabled = FinalSpectrum->Count() > 0;
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::SubtractBkgActionExecute(TObject *Sender)
+{
+    SubtractBkgAction->Checked = !SubtractBkgAction->Checked;
+    if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
+        RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
+    {
+        DecomposeSampleSpectrum();
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::SubtractBkgActionUpdate(TObject *Sender)
+{
+    SubtractBkgAction->Enabled = FinalSpectrum->Count() > 0;
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::SmoothFInalSpectrumActionExecute(TObject *Sender)
+{
+    SmoothFInalSpectrumAction->Checked = !SmoothFInalSpectrumAction->Checked;
+    if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
+        RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
+    {
+        DecomposeSampleSpectrum();
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::SmoothFInalSpectrumActionUpdate(TObject *Sender)
+{
+    SmoothFInalSpectrumAction->Enabled = FinalSpectrum->Count() > 0;
 }
 //---------------------------------------------------------------------------
 

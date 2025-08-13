@@ -270,10 +270,14 @@ __published:
     TLabel *Label4;
     TLabel *Label5;
     TLabel *BeSmpLabel;
-    TCheckBox *IsBkgSubtracted;
     TAction *ChangeFinalSpcScaleAction;
     TPopupMenu *FinalSpcPopupMenu;
     TMenuItem *Logarifmlimasshtabda1;
+    TAction *SubtractBkgAction;
+    TMenuItem *Fonayriladi1;
+    TToolButton *ToolButton1;
+    TAction *SmoothFInalSpectrumAction;
+    TMenuItem *Silliqlangan1;
     void __fastcall FormResize(TObject *Sender);
     void __fastcall StandardSamplesButtonClick(TObject *Sender);
     void __fastcall OnSpectraLoadTimer(TObject *Sender);
@@ -313,9 +317,12 @@ __published:
     void __fastcall FinalSpcChartMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
     void __fastcall OnChartAfterDraw(TObject *Sender);
-    void __fastcall IsBkgSubtractedClick(TObject *Sender);
     void __fastcall ChangeFinalSpcScaleActionExecute(TObject *Sender);
     void __fastcall ChangeFinalSpcScaleActionUpdate(TObject *Sender);
+    void __fastcall SubtractBkgActionExecute(TObject *Sender);
+    void __fastcall SubtractBkgActionUpdate(TObject *Sender);
+    void __fastcall SmoothFInalSpectrumActionExecute(TObject *Sender);
+    void __fastcall SmoothFInalSpectrumActionUpdate(TObject *Sender);
 
 
 private:
