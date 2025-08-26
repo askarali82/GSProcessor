@@ -937,6 +937,12 @@ void TMainForm::DecomposeSampleSpectrum()
         TSpectrum TMPSpc = BkgSpc.Multiply(int(SubtractBkgAction->Checked) * SampleSpc.Duration / BkgSpc.Duration);
         BkgSpcWithCoeff = TMPSpc;
         DrawSpectrum(TMPSpc, BkgSpectrum);
+
+        const double SampleTh = SampleSpc.CalculateCountByEnergyRange(ThEn1, ThEn2);
+        const double SampleRa = SampleSpc.CalculateCountByEnergyRange(RaEn1, RaEn2);
+        const double SampleK = SampleSpc.CalculateCountByEnergyRange(KEn1, KEn2);
+        const double SampleCs = SampleSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
+        const double SampleBe = SampleSpc.CalculateCountByEnergyRange(BeEn1, BeEn2);
         bool OK = SampleSpc.Subtract(TMPSpc, Sample_M_Bkg);
         TSpectrum::CheckError(OK, Msg + L"\r\n\r\n" + SampleSpc.ErrorMessage);
 
@@ -974,7 +980,7 @@ void TMainForm::DecomposeSampleSpectrum()
         OK = Sample_M_Bkg.Subtract(TMPSpc, Sample_M_Th);
         TSpectrum::CheckError(OK, Msg + L"\r\n\r\n" + Sample_M_Bkg.ErrorMessage);
 
-        const double ThError1 = Count > 0 ? (System::Sqrt(Count + BkgTh) / Count) : 0;
+        const double ThError1 = Count > 0 ? (System::Sqrt(SampleTh + BkgTh) / Count) : 0;
         const double ThTh = TMPSpc.CalculateCountByEnergyRange(ThEn1, ThEn2);
         const double ThRa = TMPSpc.CalculateCountByEnergyRange(RaEn1, RaEn2);
         const double ThK = TMPSpc.CalculateCountByEnergyRange(KEn1, KEn2);
@@ -1000,7 +1006,7 @@ void TMainForm::DecomposeSampleSpectrum()
         OK = Sample_M_Th.Subtract(TMPSpc, Sample_M_Ra);
         TSpectrum::CheckError(OK, Msg + L"\r\n\r\n" + Sample_M_Th.ErrorMessage);
 
-        const double RaError1 = Count > 0 ? (System::Sqrt(Count + (BkgRa + ThRa)) / Count) : 0;
+        const double RaError1 = Count > 0 ? (System::Sqrt(SampleRa + BkgRa + ThRa) / Count) : 0;
         const double RaRa = TMPSpc.CalculateCountByEnergyRange(RaEn1, RaEn2);
         const double RaK = TMPSpc.CalculateCountByEnergyRange(KEn1, KEn2);
         const double RaCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
@@ -1025,7 +1031,7 @@ void TMainForm::DecomposeSampleSpectrum()
         OK = Sample_M_Ra.Subtract(TMPSpc, Sample_M_K);
         TSpectrum::CheckError(OK, Msg + L"\r\n\r\n" + Sample_M_Ra.ErrorMessage);
 
-        const double KError1 = Count > 0 ? (System::Sqrt(Count + (BkgK + ThK + RaK)) / Count) : 0;
+        const double KError1 = Count > 0 ? (System::Sqrt(SampleK + BkgK + ThK + RaK) / Count) : 0;
         const double KK = TMPSpc.CalculateCountByEnergyRange(KEn1, KEn2);
         const double KCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
         const double KBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
@@ -1049,7 +1055,7 @@ void TMainForm::DecomposeSampleSpectrum()
         OK = Sample_M_K.Subtract(TMPSpc, Sample_M_Cs);
         TSpectrum::CheckError(OK, Msg + L"\r\n\r\n" + Sample_M_K.ErrorMessage);
 
-        const double CsError1 = Count > 0 ? (System::Sqrt(Count + (BkgCs + ThCs + RaCs + KCs)) / Count) : 0;
+        const double CsError1 = Count > 0 ? (System::Sqrt(SampleCs + BkgCs + ThCs + RaCs + KCs) / Count) : 0;
         const double CsCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
         const double CsBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
         const double CsError =
@@ -1075,7 +1081,7 @@ void TMainForm::DecomposeSampleSpectrum()
             const double TotalMass = Sysutils::StrToFloatDef(SampleOrigMass->Text, 0) * 0.001;
             const double Square = Sysutils::StrToFloatDef(SampleSquare->Text, 0) * 0.0001;
             const double BeError1 =
-                Count > 0 ? (System::Sqrt(Count + (BkgBe + ThBe + RaBe + KBe + CsBe)) / Count) : 0;
+                Count > 0 ? (System::Sqrt(SampleBe + BkgBe + ThBe + RaBe + KBe + CsBe) / Count) : 0;
             const double BeError = System::Sqrt(Utils::Sqr(BeError1) + Utils::Sqr(CountError) + Utils::Sqr(BeSysError));
             BeErrorPerKilogram = Activity >= MDABe ? Utils::RoundFloatValue(Activity * BeError, 2, false) : String();
 

@@ -430,22 +430,58 @@ bool TBatchProcessingThread::CreateVirtualSpectra(const TSpectrum &Spectrum)
 
     if (BaseData.ValidSpectra(0) && BaseData.ValidSpectra(1) && BaseData.ValidSpectra(2))
     {
+        const double dN1 = std::abs(DensityInGramPerLitre - BaseData.Ths[0].DensityInGramPerLitre);
+        const double dN2 = std::abs(DensityInGramPerLitre - BaseData.Ths[1].DensityInGramPerLitre);
+        const double dN3 = std::abs(DensityInGramPerLitre - BaseData.Ths[2].DensityInGramPerLitre);
+        ValidIndex = 0;
+        double MindN = dN1;
+        if (dN2 <= MindN)
+        {
+            MindN = dN2;
+            ValidIndex = 1;
+        }
+        if (dN3 <= MindN)
+        {
+            ValidIndex = 2;
+        }
         return CreateVirtualSpectraFrom3Set(DensityInGramPerLitre);
     }
     else if (BaseData.ValidSpectra(0) && BaseData.ValidSpectra(1))
     {
+        const double dN1 = std::abs(DensityInGramPerLitre - BaseData.Ths[0].DensityInGramPerLitre);
+        const double dN2 = std::abs(DensityInGramPerLitre - BaseData.Ths[1].DensityInGramPerLitre);
+        ValidIndex = 0;
+        if (dN2 <= dN1)
+        {
+            ValidIndex = 1;
+        }
         return CreateVirtualSpectraFrom2Set(DensityInGramPerLitre, 0, 1);
     }
     else if (BaseData.ValidSpectra(0) && BaseData.ValidSpectra(2))
     {
+        const double dN1 = std::abs(DensityInGramPerLitre - BaseData.Ths[0].DensityInGramPerLitre);
+        const double dN2 = std::abs(DensityInGramPerLitre - BaseData.Ths[2].DensityInGramPerLitre);
+        ValidIndex = 0;
+        if (dN2 <= dN1)
+        {
+            ValidIndex = 2;
+        }
         return CreateVirtualSpectraFrom2Set(DensityInGramPerLitre, 0, 2);
     }
     else if (BaseData.ValidSpectra(1) && BaseData.ValidSpectra(2))
     {
+        const double dN1 = std::abs(DensityInGramPerLitre - BaseData.Ths[1].DensityInGramPerLitre);
+        const double dN2 = std::abs(DensityInGramPerLitre - BaseData.Ths[2].DensityInGramPerLitre);
+        ValidIndex = 1;
+        if (dN2 <= dN1)
+        {
+            ValidIndex = 2;
+        }
         return CreateVirtualSpectraFrom2Set(DensityInGramPerLitre, 1, 2);
     }
     else if (BaseData.ValidSpectra(0))
     {
+        ValidIndex = 0;
         ThSpc = BaseData.Ths[0];
         RaSpc = BaseData.Ras[0];
         KSpc = BaseData.Ks[0];
@@ -455,6 +491,7 @@ bool TBatchProcessingThread::CreateVirtualSpectra(const TSpectrum &Spectrum)
     }
     else if (BaseData.ValidSpectra(1))
     {
+        ValidIndex = 1;
         ThSpc = BaseData.Ths[1];
         RaSpc = BaseData.Ras[1];
         KSpc = BaseData.Ks[1];
@@ -464,6 +501,7 @@ bool TBatchProcessingThread::CreateVirtualSpectra(const TSpectrum &Spectrum)
     }
     else if (BaseData.ValidSpectra(2))
     {
+        ValidIndex = 2;
         ThSpc = BaseData.Ths[2];
         RaSpc = BaseData.Ras[2];
         KSpc = BaseData.Ks[2];
@@ -575,28 +613,18 @@ void TBatchProcessingThread::CalculateActivities(
 
     LOG(L"BePhotopeakEff = " + String(BePhotopeakEff) + L" for density " + String(Spectrum.DensityInGramPerLitre));
 
-
-    const double dN1 = std::abs(Spectrum.DensityInGramPerLitre - BaseData.Ths[0].DensityInGramPerLitre);
-    const double dN2 = std::abs(Spectrum.DensityInGramPerLitre - BaseData.Ths[1].DensityInGramPerLitre);
-    const double dN3 = std::abs(Spectrum.DensityInGramPerLitre - BaseData.Ths[2].DensityInGramPerLitre);
-    int Idx = 0;
-    double MindN = dN1;
-    if (dN2 <= MindN)
-    {
-        MindN = dN2;
-        Idx = 1;
-    }
-    if (dN3 <= MindN)
-    {
-        Idx = 2;
-    }
-    const double ThActivityError = BaseData.ThActivityErrors[Idx];
-    const double RaActivityError = BaseData.RaActivityErrors[Idx];
-    const double KActivityError = BaseData.KActivityErrors[Idx];
-    const double CsActivityError = BaseData.CsActivityErrors[Idx];
+    const double ThActivityError = BaseData.ThActivityErrors[ValidIndex];
+    const double RaActivityError = BaseData.RaActivityErrors[ValidIndex];
+    const double KActivityError = BaseData.KActivityErrors[ValidIndex];
+    const double CsActivityError = BaseData.CsActivityErrors[ValidIndex];
 
     TSpectrum SubtractedSpc;
     TSpectrum TMPSpc;
+    const double SampleThCount = Spectrum.CalculateCountByEnergyRange(BaseData.ThEn1, BaseData.ThEn2);
+    const double SampleRaCount = Spectrum.CalculateCountByEnergyRange(BaseData.RaEn1, BaseData.RaEn2);
+    const double SampleKCount = Spectrum.CalculateCountByEnergyRange(BaseData.KEn1, BaseData.KEn2);
+    const double SampleCsCount = Spectrum.CalculateCountByEnergyRange(BaseData.CsEn1, BaseData.CsEn2);
+    const double SampleBeCount = Spectrum.CalculateCountByEnergyRange(BaseData.BeEn1, BaseData.BeEn2);
     bool OK = Spectrum.Subtract(BkgSpc.Multiply(InSmpDuration), TMPSpc, true);
     TSpectrum::CheckError(OK, Msg + L"\r\n\r\n" + Spectrum.ErrorMessage);
     SubtractedSpc = TMPSpc;
@@ -610,7 +638,7 @@ void TBatchProcessingThread::CalculateActivities(
     const auto SmpCsThCount = SmpThActivity * Spectrum.Duration * CsThCount_sa;
     const auto SmpBeThCount = Be7IsCalculated ? SmpThActivity * BeThCount_sa * Spectrum.Duration: 0;
     const double ThError1 =
-        SmpThCount > 0 ? (System::Sqrt(SmpThCount + BkgThCount) / SmpThCount) : 0;
+        SmpThCount > 0 ? (System::Sqrt(SampleThCount + BkgThCount) / SmpThCount) : 0;
     const double ThError = System::Sqrt(Utils::Sqr(ThError1) + Utils::Sqr(ThActivityError));
 
 
@@ -628,7 +656,7 @@ void TBatchProcessingThread::CalculateActivities(
     const auto SmpCsRaCount = SmpRaActivity * Spectrum.Duration * CsRaCount_sa;
     const auto SmpBeRaCount = Be7IsCalculated ? SmpRaActivity * Spectrum.Duration * BeRaCount_sa : 0;
     const double RaError1 =
-        SmpRaCount > 0 ? (System::Sqrt(SmpRaCount + (BkgRaCount + SmpRaThCount)) / SmpRaCount) : 0;
+        SmpRaCount > 0 ? (System::Sqrt(SampleRaCount + BkgRaCount + SmpRaThCount) / SmpRaCount) : 0;
     const double RaError = System::Sqrt(Utils::Sqr(RaError1) + Utils::Sqr(RaActivityError));
 
 
@@ -645,7 +673,7 @@ void TBatchProcessingThread::CalculateActivities(
     const auto SmpCsKCount = SmpKActivity * Spectrum.Duration * CsKCount_sa;
     const auto SmpBeKCount = Be7IsCalculated ? SmpKActivity * Spectrum.Duration * BeKCount_sa : 0;
     const double KError1 =
-        SmpKCount > 0 ? (System::Sqrt(SmpKCount + (BkgKCount + SmpKThCount + SmpKRaCount)) / SmpKCount) : 0;
+        SmpKCount > 0 ? (System::Sqrt(SampleKCount + BkgKCount + SmpKThCount + SmpKRaCount) / SmpKCount) : 0;
     const double KError  = System::Sqrt(Utils::Sqr(KError1) + Utils::Sqr(KActivityError));
 
 
@@ -661,7 +689,7 @@ void TBatchProcessingThread::CalculateActivities(
     const auto SmpCsActivity = (CsSpc.Duration * CsActivity * CsC) / Spectrum.Duration;
     const auto SmpBeCsCount = Be7IsCalculated ? SmpCsActivity * Spectrum.Duration * BeCsCount_sa : 0;
     const double CsError1 =
-        SmpCsCount > 0 ? (System::Sqrt(SmpCsCount + (BkgCsCount + SmpCsThCount + SmpCsRaCount + SmpCsKCount)) / SmpCsCount) : 0;
+        SmpCsCount > 0 ? (System::Sqrt(SampleCsCount + BkgCsCount + SmpCsThCount + SmpCsRaCount + SmpCsKCount) / SmpCsCount) : 0;
     const double CsError = System::Sqrt(Utils::Sqr(CsError1) + Utils::Sqr(CsActivityError));
 
 
@@ -678,7 +706,7 @@ void TBatchProcessingThread::CalculateActivities(
         Be7IsCalculated ? SmpBeCount / BeCoeff : 0;
 
     const double BeError1 =
-        Be7IsCalculated ? (System::Sqrt(SmpBeCount + (BkgBeCount + SmpBeThCount + SmpBeRaCount + SmpBeKCount + SmpBeCsCount)) / SmpBeCount) : 0;
+        Be7IsCalculated ? (System::Sqrt(SampleBeCount + BkgBeCount + SmpBeThCount + SmpBeRaCount + SmpBeKCount + SmpBeCsCount) / SmpBeCount) : 0;
 
     const double BeError =
         Be7IsCalculated ? System::Sqrt(Utils::Sqr(BeError1) + Utils::Sqr(BaseData.BeSysError)) : 0;

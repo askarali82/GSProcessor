@@ -107,6 +107,8 @@ private:
 
     bool Be7IsCalculated;
 
+    int ValidIndex;
+
     void GetFilesList();
     bool CreateVirtualSpectra(const TSpectrum &Spectrum);
     bool CreateVirtualSpectraFrom3Set(const double DensityInGramPerLitre);
