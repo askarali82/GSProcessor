@@ -439,7 +439,6 @@ private:
     void SetEnergyRanges(TSettingsForm *Settings);
     bool ValidSpectra(const int Idx) const;
     int FindChannelByEnergy(const double En, TLineSeries *Spc) const;
-    void CalculateMDAs(const TSpectrum &Bkg, double &MDATh, double &MDARa, double &MDAK, double &MDACs, double &MDABe) const;
     String GetVersionString(const String &DefaultVal = L"") const;
     bool ShiftSrc();
     bool ShiftBkg();

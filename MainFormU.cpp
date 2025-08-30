@@ -879,35 +879,6 @@ void TMainForm::CalculateCountsInStdSamples()
     CsSum->Text = Utils::RoundFloatValue(CsCount);
 }
 //---------------------------------------------------------------------------
-void TMainForm::CalculateMDAs(
-    const TSpectrum &Bkg, double &MDATh, double &MDARa, double &MDAK, double &MDACs, double &MDABe) const
-{
-    const double CountThBkg = Bkg.CalculateCountByEnergyRange(ThEn1, ThEn2);
-    const double CountRaBkg = Bkg.CalculateCountByEnergyRange(RaEn1, RaEn2);
-    const double CountKBkg = Bkg.CalculateCountByEnergyRange(KEn1, KEn2);
-    const double CountCsBkg = Bkg.CalculateCountByEnergyRange(CsEn1, CsEn2);
-    const double CountBeBkg =
-        (BeEn1 > 0 && BeEn2 > 0 && BeEn2 > BeEn1) ? Bkg.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
-    const double MassCoeff = StrToFloat(SampleMass->Text) / 1000;
-
-    MDATh =
-        3 * System::Sqrt(CountThBkg) * (StrToFloat(ThActivity->Text) / (ThCount * (SampleSpc.Duration / ThSpc.Duration) * MassCoeff));
-    MDARa =
-        3 * System::Sqrt(CountRaBkg) * (StrToFloat(RaActivity->Text) / (RaCount * (SampleSpc.Duration / RaSpc.Duration) * MassCoeff));
-    MDAK =
-        3 * System::Sqrt(CountKBkg) * (StrToFloat(KActivity->Text) / (KCount * (SampleSpc.Duration / KSpc.Duration) * MassCoeff));
-    MDACs =
-        3 * System::Sqrt(CountCsBkg) * (StrToFloat(CsActivity->Text) / (CsCount * (SampleSpc.Duration / CsSpc.Duration) * MassCoeff));
-
-    const double DensityInGramPerLitre = Sysutils::StrToFloatDef(SampleDensity->Text, 0);
-    const double BePhotopeakEff =
-        Utils::CalcBe7Effectivity(BePhotopeakEff1, BePhotopeakEff2, BePhotopeakEff3, DensityInGramPerLitre);
-    LOG(L"BePhotopeakEff = " + String(BePhotopeakEff) + L" for density " + SampleDensity->Text);
-    MDABe =
-        (CountBeBkg > 0 && BePhotopeakEff > 0) ?
-        ((3 * System::Sqrt(CountBeBkg)) / (0.104 * SampleSpc.Duration * BePhotopeakEff * MassCoeff)) : 0;
-}
-//---------------------------------------------------------------------------
 void TMainForm::DecomposeSampleSpectrum()
 {
     try
@@ -932,6 +903,8 @@ void TMainForm::DecomposeSampleSpectrum()
         const double CsActivityError =
             System::Sqrt(Utils::Sqr(CsActivityErrors[0]) + Utils::Sqr(CsActivityErrors[1]) + Utils::Sqr(CsActivityErrors[2]));
 
+        const double MassCoeff = StrToFloat(SampleMass->Text) / 1000;
+
         DrawSpectrum(SampleSpc, SampleSpectrum);
         CalculateCountsInStdSamples();
         TSpectrum TMPSpc = BkgSpc.Multiply(int(SubtractBkgAction->Checked) * SampleSpc.Duration / BkgSpc.Duration);
@@ -946,23 +919,18 @@ void TMainForm::DecomposeSampleSpectrum()
         bool OK = SampleSpc.Subtract(TMPSpc, Sample_M_Bkg);
         TSpectrum::CheckError(OK, Msg + L"\r\n\r\n" + SampleSpc.ErrorMessage);
 
-        double MDATh;
-        double MDARa;
-        double MDAK;
-        double MDACs;
-        double MDABe;
-        CalculateMDAs(TMPSpc, MDATh, MDARa, MDAK, MDACs, MDABe);
-        ThMDA->Text = Utils::RoundFloatValue(MDATh, 2, false);
-        RaMDA->Text = Utils::RoundFloatValue(MDARa, 2, false);
-        KMDA->Text = Utils::RoundFloatValue(MDAK, 2, false);
-        CsMDA->Text = Utils::RoundFloatValue(MDACs, 2, false);
-        BeMDA->Text = MDABe > 0 ? Utils::RoundFloatValue(MDABe, 2, false) : String();
-
         const double BkgTh = TMPSpc.CalculateCountByEnergyRange(ThEn1, ThEn2);
         const double BkgRa = TMPSpc.CalculateCountByEnergyRange(RaEn1, RaEn2);
         const double BkgK = TMPSpc.CalculateCountByEnergyRange(KEn1, KEn2);
         const double BkgCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
-        const double BkgBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
+        const double BkgBe =
+            (BeEn1 > 0 && BeEn2 > 0 && BeEn2 > BeEn1) ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
+
+        const double DensityInGramPerLitre = Sysutils::StrToFloatDef(SampleDensity->Text, 0);
+        const double BePhotopeakEff =
+            Utils::CalcBe7Effectivity(BePhotopeakEff1, BePhotopeakEff2, BePhotopeakEff3, DensityInGramPerLitre);
+        LOG(L"BePhotopeakEff = " + String(BePhotopeakEff) + L" for density " + SampleDensity->Text);
+        const bool MDABeCanBeCalculated = BkgBe > 0 && BePhotopeakEff > 0;
 
         double Count = Sample_M_Bkg.CalculateCountByEnergyRange(ThEn1, ThEn2);
         double Coeff = Count / ThCount;
@@ -970,6 +938,8 @@ void TMainForm::DecomposeSampleSpectrum()
         SampleThSum->Text = Utils::RoundFloatValue(Count);
         ThSnSe1->Text = Utils::RoundFloatValue(Coeff, 5);
         ThC = Sysutils::StrToFloatDef(ThSnSe2->Text, 0);
+        const double MDATh =
+            3 * System::Sqrt(BkgTh) * (StrToFloat(ThActivity->Text) / (ThCount * (SampleSpc.Duration / ThSpc.Duration) * MassCoeff));
         double Activity =
             ((ThSpc.Duration * Sysutils::StrToFloatDef(ThActivity->Text, 0) * ThC) /
             (SampleSpc.Duration * Sysutils::StrToFloatDef(SampleMass->Text, 0))) * 1000;
@@ -985,10 +955,11 @@ void TMainForm::DecomposeSampleSpectrum()
         const double ThRa = TMPSpc.CalculateCountByEnergyRange(RaEn1, RaEn2);
         const double ThK = TMPSpc.CalculateCountByEnergyRange(KEn1, KEn2);
         const double ThCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
-        const double ThBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
+        const double ThBe = MDABeCanBeCalculated > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
         const double ThError =
             System::Sqrt(Utils::Sqr(ThError1) + Utils::Sqr(CountError) + Utils::Sqr(ThActivityError));
         SampleThError->Text = Activity >= MDATh ? Utils::RoundFloatValue(Activity * ThError, 2, false) : String();
+        ThMDA->Text = Utils::RoundFloatValue(MDATh, 2, false);
 
         Count = Sample_M_Th.CalculateCountByEnergyRange(RaEn1, RaEn2);
         Coeff = Count / RaCount;
@@ -996,6 +967,8 @@ void TMainForm::DecomposeSampleSpectrum()
         SampleRaSum->Text = Utils::RoundFloatValue(Count);
         RaSnSe1->Text = Utils::RoundFloatValue(Coeff, 5);
         RaC = Sysutils::StrToFloatDef(RaSnSe2->Text, 0);
+        const double MDARa =
+            3 * System::Sqrt(BkgRa + ThRa) * (StrToFloat(RaActivity->Text) / (RaCount * (SampleSpc.Duration / RaSpc.Duration) * MassCoeff));
         Activity =
             ((RaSpc.Duration * Sysutils::StrToFloatDef(RaActivity->Text, 0) * RaC) /
             (SampleSpc.Duration * Sysutils::StrToFloatDef(SampleMass->Text, 0))) * 1000;
@@ -1010,10 +983,11 @@ void TMainForm::DecomposeSampleSpectrum()
         const double RaRa = TMPSpc.CalculateCountByEnergyRange(RaEn1, RaEn2);
         const double RaK = TMPSpc.CalculateCountByEnergyRange(KEn1, KEn2);
         const double RaCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
-        const double RaBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
+        const double RaBe = MDABeCanBeCalculated > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
         const double RaError =
             System::Sqrt(Utils::Sqr(RaError1) + Utils::Sqr(CountError) + Utils::Sqr(RaActivityError));
         SampleRaError->Text = Activity >= MDARa ? Utils::RoundFloatValue(Activity * RaError, 2, false) : String();
+        RaMDA->Text = Utils::RoundFloatValue(MDARa, 2, false);
 
         Count = Sample_M_Ra.CalculateCountByEnergyRange(KEn1, KEn2);
         Coeff = Count / KCount;
@@ -1021,6 +995,8 @@ void TMainForm::DecomposeSampleSpectrum()
         SampleKSum->Text = Utils::RoundFloatValue(Count);
         KSnSe1->Text = Utils::RoundFloatValue(Coeff, 5);
         KC = Sysutils::StrToFloatDef(KSnSe2->Text, 0);
+        const double MDAK =
+            3 * System::Sqrt(BkgK + ThK + RaK) * (StrToFloat(KActivity->Text) / (KCount * (SampleSpc.Duration / KSpc.Duration) * MassCoeff));
         Activity =
             ((KSpc.Duration * Sysutils::StrToFloatDef(KActivity->Text, 0) * KC) /
             (SampleSpc.Duration * Sysutils::StrToFloatDef(SampleMass->Text, 0))) * 1000;
@@ -1034,10 +1010,11 @@ void TMainForm::DecomposeSampleSpectrum()
         const double KError1 = Count > 0 ? (System::Sqrt(SampleK + BkgK + ThK + RaK) / Count) : 0;
         const double KK = TMPSpc.CalculateCountByEnergyRange(KEn1, KEn2);
         const double KCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
-        const double KBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
+        const double KBe = MDABeCanBeCalculated > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
         const double KError  =
             System::Sqrt(Utils::Sqr(KError1) + Utils::Sqr(CountError) + Utils::Sqr(KActivityError));
         SampleKError->Text = Activity >= MDAK ? Utils::RoundFloatValue(Activity * KError, 2, false) : String();
+        KMDA->Text = Utils::RoundFloatValue(MDAK, 2, false);
 
         Count = Sample_M_K.CalculateCountByEnergyRange(CsEn1, CsEn2);
         Coeff = Count / CsCount;
@@ -1045,6 +1022,8 @@ void TMainForm::DecomposeSampleSpectrum()
         SampleCsSum->Text = Utils::RoundFloatValue(Count);
         CsSnSe1->Text = Utils::RoundFloatValue(Coeff, 5);
         CsC = Sysutils::StrToFloatDef(CsSnSe2->Text, 0);
+        const double MDACs =
+            3 * System::Sqrt(BkgCs + ThCs + RaCs + KCs) * (StrToFloat(CsActivity->Text) / (CsCount * (SampleSpc.Duration / CsSpc.Duration) * MassCoeff));
         Activity =
             ((CsSpc.Duration * Sysutils::StrToFloatDef(CsActivity->Text, 0) * CsC) /
             (SampleSpc.Duration * Sysutils::StrToFloatDef(SampleMass->Text, 0))) * 1000;
@@ -1057,10 +1036,11 @@ void TMainForm::DecomposeSampleSpectrum()
 
         const double CsError1 = Count > 0 ? (System::Sqrt(SampleCs + BkgCs + ThCs + RaCs + KCs) / Count) : 0;
         const double CsCs = TMPSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
-        const double CsBe = MDABe > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
+        const double CsBe = MDABeCanBeCalculated > 0 ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
         const double CsError =
             System::Sqrt(Utils::Sqr(CsError1) + Utils::Sqr(CountError) + Utils::Sqr(CsActivityError));
         SampleCsError->Text = Activity >= MDACs ? Utils::RoundFloatValue(Activity * CsError, 2, false) : String();
+        CsMDA->Text = Utils::RoundFloatValue(MDACs, 2, false);
 
         Count = Sample_M_Cs.CalculateCountByEnergyRange(BeEn1, BeEn2);
         if (SmoothFInalSpectrumAction->Checked)
@@ -1069,14 +1049,12 @@ void TMainForm::DecomposeSampleSpectrum()
         }
         DrawSpectrum(Sample_M_Cs, FinalSpectrum);
         BeSum->Text = Utils::RoundFloatValue(Count);
-        if (MDABe > 0)
+        if (MDABeCanBeCalculated)
         {
-            const double DensityInGramPerLitre = Sysutils::StrToFloatDef(SampleDensity->Text, 0);
-            const double BePhotopeakEff =
-                Utils::CalcBe7Effectivity(BePhotopeakEff1, BePhotopeakEff2, BePhotopeakEff3, DensityInGramPerLitre);
-            LOG(L"BePhotopeakEff = " + String(BePhotopeakEff) + L" for density " + SampleDensity->Text);
-            const double Weight = SameText(SampleSpc.WeightUnit, L"kg") ? (SampleSpc.Weight * 1000) : SampleSpc.Weight;
-            Activity = Count / (0.104 * SampleSpc.Duration * BePhotopeakEff * (Weight / 1000));
+            const double K = 0.104 * SampleSpc.Duration * BePhotopeakEff * MassCoeff;
+            const double MDABe =
+                (3 * System::Sqrt(BkgBe + ThBe + RaBe + KBe + CsBe)) / K;
+            Activity = Count / K;
             BeActivityPerKilogram = Activity >= MDABe ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
             const double TotalMass = Sysutils::StrToFloatDef(SampleOrigMass->Text, 0) * 0.001;
             const double Square = Sysutils::StrToFloatDef(SampleSquare->Text, 0) * 0.0001;
@@ -1097,11 +1075,13 @@ void TMainForm::DecomposeSampleSpectrum()
                 BeErrorPerSquare = L"";
             }
 
+            BeMDA->Text = Utils::RoundFloatValue(MDABe, 2, false);
             BeActivityPerKgOrSq->Text = BeActivityPerKgOrSq->Tag ? BeActivityPerKilogram : BeActivityPerSquare;
             SampleBeError->Text = BeActivityPerKgOrSq->Tag ? BeErrorPerKilogram : BeErrorPerSquare;
         }
         else
         {
+            BeMDA->Text = L"";
             BeActivityPerKgOrSq->Text = L"";
             SampleBeError->Text = L"";
             BeActivityPerKilogram = L"";

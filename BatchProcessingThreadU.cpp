@@ -596,21 +596,10 @@ void TBatchProcessingThread::CalculateActivities(
         BkgSpc.CalculateCountByEnergyRange(BaseData.BeEn1, BaseData.BeEn2) * InSmpDuration : 0;
 
 
-
-    const double MDATh =
-        3 * System::Sqrt(BkgThCount) * (ThActivity / (ThCount * (Spectrum.Duration / ThSpc.Duration) * Weight));
-    const double MDARa =
-        3 * System::Sqrt(BkgRaCount) * (RaActivity / (RaCount * (Spectrum.Duration / RaSpc.Duration) * Weight));
-    const double MDAK =
-        3 * System::Sqrt(BkgKCount) * (KActivity / (KCount * (Spectrum.Duration / KSpc.Duration) * Weight));
-    const double MDACs =
-        3 * System::Sqrt(BkgCsCount) * (CsActivity / (CsCount * (Spectrum.Duration / CsSpc.Duration) * Weight));
     const double BePhotopeakEff = Be7IsCalculated ?
         Utils::CalcBe7Effectivity(BaseData.BePhotopeakEff1, BaseData.BePhotopeakEff2, BaseData.BePhotopeakEff3, Spectrum.DensityInGramPerLitre) :
         0;
     const double BeCoeff = Be7IsCalculated ? (0.104 * BePhotopeakEff * Spectrum.Duration) : 0;
-    const double MDABe = Be7IsCalculated ? (3 * System::Sqrt(BkgBeCount)) / (BeCoeff * Weight) : 0;
-
     LOG(L"BePhotopeakEff = " + String(BePhotopeakEff) + L" for density " + String(Spectrum.DensityInGramPerLitre));
 
     const double ThActivityError = BaseData.ThActivityErrors[ValidIndex];
@@ -632,6 +621,8 @@ void TBatchProcessingThread::CalculateActivities(
     auto ThC = SmpThCount / ThCount;
     ThC = ThC < 0 ? 0 : ThC;
     ThCstr = Utils::RoundFloatValue(ThC);
+    const double MDATh =
+        3 * System::Sqrt(BkgThCount) * (ThActivity / (ThCount * (Spectrum.Duration / ThSpc.Duration) * Weight));
     const auto SmpThActivity = (ThSpc.Duration * ThActivity * ThC) / Spectrum.Duration;
     const auto SmpRaThCount = SmpThActivity * Spectrum.Duration * RaThCount_sa;
     const auto SmpKThCount = SmpThActivity * Spectrum.Duration * KThCount_sa;
@@ -651,6 +642,8 @@ void TBatchProcessingThread::CalculateActivities(
     auto RaC = SmpRaCount / RaCount;
     RaC = RaC < 0 ? 0 : RaC;
     RaCstr = Utils::RoundFloatValue(RaC);
+    const double MDARa =
+        3 * System::Sqrt(BkgRaCount + SmpRaThCount) * (RaActivity / (RaCount * (Spectrum.Duration / RaSpc.Duration) * Weight));
     const auto SmpRaActivity = (RaSpc.Duration * RaActivity * RaC) / Spectrum.Duration;
     const auto SmpKRaCount = SmpRaActivity * Spectrum.Duration * KRaCount_sa;
     const auto SmpCsRaCount = SmpRaActivity * Spectrum.Duration * CsRaCount_sa;
@@ -669,6 +662,8 @@ void TBatchProcessingThread::CalculateActivities(
     auto KC = SmpKCount / KCount;
     KC = KC < 0 ? 0 : KC;
     KCstr = Utils::RoundFloatValue(KC);
+    const double MDAK =
+        3 * System::Sqrt(BkgKCount + SmpKThCount + SmpKRaCount) * (KActivity / (KCount * (Spectrum.Duration / KSpc.Duration) * Weight));
     const auto SmpKActivity = (KSpc.Duration * KActivity * KC) / Spectrum.Duration;
     const auto SmpCsKCount = SmpKActivity * Spectrum.Duration * CsKCount_sa;
     const auto SmpBeKCount = Be7IsCalculated ? SmpKActivity * Spectrum.Duration * BeKCount_sa : 0;
@@ -686,6 +681,8 @@ void TBatchProcessingThread::CalculateActivities(
     auto CsC = SmpCsCount / CsCount;
     CsC = CsC < 0 ? 0 : CsC;
     CsCstr = Utils::RoundFloatValue(CsC);
+    const double MDACs =
+        3 * System::Sqrt(BkgCsCount + SmpCsThCount + SmpCsRaCount + SmpCsKCount) * (CsActivity / (CsCount * (Spectrum.Duration / CsSpc.Duration) * Weight));
     const auto SmpCsActivity = (CsSpc.Duration * CsActivity * CsC) / Spectrum.Duration;
     const auto SmpBeCsCount = Be7IsCalculated ? SmpCsActivity * Spectrum.Duration * BeCsCount_sa : 0;
     const double CsError1 =
@@ -702,15 +699,15 @@ void TBatchProcessingThread::CalculateActivities(
     const double SmpBeCount =
         Be7IsCalculated ? SubtractedSpc.CalculateCountByEnergyRange(BaseData.BeEn1, BaseData.BeEn2) : 0;
 
-    const auto SmpBeActivity =
-        Be7IsCalculated ? SmpBeCount / BeCoeff : 0;
+    const double MDABe =
+        Be7IsCalculated ? (3 * System::Sqrt(BkgBeCount + SmpBeThCount + SmpBeRaCount + SmpBeKCount + SmpBeCsCount)) / (BeCoeff * Weight) : 0;
+    const auto SmpBeActivity = Be7IsCalculated ? SmpBeCount / BeCoeff : 0;
 
     const double BeError1 =
         Be7IsCalculated ? (System::Sqrt(SampleBeCount + BkgBeCount + SmpBeThCount + SmpBeRaCount + SmpBeKCount + SmpBeCsCount) / SmpBeCount) : 0;
 
     const double BeError =
         Be7IsCalculated ? System::Sqrt(Utils::Sqr(BeError1) + Utils::Sqr(BaseData.BeSysError)) : 0;
-
 
 
     const double SmpThActivityPerKg = SmpThActivity / Weight;
