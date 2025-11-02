@@ -4338,17 +4338,17 @@ object MainForm: TMainForm
         Style = tbsTextButton
         OnClick = ShiftingButtonClick
       end
-      object StandardSamplesButton: TToolButton
+      object SettingsButton: TToolButton
         Left = 456
         Top = 0
         AutoSize = True
-        Caption = 'Etalon namunalar'
+        Caption = 'Sozlamalar'
         ImageIndex = 4
         Style = tbsTextButton
-        OnClick = StandardSamplesButtonClick
+        OnClick = SettingsButtonClick
       end
       object HelpButton: TToolButton
-        Left = 578
+        Left = 546
         Top = 0
         AutoSize = True
         Caption = 'Dastur haqida'
@@ -4356,7 +4356,7 @@ object MainForm: TMainForm
         OnClick = HelpButtonClick
       end
       object ToolButton1: TToolButton
-        Left = 684
+        Left = 652
         Top = 0
         AutoSize = True
         Caption = 'Test'

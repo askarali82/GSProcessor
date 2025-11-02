@@ -13,8 +13,12 @@
 //---------------------------------------------------------------------------
 __fastcall TSettingsForm::TSettingsForm(TComponent* Owner):
     TForm(Owner),
-    IniFile(new TMemIniFile(L".\\Settings.ini", TEncoding::Unicode))
+    IniFile(new TMemIniFile(L".\\Settings.ini", TEncoding::Unicode)),
+    ScrollBoxCanvas(new TControlCanvas())
 {
+    ScrollBoxCanvas->Control = ScrollBox;
+    OldScrollBoxProc = ScrollBox->WindowProc;
+    ScrollBox->WindowProc = NewScrollBoxProc;
     IniFile->CaseSensitive = false;
     Th1Button->Tag = reinterpret_cast<NativeInt>(Th1FileName);
     Ra1Button->Tag = reinterpret_cast<NativeInt>(Ra1FileName);
@@ -39,8 +43,144 @@ __fastcall TSettingsForm::TSettingsForm(TComponent* Owner):
     LoadDensity_3_Data();
     LoadEnergyRanges();
     LoadBe7Params();
+    ShowResultsWithMDA->Checked =
+        IniFile->ReadBool(L"Others", ShowResultsWithMDA->Name, ShowResultsWithMDA->Checked);
 
     ChangeUILanguage();
+}
+//---------------------------------------------------------------------------
+void __fastcall TSettingsForm::NewScrollBoxProc(Winapi::Messages::TMessage &Message)
+{
+    OldScrollBoxProc(Message);
+    if (Message.Msg == WM_PAINT)
+    {
+        if (Th1FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(Th1Button->Left + Th1Button->Width + 5, Th1Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(Th1Button->Left + Th1Button->Width + 5, Th1Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+        if (Ra1FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(Ra1Button->Left + Ra1Button->Width + 5, Ra1Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(Ra1Button->Left + Ra1Button->Width + 5, Ra1Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+        if (K1FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(K1Button->Left + K1Button->Width + 5, K1Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(K1Button->Left + K1Button->Width + 5, K1Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+        if (Cs1FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(Cs1Button->Left + Cs1Button->Width + 5, Cs1Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(Cs1Button->Left + Cs1Button->Width + 5, Cs1Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+        if (Bkg1FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(Bkg1Button->Left + Bkg1Button->Width + 5, Bkg1Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(Bkg1Button->Left + Bkg1Button->Width + 5, Bkg1Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+
+        if (Th2FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(Th2Button->Left + Th2Button->Width + 5, Th2Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(Th2Button->Left + Th2Button->Width + 5, Th2Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+        if (Ra2FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(Ra2Button->Left + Ra2Button->Width + 5, Ra2Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(Ra2Button->Left + Ra2Button->Width + 5, Ra2Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+        if (K2FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(K2Button->Left + K2Button->Width + 5, K2Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(K2Button->Left + K2Button->Width + 5, K2Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+        if (Cs2FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(Cs2Button->Left + Cs2Button->Width + 5, Cs2Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(Cs2Button->Left + Cs2Button->Width + 5, Cs2Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+        if (Bkg2FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(Bkg2Button->Left + Bkg2Button->Width + 5, Bkg2Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(Bkg2Button->Left + Bkg2Button->Width + 5, Bkg2Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+
+        if (Th3FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(Th3Button->Left + Th3Button->Width + 5, Th3Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(Th3Button->Left + Th3Button->Width + 5, Th3Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+        if (Ra3FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(Ra3Button->Left + Ra3Button->Width + 5, Ra3Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(Ra3Button->Left + Ra3Button->Width + 5, Ra3Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+        if (K3FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(K3Button->Left + K3Button->Width + 5, K3Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(K3Button->Left + K3Button->Width + 5, K3Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+        if (Cs3FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(Cs3Button->Left + Cs3Button->Width + 5, Cs3Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(Cs3Button->Left + Cs3Button->Width + 5, Cs3Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+        if (Bkg3FileName->Tag == 1)
+        {
+            ScrollBoxCanvas->Draw(Bkg3Button->Left + Bkg3Button->Width + 5, Bkg3Button->Top, ImageCorrect->Picture->Graphic);
+        }
+        else
+        {
+            ScrollBoxCanvas->Draw(Bkg3Button->Left + Bkg3Button->Width + 5, Bkg3Button->Top, ImageIncorrect->Picture->Graphic);
+        }
+    }
+    else if (Message.Msg == WM_VSCROLL)
+    {
+        LOG(L"WM_VSCROLL received.");
+    }
 }
 //---------------------------------------------------------------------------
 void TSettingsForm::LoadEnergyRanges()
@@ -429,6 +569,7 @@ void __fastcall TSettingsForm::SaveButtonClick(TObject *Sender)
     }
     SaveEnergyRanges();
     SaveBe7Params();
+    IniFile->WriteBool(L"Others", ShowResultsWithMDA->Name, ShowResultsWithMDA->Checked);
     IniFile->UpdateFile();
     ModalResult = mrOk;
 }
@@ -453,133 +594,7 @@ void __fastcall TSettingsForm::BrowseButtonClick(TObject *Sender)
         FileName->Text = OpenDialog->FileName;
     }
     FileName->Tag = 1;
-    Invalidate();
-}
-//---------------------------------------------------------------------------
-void __fastcall TSettingsForm::FormPaint(TObject *Sender)
-{
-    if (Th1FileName->Tag == 1)
-    {
-        Canvas->Draw(Th1Button->Left + Th1Button->Width + 5, Th1Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(Th1Button->Left + Th1Button->Width + 5, Th1Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-    if (Ra1FileName->Tag == 1)
-    {
-        Canvas->Draw(Ra1Button->Left + Ra1Button->Width + 5, Ra1Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(Ra1Button->Left + Ra1Button->Width + 5, Ra1Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-    if (K1FileName->Tag == 1)
-    {
-        Canvas->Draw(K1Button->Left + K1Button->Width + 5, K1Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(K1Button->Left + K1Button->Width + 5, K1Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-    if (Cs1FileName->Tag == 1)
-    {
-        Canvas->Draw(Cs1Button->Left + Cs1Button->Width + 5, Cs1Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(Cs1Button->Left + Cs1Button->Width + 5, Cs1Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-    if (Bkg1FileName->Tag == 1)
-    {
-        Canvas->Draw(Bkg1Button->Left + Bkg1Button->Width + 5, Bkg1Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(Bkg1Button->Left + Bkg1Button->Width + 5, Bkg1Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-
-    if (Th2FileName->Tag == 1)
-    {
-        Canvas->Draw(Th2Button->Left + Th2Button->Width + 5, Th2Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(Th2Button->Left + Th2Button->Width + 5, Th2Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-    if (Ra2FileName->Tag == 1)
-    {
-        Canvas->Draw(Ra2Button->Left + Ra2Button->Width + 5, Ra2Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(Ra2Button->Left + Ra2Button->Width + 5, Ra2Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-    if (K2FileName->Tag == 1)
-    {
-        Canvas->Draw(K2Button->Left + K2Button->Width + 5, K2Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(K2Button->Left + K2Button->Width + 5, K2Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-    if (Cs2FileName->Tag == 1)
-    {
-        Canvas->Draw(Cs2Button->Left + Cs2Button->Width + 5, Cs2Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(Cs2Button->Left + Cs2Button->Width + 5, Cs2Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-    if (Bkg2FileName->Tag == 1)
-    {
-        Canvas->Draw(Bkg2Button->Left + Bkg2Button->Width + 5, Bkg2Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(Bkg2Button->Left + Bkg2Button->Width + 5, Bkg2Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-
-    if (Th3FileName->Tag == 1)
-    {
-        Canvas->Draw(Th3Button->Left + Th3Button->Width + 5, Th3Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(Th3Button->Left + Th3Button->Width + 5, Th3Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-    if (Ra3FileName->Tag == 1)
-    {
-        Canvas->Draw(Ra3Button->Left + Ra3Button->Width + 5, Ra3Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(Ra3Button->Left + Ra3Button->Width + 5, Ra3Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-    if (K3FileName->Tag == 1)
-    {
-        Canvas->Draw(K3Button->Left + K3Button->Width + 5, K3Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(K3Button->Left + K3Button->Width + 5, K3Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-    if (Cs3FileName->Tag == 1)
-    {
-        Canvas->Draw(Cs3Button->Left + Cs3Button->Width + 5, Cs3Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(Cs3Button->Left + Cs3Button->Width + 5, Cs3Button->Top, ImageIncorrect->Picture->Graphic);
-    }
-    if (Bkg3FileName->Tag == 1)
-    {
-        Canvas->Draw(Bkg3Button->Left + Bkg3Button->Width + 5, Bkg3Button->Top, ImageCorrect->Picture->Graphic);
-    }
-    else
-    {
-        Canvas->Draw(Bkg3Button->Left + Bkg3Button->Width + 5, Bkg3Button->Top, ImageIncorrect->Picture->Graphic);
-    }
+    ScrollBox->Invalidate();
 }
 //---------------------------------------------------------------------------
 void __fastcall TSettingsForm::FileNameChange(TObject *Sender)
@@ -591,7 +606,7 @@ void __fastcall TSettingsForm::FileNameChange(TObject *Sender)
     R.top = Edit->Top - 2;
     R.right = R.left + ImageCorrect->Width + 4;
     R.bottom = R.top + ImageCorrect->Height + 4;
-    InvalidateRect(Handle, &R, 1);
+    InvalidateRect(ScrollBox->Handle, &R, 1);
 }
 //---------------------------------------------------------------------------
 String TSettingsForm::GetSetting(const String &Section, const String &Name) const
@@ -612,8 +627,9 @@ void TSettingsForm::ChangeUILanguage()
 
     if (__LangID == 0)
     {
-        Caption = L"Etalon va fon namunalari";
+        Caption = L"Sozlamalar";
 
+        SamplesTitleLabel->Caption = L"Etalon va fon namunalari";
         Title1Label->Caption = L"Zichligi 200 Gr/L dan 500 Gr/L gacha bo'lgan namunalar.";
         Label40->Caption = L"Namuna";
         Label7->Caption = L"Aktivligi (Bk), xatoligi (%) va qayd qilingan sanasi";
@@ -635,22 +651,26 @@ void TSettingsForm::ChangeUILanguage()
         Label21->Caption = Label34->Caption;
         Label31->Caption = Label29->Caption;
 
-        Title4Label->Caption = L"Foydalaniluvchi fotocho'qqilar sohalari (chap va o'ng nuqtalari).";
+        EnergiesTitleLabel->Caption = L"Foydalaniluvchi fotocho'qqilar sohalari (chap va o'ng nuqtalari).";
         Label33->Caption = Label40->Caption;
         Label9->Caption = L"keV dan";
         Label32->Caption = L"keV gacha";
-        Be7EffLabel->Caption = L"Be-7 uchun fotocho'qqi effektivligi, %:";
+
+        OtherSettingsTitleLabel->Caption = L"Boshqa sozlamalar";
+        Be7PhotopeakEffEdit->EditLabel->Caption = L"Be-7 uchun fotocho'qqi effektivligi, %:";
         Be7PhotopeakEffEdit->TextHint = L"Mas: 4.1; 3.5; 3";
         Be7PhotopeakEffEdit->Hint = L"Uch xil zichliklar uchun. Har birini nuqta-vergul (;) bilan ajrating.";
-        Be7SystematicErrorLabel->Caption = L"Be-7 uchun sistematik xatolik, %:";
+        Be7SystematicErrorEdit->EditLabel->Caption = L"Be-7 uchun sistematik xatolik, %:";
+        ShowResultsWithMDA->Caption = L"Natijalarni <AMA ko‘rinishida yoz";
 
         SaveButton->Caption = L"&Saqlash";
         CloseButton->Caption = L"&Yopish";
     }
     else if (__LangID == 1)
     {
-        Caption = L"Reference and background samples";
+        Caption = L"Settings";
 
+        SamplesTitleLabel->Caption = L"Reference and background samples";
         Title1Label->Caption = L"Samples with density of 200 Gr / L to 500 Gr / L.";
         Label40->Caption = L"Sample";
         Label7->Caption = L"Activity (Bq), error (%) and registered date";
@@ -672,14 +692,17 @@ void TSettingsForm::ChangeUILanguage()
         Label21->Caption = Label34->Caption;
         Label31->Caption = Label29->Caption;
 
-        Title4Label->Caption = L"Areas of photopeaks used (left and right points).";
+        EnergiesTitleLabel->Caption = L"Areas of photopeaks used (left and right points).";
         Label33->Caption = Label40->Caption;
         Label9->Caption = L"From keV";
         Label32->Caption = L"To keV";
-        Be7EffLabel->Caption = L"Photopeak efficiency for Be-7, %:";
+
+        OtherSettingsTitleLabel->Caption = L"Other settings";
+        Be7PhotopeakEffEdit->EditLabel->Caption = L"Photopeak efficiency for Be-7, %:";
         Be7PhotopeakEffEdit->TextHint = L"Ex: 4.1; 3.5; 3";
         Be7PhotopeakEffEdit->Hint = L"For three densities. Separate them by semicolon (;).";
-        Be7SystematicErrorLabel->Caption = L"Systematic error for Be-7, %:";
+        Be7SystematicErrorEdit->EditLabel->Caption = L"Systematic error for Be-7, %:";
+        ShowResultsWithMDA->Caption = L"Write results in <MDA format";
 
         SaveButton->Caption = L"&Save";
         CloseButton->Caption = L"&Close";
@@ -689,3 +712,22 @@ void TSettingsForm::ChangeUILanguage()
         throw Exception(L"Unknown language.");
     }
 }
+//---------------------------------------------------------------------------
+void __fastcall TSettingsForm::ScrollBoxMouseWheel(TObject *Sender, TShiftState Shift,
+          int WheelDelta, TPoint &MousePos, bool &Handled)
+{
+    TScrollBox *SB = dynamic_cast<TScrollBox*>(Sender);
+    if (!SB)
+    {
+        return;
+    }
+    const int ScrollStep = 30;
+    if (WheelDelta > 0)
+        SB->VertScrollBar->Position = SB->VertScrollBar->Position - ScrollStep;
+    else
+        SB->VertScrollBar->Position = SB->VertScrollBar->Position + ScrollStep;
+    Handled = true;
+}
+//---------------------------------------------------------------------------
+
+

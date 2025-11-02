@@ -20,7 +20,9 @@
 TMainForm *MainForm;
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner):
-    TForm(Owner), AppName(L"GSProcessor")
+    TForm(Owner),
+    AppName(L"GSProcessor"),
+    ShowResultsWithMDA(true)
 {
     Application->Title = AppName;
     Application->ModalPopupMode = pmAuto;
@@ -394,7 +396,7 @@ void TMainForm::InitStdSamples(TSettingsForm *Form)
     PopulateStandardSourcesInfo(Form);
 }
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::StandardSamplesButtonClick(TObject *Sender)
+void __fastcall TMainForm::SettingsButtonClick(TObject *Sender)
 {
     std::unique_ptr<TSettingsForm> Form(new TSettingsForm(Application));
     if (Form->ShowModal() != mrOk)
@@ -407,6 +409,7 @@ void __fastcall TMainForm::StandardSamplesButtonClick(TObject *Sender)
     Ks[0] = Ks[1] = Ks[2] = TSpectrum();
     Css[0] = Css[1] = Css[2] = TSpectrum();
     InitStdSamples(Form.get());
+    ShowResultsWithMDA = Form->ShowResultsWithMDA->Checked;
 }
 //---------------------------------------------------------------------------
 void TMainForm::SubtractBkgFromStandardSources(const int Idx)
@@ -445,6 +448,7 @@ void __fastcall TMainForm::OnSpectraLoadTimer(TObject *Sender)
             return;
         }
     }
+    ShowResultsWithMDA = Form->ShowResultsWithMDA->Checked;
     ShiftingForm->ChangeUILanguage();
     if (BatchProcessingResultsForm != nullptr)
     {
@@ -943,7 +947,15 @@ void TMainForm::DecomposeSampleSpectrum()
         double Activity =
             ((ThSpc.Duration * Sysutils::StrToFloatDef(ThActivity->Text, 0) * ThC) /
             (SampleSpc.Duration * Sysutils::StrToFloatDef(SampleMass->Text, 0))) * 1000;
-        SampleThActivity->Text = Activity >= MDATh ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
+        if (ShowResultsWithMDA)
+        {
+            SampleThActivity->Text =
+                Activity >= MDATh ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
+        }
+        else
+        {
+            SampleThActivity->Text = Utils::RoundFloatValue(Activity, 2, false);
+        }
         TMPSpc = ThSpc.Multiply(ThC);
         ThSpcWithCoeff = TMPSpc;
         DrawSpectrum(TMPSpc, ThSpectrum);
@@ -972,7 +984,15 @@ void TMainForm::DecomposeSampleSpectrum()
         Activity =
             ((RaSpc.Duration * Sysutils::StrToFloatDef(RaActivity->Text, 0) * RaC) /
             (SampleSpc.Duration * Sysutils::StrToFloatDef(SampleMass->Text, 0))) * 1000;
-        SampleRaActivity->Text = Activity >= MDARa ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
+        if (ShowResultsWithMDA)
+        {
+            SampleRaActivity->Text =
+                Activity >= MDARa ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
+        }
+        else
+        {
+            SampleRaActivity->Text = Utils::RoundFloatValue(Activity, 2, false);
+        }
         TMPSpc = RaSpc.Multiply(RaC);
         RaSpcWithCoeff = TMPSpc;
         DrawSpectrum(TMPSpc, RaSpectrum);
@@ -1000,7 +1020,15 @@ void TMainForm::DecomposeSampleSpectrum()
         Activity =
             ((KSpc.Duration * Sysutils::StrToFloatDef(KActivity->Text, 0) * KC) /
             (SampleSpc.Duration * Sysutils::StrToFloatDef(SampleMass->Text, 0))) * 1000;
-        SampleKActivity->Text = Activity >= MDAK ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
+        if (ShowResultsWithMDA)
+        {
+            SampleKActivity->Text =
+                Activity >= MDAK ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
+        }
+        else
+        {
+            SampleKActivity->Text = Utils::RoundFloatValue(Activity, 2, false);
+        }
         TMPSpc = KSpc.Multiply(KC);
         KSpcWithCoeff = TMPSpc;
         DrawSpectrum(TMPSpc, KSpectrum);
@@ -1027,7 +1055,15 @@ void TMainForm::DecomposeSampleSpectrum()
         Activity =
             ((CsSpc.Duration * Sysutils::StrToFloatDef(CsActivity->Text, 0) * CsC) /
             (SampleSpc.Duration * Sysutils::StrToFloatDef(SampleMass->Text, 0))) * 1000;
-        SampleCsActivity->Text = Activity >= MDACs ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
+        if (ShowResultsWithMDA)
+        {
+            SampleCsActivity->Text =
+                Activity >= MDACs ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
+        }
+        else
+        {
+            SampleCsActivity->Text = Utils::RoundFloatValue(Activity, 2, false);
+        }
         TMPSpc = CsSpc.Multiply(CsC);
         CsSpcWithCoeff = TMPSpc;
         DrawSpectrum(TMPSpc, CsSpectrum);
@@ -1055,7 +1091,15 @@ void TMainForm::DecomposeSampleSpectrum()
             const double MDABe =
                 (3 * System::Sqrt(BkgBe + ThBe + RaBe + KBe + CsBe)) / K;
             Activity = Count / K;
-            BeActivityPerKilogram = Activity >= MDABe ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
+            if (ShowResultsWithMDA)
+            {
+                BeActivityPerKilogram =
+                    Activity >= MDABe ? Utils::RoundFloatValue(Activity, 2, false) : BelowMDA;
+            }
+            else
+            {
+                BeActivityPerKilogram = Utils::RoundFloatValue(Activity, 2, false);
+            }
             const double TotalMass = Sysutils::StrToFloatDef(SampleOrigMass->Text, 0) * 0.001;
             const double Square = Sysutils::StrToFloatDef(SampleSquare->Text, 0) * 0.0001;
             const double BeError1 =
@@ -2423,7 +2467,7 @@ void TMainForm::ChangeUILanguage()
         SelectDirectoryAction->Caption = L"Manzilni tanlash";
 
         ShiftingButton->Caption = L"Spektrni siljitish";
-        StandardSamplesButton->Caption = L"Etalon namunalar";
+        SettingsButton->Caption = L"Sozlamalar";
         HelpButton->Caption = L"Dastur haqida";
 
         ThLabel->Caption = L"Etalon namunada";
@@ -2631,7 +2675,7 @@ void TMainForm::ChangeUILanguage()
         SelectDirectoryAction->Caption = L"Select directory";
 
         ShiftingButton->Caption = L"Spectrum shifting";
-        StandardSamplesButton->Caption = L"Reference samples";
+        SettingsButton->Caption = L"Settings";
         HelpButton->Caption = L"About";
 
         ThLabel->Caption = L"In reference sample";

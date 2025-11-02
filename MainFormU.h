@@ -252,7 +252,7 @@ __published:
     TToolButton *SaveSpectraButton;
     TToolButton *BatchProcessButton;
     TToolButton *ShiftingButton;
-    TToolButton *StandardSamplesButton;
+    TToolButton *SettingsButton;
     TAction *LanguageAction;
     TSpeedButton *SpeedButton1;
     TToolButton *HelpButton;
@@ -279,7 +279,7 @@ __published:
     TAction *SmoothFInalSpectrumAction;
     TMenuItem *Silliqlangan1;
     void __fastcall FormResize(TObject *Sender);
-    void __fastcall StandardSamplesButtonClick(TObject *Sender);
+    void __fastcall SettingsButtonClick(TObject *Sender);
     void __fastcall OnSpectraLoadTimer(TObject *Sender);
     void __fastcall OnParamChange(TObject *Sender);
     void __fastcall OnChartMouseMove(TObject *Sender, TShiftState Shift, int X,
@@ -423,6 +423,7 @@ private:
     String BeErrorPerKilogram;
     String BeErrorPerSquare;
 
+    bool ShowResultsWithMDA;
 
     void InitStdSamples(TSettingsForm *Form);
     void SubtractBkgFromStandardSources(const int Idx);
