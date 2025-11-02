@@ -658,9 +658,14 @@ void TSettingsForm::ChangeUILanguage()
 
         OtherSettingsTitleLabel->Caption = L"Boshqa sozlamalar";
         Be7PhotopeakEffEdit->EditLabel->Caption = L"Be-7 uchun fotocho'qqi effektivligi, %:";
+        Be7PhotopeakEffEdit->Left =
+            Label33->Left + Be7PhotopeakEffEdit->EditLabel->Width + Be7PhotopeakEffEdit->LabelSpacing;
         Be7PhotopeakEffEdit->TextHint = L"Mas: 4.1; 3.5; 3";
         Be7PhotopeakEffEdit->Hint = L"Uch xil zichliklar uchun. Har birini nuqta-vergul (;) bilan ajrating.";
         Be7SystematicErrorEdit->EditLabel->Caption = L"Be-7 uchun sistematik xatolik, %:";
+        Be7SystematicErrorEdit->Left = Be7PhotopeakEffEdit->Left;
+        Be7SystematicErrorEdit->LabelSpacing =
+            Be7SystematicErrorEdit->Left - Be7SystematicErrorEdit->EditLabel->Width - Label33->Left;
         ShowResultsWithMDA->Caption = L"Natijalarni <AMA ko‘rinishida yoz";
 
         SaveButton->Caption = L"&Saqlash";
@@ -699,9 +704,14 @@ void TSettingsForm::ChangeUILanguage()
 
         OtherSettingsTitleLabel->Caption = L"Other settings";
         Be7PhotopeakEffEdit->EditLabel->Caption = L"Photopeak efficiency for Be-7, %:";
+        Be7PhotopeakEffEdit->Left =
+            Label33->Left + Be7PhotopeakEffEdit->EditLabel->Width + Be7PhotopeakEffEdit->LabelSpacing;
         Be7PhotopeakEffEdit->TextHint = L"Ex: 4.1; 3.5; 3";
         Be7PhotopeakEffEdit->Hint = L"For three densities. Separate them by semicolon (;).";
         Be7SystematicErrorEdit->EditLabel->Caption = L"Systematic error for Be-7, %:";
+        Be7SystematicErrorEdit->Left = Be7PhotopeakEffEdit->Left;
+        Be7SystematicErrorEdit->LabelSpacing =
+            Be7SystematicErrorEdit->Left - Be7SystematicErrorEdit->EditLabel->Width - Label33->Left;
         ShowResultsWithMDA->Caption = L"Write results in <MDA format";
 
         SaveButton->Caption = L"&Save";

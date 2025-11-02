@@ -1312,7 +1312,7 @@ object SettingsForm: TSettingsForm
       Text = '2720'
     end
     object ShowResultsWithMDA: TCheckBox
-      Left = 326
+      Left = 422
       Top = 808
       Width = 197
       Height = 17
@@ -1322,27 +1322,31 @@ object SettingsForm: TSettingsForm
       TabOrder = 88
     end
     object Be7PhotopeakEffEdit: TLabeledEdit
-      Left = 35
-      Top = 825
-      Width = 121
+      Left = 224
+      Top = 807
+      Width = 108
       Height = 21
       Hint = '3 xil zichliklar uchun. Har birini nuqta-vergul bilan ajrating.'
       EditLabel.Width = 184
       EditLabel.Height = 13
       EditLabel.Caption = 'Be-7 uchun fotocho'#39'qqi effektivligi, %:'
+      LabelPosition = lpLeft
+      LabelSpacing = 5
       ParentShowHint = False
       ShowHint = True
       TabOrder = 89
       TextHint = 'Mas: 4.1; 3.5; 3'
     end
     object Be7SystematicErrorEdit: TLabeledEdit
-      Left = 35
-      Top = 877
-      Width = 121
+      Left = 224
+      Top = 834
+      Width = 60
       Height = 21
       EditLabel.Width = 160
       EditLabel.Height = 13
       EditLabel.Caption = 'Be-7 uchun sistematik xatolik, %:'
+      LabelPosition = lpLeft
+      LabelSpacing = 29
       ParentShowHint = False
       ShowHint = True
       TabOrder = 90
