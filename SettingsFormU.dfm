@@ -515,9 +515,9 @@ object SettingsForm: TSettingsForm
     object Title1Label: TLabel
       Left = 226
       Top = 49
-      Width = 315
+      Width = 312
       Height = 13
-      Caption = 'Zichligi 200 Gr/L dan 500 Gr/L gacha bo'#39'lgan namunalar.'
+      Caption = 'Zichligi 200 Gr/L dan 500 Gr/L gacha bo'#39'lgan namunalar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -528,9 +528,9 @@ object SettingsForm: TSettingsForm
     object Title2Label: TLabel
       Left = 226
       Top = 222
-      Width = 322
+      Width = 319
       Height = 13
-      Caption = 'Zichligi 800 Gr/L dan 1100 Gr/L gacha bo'#39'lgan namunalar.'
+      Caption = 'Zichligi 800 Gr/L dan 1100 Gr/L gacha bo'#39'lgan namunalar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -541,9 +541,9 @@ object SettingsForm: TSettingsForm
     object Title3Label: TLabel
       Left = 226
       Top = 397
-      Width = 329
+      Width = 326
       Height = 13
-      Caption = 'Zichligi 1500 Gr/L dan 1800 Gr/L gacha bo'#39'lgan namunalar.'
+      Caption = 'Zichligi 1500 Gr/L dan 1800 Gr/L gacha bo'#39'lgan namunalar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -554,11 +554,9 @@ object SettingsForm: TSettingsForm
     object EnergiesTitleLabel: TLabel
       Left = 12
       Top = 582
-      Width = 516
+      Width = 511
       Height = 19
-      Caption = 
-        'Foydalaniluvchi fotocho'#39'qqilar sohalari (chap va o'#39'ng nuqtalari)' +
-        '.'
+      Caption = 'Foydalaniluvchi fotocho'#39'qqilar sohalari (chap va o'#39'ng nuqtalari)'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16

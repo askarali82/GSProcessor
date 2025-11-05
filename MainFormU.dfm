@@ -3989,9 +3989,9 @@ object MainForm: TMainForm
     object SmpSquareLabel: TLabel
       Left = 2
       Top = 253
-      Width = 73
+      Width = 64
       Height = 13
-      Caption = 'Yuzasi (Sm^2):'
+      Caption = 'Yuzasi (Sm'#178'):'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11

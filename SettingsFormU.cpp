@@ -630,28 +630,28 @@ void TSettingsForm::ChangeUILanguage()
         Caption = L"Sozlamalar";
 
         SamplesTitleLabel->Caption = L"Etalon va fon namunalari";
-        Title1Label->Caption = L"Zichligi 200 Gr/L dan 500 Gr/L gacha bo'lgan namunalar.";
+        Title1Label->Caption = L"Zichligi 200 Gr/L dan 500 Gr/L gacha bo'lgan namunalar";
         Label40->Caption = L"Namuna";
         Label7->Caption = L"Aktivligi (Bk), xatoligi (%) va qayd qilingan sanasi";
         Label35->Caption = L"Spektr o'lchangan kun";
         Label34->Caption = L"Spektr faylining nomi";
         Label29->Caption = L"Tabiiy fon";
 
-        Title2Label->Caption = L"Zichligi 800 Gr/L dan 1100 Gr/L gacha bo'lgan namunalar.";
+        Title2Label->Caption = L"Zichligi 800 Gr/L dan 1100 Gr/L gacha bo'lgan namunalar";
         Label12->Caption = Label40->Caption;
         Label16->Caption = Label7->Caption;
         Label36->Caption = Label35->Caption;
         Label14->Caption = Label34->Caption;
         Label30->Caption = Label29->Caption;
 
-        Title3Label->Caption = L"Zichligi 1500 Gr/L dan 1800 Gr/L gacha bo'lgan namunalar.";
+        Title3Label->Caption = L"Zichligi 1500 Gr/L dan 1800 Gr/L gacha bo'lgan namunalar";
         Label24->Caption = Label40->Caption;
         Label19->Caption = Label7->Caption;
         Label37->Caption = Label35->Caption;
         Label21->Caption = Label34->Caption;
         Label31->Caption = Label29->Caption;
 
-        EnergiesTitleLabel->Caption = L"Foydalaniluvchi fotocho'qqilar sohalari (chap va o'ng nuqtalari).";
+        EnergiesTitleLabel->Caption = L"Foydalaniluvchi fotocho'qqilar sohalari (chap va o'ng nuqtalari)";
         Label33->Caption = Label40->Caption;
         Label9->Caption = L"keV dan";
         Label32->Caption = L"keV gacha";
@@ -676,28 +676,28 @@ void TSettingsForm::ChangeUILanguage()
         Caption = L"Settings";
 
         SamplesTitleLabel->Caption = L"Reference and background samples";
-        Title1Label->Caption = L"Samples with density of 200 Gr / L to 500 Gr / L.";
+        Title1Label->Caption = L"Samples with density of 200 Gr / L to 500 Gr / L";
         Label40->Caption = L"Sample";
         Label7->Caption = L"Activity (Bq), error (%) and registered date";
         Label35->Caption = L"Date the spectrum measured";
         Label34->Caption = L"Name of the spectrum file";
         Label29->Caption = L"Background";
 
-        Title2Label->Caption = L"Samples with density of 800 Gr / L to 1100 Gr / L.";
+        Title2Label->Caption = L"Samples with density of 800 Gr / L to 1100 Gr / L";
         Label12->Caption = Label40->Caption;
         Label16->Caption = Label7->Caption;
         Label36->Caption = Label35->Caption;
         Label14->Caption = Label34->Caption;
         Label30->Caption = Label29->Caption;
 
-        Title3Label->Caption = L"Samples with density of 1500 Gr / L to 1800 Gr / L.";
+        Title3Label->Caption = L"Samples with density of 1500 Gr / L to 1800 Gr / L";
         Label24->Caption = Label40->Caption;
         Label19->Caption = Label7->Caption;
         Label37->Caption = Label35->Caption;
         Label21->Caption = Label34->Caption;
         Label31->Caption = Label29->Caption;
 
-        EnergiesTitleLabel->Caption = L"Areas of photopeaks used (left and right points).";
+        EnergiesTitleLabel->Caption = L"Areas of photopeaks used (left and right points)";
         Label33->Caption = Label40->Caption;
         Label9->Caption = L"From keV";
         Label32->Caption = L"To keV";

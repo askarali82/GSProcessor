@@ -2543,8 +2543,8 @@ void TMainForm::ChangeUILanguage()
         }
         else
         {
-            BeActLabel->Caption = L"Aktivligi (Bk/m^2):";
-            BeErrorLabel->Caption = L"Xatolik (Bk/m^2):";
+            BeActLabel->Caption = L"Aktivligi (Bk/m²):";
+            BeErrorLabel->Caption = L"Xatolik (Bk/m²):";
         }
         BeMDALabel->Caption = L"AMA (Bk/kg):";
         SmpLabel->Caption = L"Namuna o'lchamlari";
@@ -2552,7 +2552,7 @@ void TMainForm::ChangeUILanguage()
         SmpMassLabel->Caption = L"Massasi (Gr):";
         SmpDensityLabel->Caption = L"Zichligi (Gr/L):";
         SmpTotalMassLabel->Caption = L"Um. massasi (Gr):";
-        SmpSquareLabel->Caption = L"Yuzasi (Sm^2):";
+        SmpSquareLabel->Caption = L"Yuzasi (Sm²):";
 
         FinalSpcChart->Title->Text->Text = L"Natijaviy spektr";
         FinalSpcChart->LeftAxis->Title->Caption = L"Impuls";
@@ -2751,8 +2751,8 @@ void TMainForm::ChangeUILanguage()
         }
         else
         {
-            BeActLabel->Caption = L"Activity (Bq/m^2):";
-            BeErrorLabel->Caption = L"Error (Bq/m^2):";
+            BeActLabel->Caption = L"Activity (Bq/m²):";
+            BeErrorLabel->Caption = L"Error (Bq/m²):";
         }
         BeMDALabel->Caption = L"MDA (Bq/kg):";
         SmpLabel->Caption = L"Sample parameters";
@@ -2760,7 +2760,7 @@ void TMainForm::ChangeUILanguage()
         SmpMassLabel->Caption = L"Mass (Gr):";
         SmpDensityLabel->Caption = L"Density (Gr/L):";
         SmpTotalMassLabel->Caption = L"Total mass (Gr):";
-        SmpSquareLabel->Caption = L"Square (Sm^2):";
+        SmpSquareLabel->Caption = L"Square (Cm²):";
 
         FinalSpcChart->Title->Text->Text = L"Residual spectrum";
         FinalSpcChart->LeftAxis->Title->Caption = L"Count";
@@ -3104,13 +3104,13 @@ void __fastcall TMainForm::BeActLabelClick(TObject *Sender)
     {
         if (__LangID == 0)
         {
-            BeActLabel->Caption = L"Aktivligi (Bk/m^2):";
-            BeErrorLabel->Caption = L"Xatolik (Bk/m^2):";
+            BeActLabel->Caption = L"Aktivligi (Bk/m²):";
+            BeErrorLabel->Caption = L"Xatolik (Bk/m²):";
         }
         else
         {
-            BeActLabel->Caption = L"Activity (Bq/m^2):";
-            BeErrorLabel->Caption = L"Error (Bq/m^2):";
+            BeActLabel->Caption = L"Activity (Bq/m²):";
+            BeErrorLabel->Caption = L"Error (Bq/m²):";
         }
         BeActivityPerKgOrSq->Text = BeActivityPerSquare;
         SampleBeError->Text = BeErrorPerSquare;
