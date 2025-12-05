@@ -1,7 +1,7 @@
 object BatchProcessingResultsForm: TBatchProcessingResultsForm
   Left = 0
   Top = 0
-  Caption = 'Ko'#39'p sonli spektrlar tahlili - Natijalar'
+  Caption = 'Ko'#8216'p sonli spektrlar tahlili - Natijalar'
   ClientHeight = 600
   ClientWidth = 1135
   Color = clBtnFace
@@ -671,7 +671,7 @@ object BatchProcessingResultsForm: TBatchProcessingResultsForm
       OnUpdate = SaveToCSVFIleActionUpdate
     end
     object MoveToMainWindowAction: TAction
-      Caption = 'Asosiy oynaga o'#39'tkazish'
+      Caption = 'Asosiy oynaga o'#8216'tkazish'
       ImageIndex = 1
       OnExecute = MoveToMainWindowActionExecute
       OnUpdate = MoveToMainWindowActionUpdate

@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
 
@@ -429,7 +429,7 @@ void TShiftingForm::SaveToOriginalFile()
         else
         {
             if (__LangID == 0)
-                throw Exception(L"Faylning formati noto'g'ri.");
+                throw Exception(L"Faylning formati noto‘g‘ri.");
             else if (__LangID == 1)
                 throw Exception(L"File's format is not valid.");
         }

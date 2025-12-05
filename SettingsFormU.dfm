@@ -27,8 +27,6 @@ object SettingsForm: TSettingsForm
     Default = True
     TabOrder = 0
     OnClick = SaveButtonClick
-    ExplicitLeft = 775
-    ExplicitTop = 648
   end
   object CloseButton: TButton
     Left = 856
@@ -40,8 +38,6 @@ object SettingsForm: TSettingsForm
     Caption = '&Yopish'
     ModalResult = 8
     TabOrder = 1
-    ExplicitLeft = 857
-    ExplicitTop = 648
   end
   object ScrollBox: TScrollBox
     Left = 0
@@ -62,8 +58,6 @@ object SettingsForm: TSettingsForm
     ParentDoubleBuffered = False
     TabOrder = 2
     OnMouseWheel = ScrollBoxMouseWheel
-    ExplicitWidth = 946
-    ExplicitHeight = 625
     object ImageCorrect: TImage
       Left = 793
       Top = 38
@@ -423,21 +417,21 @@ object SettingsForm: TSettingsForm
       Top = 72
       Width = 105
       Height = 13
-      Caption = 'Spektr o'#39'lchangan kun'
+      Caption = 'Spektr o'#8216'lchangan kun'
     end
     object Label36: TLabel
       Left = 397
       Top = 246
       Width = 105
       Height = 13
-      Caption = 'Spektr o'#39'lchangan kun'
+      Caption = 'Spektr o'#8216'lchangan kun'
     end
     object Label37: TLabel
       Left = 397
       Top = 420
       Width = 105
       Height = 13
-      Caption = 'Spektr o'#39'lchangan kun'
+      Caption = 'Spektr o'#8216'lchangan kun'
     end
     object Label4: TLabel
       Left = 35
@@ -515,9 +509,9 @@ object SettingsForm: TSettingsForm
     object Title1Label: TLabel
       Left = 226
       Top = 49
-      Width = 312
+      Width = 304
       Height = 13
-      Caption = 'Zichligi 200 Gr/L dan 500 Gr/L gacha bo'#39'lgan namunalar'
+      Caption = 'Zichligi 200 gr/l dan 500 gr/l gacha bo'#8216'lgan namunalar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -528,9 +522,9 @@ object SettingsForm: TSettingsForm
     object Title2Label: TLabel
       Left = 226
       Top = 222
-      Width = 319
+      Width = 311
       Height = 13
-      Caption = 'Zichligi 800 Gr/L dan 1100 Gr/L gacha bo'#39'lgan namunalar'
+      Caption = 'Zichligi 800 gr/l dan 1100 gr/l gacha bo'#8216'lgan namunalar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -541,9 +535,9 @@ object SettingsForm: TSettingsForm
     object Title3Label: TLabel
       Left = 226
       Top = 397
-      Width = 326
+      Width = 318
       Height = 13
-      Caption = 'Zichligi 1500 Gr/L dan 1800 Gr/L gacha bo'#39'lgan namunalar'
+      Caption = 'Zichligi 1500 gr/l dan 1800 gr/l gacha bo'#8216'lgan namunalar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -556,7 +550,7 @@ object SettingsForm: TSettingsForm
       Top = 582
       Width = 511
       Height = 19
-      Caption = 'Foydalaniluvchi fotocho'#39'qqilar sohalari (chap va o'#39'ng nuqtalari)'
+      Caption = 'Foydalaniluvchi fotocho'#8216'qqilar sohalari (chap va o'#8216'ng nuqtalari)'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16

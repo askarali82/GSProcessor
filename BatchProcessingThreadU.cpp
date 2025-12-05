@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 #include <System.hpp>
 #pragma hdrstop
 
@@ -95,7 +95,7 @@ void __fastcall TBatchProcessingThread::Execute()
                 TSpectrum WorkSpc;
                 if (!WorkSpc.LoadFromFile(FileName, false))
                 {
-                    String Msg = L"Spektrni o'qishni imkoni bo'lmadi: ";
+                    String Msg = L"Spektrni o‘qishni imkoni bo‘lmadi: ";
                     if (LangID == 1)
                     {
                         Msg = L"Couldn't read spectrum: ";
@@ -104,7 +104,7 @@ void __fastcall TBatchProcessingThread::Execute()
                 }
                 else if (!Utils::IsEqual(WorkSpc.Volume, BaseData.Ths[1].Volume))
                 {
-                    String Msg = L"Spektrda namuna hajmi noto'g'ri.";
+                    String Msg = L"Spektrda namuna hajmi noto‘g‘ri.";
                     if (LangID == 1)
                     {
                         Msg = L"Sample volume is not valid.";

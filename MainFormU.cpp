@@ -16,6 +16,7 @@
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
+#pragma comment(lib, "fsa_omf.lib")
 
 TMainForm *MainForm;
 //---------------------------------------------------------------------------
@@ -146,17 +147,13 @@ void __fastcall TMainForm::FormResize(TObject *Sender)
     CsInfoPanel->Left = KInfoPanel->Left + KInfoPanel->Width + 4;
     CsInfoPanel->Width = DIW - 4;
 
-    SampleInfoPanel->Left = CsInfoPanel->Left + CsInfoPanel->Width + 4;
-    SampleInfoPanel->Width = DIW - 4;
+    BeInfoPanel->Left = CsInfoPanel->Left + CsInfoPanel->Width + 4;
+    BeInfoPanel->Width = DIW - 4;
 
     FinalSpcChart->Left = 0;
-    FinalSpcChart->Top = SampleInfoPanel->Top + SampleInfoPanel->Height + 2;
-    FinalSpcChart->Width = SampleInfoPanel->Left + SampleInfoPanel->Width;
-    FinalSpcChart->Height = StatusBar->Top - FinalSpcChart->Top - 2;//FinalSpcChart->Width / 2;
-    /*if ((FinalSpcChart->Top + FinalSpcChart->Height) > StatusBar->Top)
-    {
-        FinalSpcChart->Height = StatusBar->Top - FinalSpcChart->Top - 1;
-    }*/
+    FinalSpcChart->Top = BeInfoPanel->Top + BeInfoPanel->Height + 2;
+    FinalSpcChart->Width = BeInfoPanel->Left + BeInfoPanel->Width;
+    FinalSpcChart->Height = StatusBar->Top - FinalSpcChart->Top - 2;
     Application->ProcessMessages();
 
     SamplePanel->Height = H;
@@ -825,7 +822,6 @@ void TMainForm::CreateVirtualSpectraFrom2Set(
 void TMainForm::CreateVirtualSpectra()
 {
     const int __LangID = LangID;
-    const double DensityInGramPerLitre = Sysutils::StrToFloatDef(SampleDensity->Text, 0);
     LOG("DensityInGramPerLitre = " + Sysutils::FloatToStrF(DensityInGramPerLitre, ffFixed, 15, 2));
 
     if (ValidSpectra(0) && ValidSpectra(1) && ValidSpectra(2))
@@ -871,16 +867,9 @@ void TMainForm::CreateVirtualSpectra()
 void TMainForm::CalculateCountsInStdSamples()
 {
     ThCount = ThSpc.CalculateCountByEnergyRange(ThEn1, ThEn2);
-    ThSum->Text = Utils::RoundFloatValue(ThCount);
-
     RaCount = RaSpc.CalculateCountByEnergyRange(RaEn1, RaEn2);
-    RaSum->Text = Utils::RoundFloatValue(RaCount);
-
     KCount = KSpc.CalculateCountByEnergyRange(KEn1, KEn2);
-    KSum->Text = Utils::RoundFloatValue(KCount);
-
     CsCount = CsSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
-    CsSum->Text = Utils::RoundFloatValue(CsCount);
 }
 //---------------------------------------------------------------------------
 void TMainForm::DecomposeSampleSpectrum()
@@ -907,7 +896,8 @@ void TMainForm::DecomposeSampleSpectrum()
         const double CsActivityError =
             System::Sqrt(Utils::Sqr(CsActivityErrors[0]) + Utils::Sqr(CsActivityErrors[1]) + Utils::Sqr(CsActivityErrors[2]));
 
-        const double MassCoeff = StrToFloat(SampleMass->Text) / 1000;
+        const double MassCoeff =
+            SameText(SampleSpc.WeightUnit, L"kg") ? SampleSpc.Weight : SampleSpc.Weight * 0.001;
 
         DrawSpectrum(SampleSpc, SampleSpectrum);
         CalculateCountsInStdSamples();
@@ -930,10 +920,9 @@ void TMainForm::DecomposeSampleSpectrum()
         const double BkgBe =
             (BeEn1 > 0 && BeEn2 > 0 && BeEn2 > BeEn1) ? TMPSpc.CalculateCountByEnergyRange(BeEn1, BeEn2) : 0;
 
-        const double DensityInGramPerLitre = Sysutils::StrToFloatDef(SampleDensity->Text, 0);
         const double BePhotopeakEff =
             Utils::CalcBe7Effectivity(BePhotopeakEff1, BePhotopeakEff2, BePhotopeakEff3, DensityInGramPerLitre);
-        LOG(L"BePhotopeakEff = " + String(BePhotopeakEff) + L" for density " + SampleDensity->Text);
+        LOG(L"BePhotopeakEff = " + String(BePhotopeakEff) + L" for density " + String(DensityInGramPerLitre));
         const bool MDABeCanBeCalculated = BkgBe > 0 && BePhotopeakEff > 0;
 
         double Count = Sample_M_Bkg.CalculateCountByEnergyRange(ThEn1, ThEn2);
@@ -943,10 +932,8 @@ void TMainForm::DecomposeSampleSpectrum()
         ThSnSe1->Text = Utils::RoundFloatValue(Coeff, 5);
         ThC = Sysutils::StrToFloatDef(ThSnSe2->Text, 0);
         const double MDATh =
-            3 * System::Sqrt(BkgTh) * (StrToFloat(ThActivity->Text) / (ThCount * (SampleSpc.Duration / ThSpc.Duration) * MassCoeff));
-        double Activity =
-            ((ThSpc.Duration * Sysutils::StrToFloatDef(ThActivity->Text, 0) * ThC) /
-            (SampleSpc.Duration * Sysutils::StrToFloatDef(SampleMass->Text, 0))) * 1000;
+            3 * System::Sqrt(BkgTh) * (ThActivity / (ThCount * (SampleSpc.Duration / ThSpc.Duration) * MassCoeff));
+        double Activity = (ThSpc.Duration * ThActivity * ThC) / (SampleSpc.Duration * MassCoeff);
         TMPSpc = ThSpc.Multiply(ThC);
         ThSpcWithCoeff = TMPSpc;
         DrawSpectrum(TMPSpc, ThSpectrum);
@@ -982,10 +969,8 @@ void TMainForm::DecomposeSampleSpectrum()
         RaSnSe1->Text = Utils::RoundFloatValue(Coeff, 5);
         RaC = Sysutils::StrToFloatDef(RaSnSe2->Text, 0);
         const double MDARa =
-            3 * System::Sqrt(BkgRa + ThRa) * (StrToFloat(RaActivity->Text) / (RaCount * (SampleSpc.Duration / RaSpc.Duration) * MassCoeff));
-        Activity =
-            ((RaSpc.Duration * Sysutils::StrToFloatDef(RaActivity->Text, 0) * RaC) /
-            (SampleSpc.Duration * Sysutils::StrToFloatDef(SampleMass->Text, 0))) * 1000;
+            3 * System::Sqrt(BkgRa + ThRa) * (RaActivity / (RaCount * (SampleSpc.Duration / RaSpc.Duration) * MassCoeff));
+        Activity = (RaSpc.Duration * RaActivity * RaC) / (SampleSpc.Duration * MassCoeff);
         TMPSpc = RaSpc.Multiply(RaC);
         RaSpcWithCoeff = TMPSpc;
         DrawSpectrum(TMPSpc, RaSpectrum);
@@ -1020,10 +1005,8 @@ void TMainForm::DecomposeSampleSpectrum()
         KSnSe1->Text = Utils::RoundFloatValue(Coeff, 5);
         KC = Sysutils::StrToFloatDef(KSnSe2->Text, 0);
         const double MDAK =
-            3 * System::Sqrt(BkgK + ThK + RaK) * (StrToFloat(KActivity->Text) / (KCount * (SampleSpc.Duration / KSpc.Duration) * MassCoeff));
-        Activity =
-            ((KSpc.Duration * Sysutils::StrToFloatDef(KActivity->Text, 0) * KC) /
-            (SampleSpc.Duration * Sysutils::StrToFloatDef(SampleMass->Text, 0))) * 1000;
+            3 * System::Sqrt(BkgK + ThK + RaK) * (KActivity / (KCount * (SampleSpc.Duration / KSpc.Duration) * MassCoeff));
+        Activity = (KSpc.Duration * KActivity * KC) / (SampleSpc.Duration * MassCoeff);
         TMPSpc = KSpc.Multiply(KC);
         KSpcWithCoeff = TMPSpc;
         DrawSpectrum(TMPSpc, KSpectrum);
@@ -1057,10 +1040,8 @@ void TMainForm::DecomposeSampleSpectrum()
         CsSnSe1->Text = Utils::RoundFloatValue(Coeff, 5);
         CsC = Sysutils::StrToFloatDef(CsSnSe2->Text, 0);
         const double MDACs =
-            3 * System::Sqrt(BkgCs + ThCs + RaCs + KCs) * (StrToFloat(CsActivity->Text) / (CsCount * (SampleSpc.Duration / CsSpc.Duration) * MassCoeff));
-        Activity =
-            ((CsSpc.Duration * Sysutils::StrToFloatDef(CsActivity->Text, 0) * CsC) /
-            (SampleSpc.Duration * Sysutils::StrToFloatDef(SampleMass->Text, 0))) * 1000;
+            3 * System::Sqrt(BkgCs + ThCs + RaCs + KCs) * (CsActivity / (CsCount * (SampleSpc.Duration / CsSpc.Duration) * MassCoeff));
+        Activity = (CsSpc.Duration * CsActivity * CsC) / (SampleSpc.Duration * MassCoeff);
         TMPSpc = CsSpc.Multiply(CsC);
         CsSpcWithCoeff = TMPSpc;
         DrawSpectrum(TMPSpc, CsSpectrum);
@@ -1152,33 +1133,21 @@ void TMainForm::DecomposeSampleSpectrum()
 //---------------------------------------------------------------------------
 void TMainForm::PopulateStandardSourcesInfo(TSettingsForm *Settings)
 {
-    ThTime->Text = Utils::RoundFloatValue(ThSpc.Duration);
-    ThSum->Text = Utils::RoundFloatValue(ThCount);
-    double Act =
+    ThActivity =
         StrToFloatDef(ThSpc.ExtraStringData, 0) *
         System::Exp(-(System::Ln(2) / 1.405E10) * ThSpc.ExtraFloatData);
-    ThActivity->Text = Utils::RoundFloatValue(Act, 2, false);
 
-    RaTime->Text = Utils::RoundFloatValue(RaSpc.Duration);
-    RaSum->Text = Utils::RoundFloatValue(RaCount);
-    Act =
+    RaActivity =
         StrToFloatDef(RaSpc.ExtraStringData, 0) *
         System::Exp(-(System::Ln(2) / 1602) * RaSpc.ExtraFloatData);
-    RaActivity->Text = Utils::RoundFloatValue(Act, 2, false);
 
-    KTime->Text = Utils::RoundFloatValue(KSpc.Duration);
-    KSum->Text = Utils::RoundFloatValue(KCount);
-    Act =
+    KActivity =
         StrToFloatDef(KSpc.ExtraStringData, 0) *
         System::Exp(-(System::Ln(2) / 1.251E9) * KSpc.ExtraFloatData);
-    KActivity->Text = Utils::RoundFloatValue(Act, 2, false);
 
-    CsTime->Text = Utils::RoundFloatValue(CsSpc.Duration);
-    CsSum->Text = Utils::RoundFloatValue(CsCount);
-    Act =
+    CsActivity =
         StrToFloatDef(CsSpc.ExtraStringData, 0) *
         System::Exp(-(System::Ln(2) / 30) * CsSpc.ExtraFloatData);
-    CsActivity->Text = Utils::RoundFloatValue(Act, 2, false);
 
     const double Energy1 = Ths[VI].Energy1;
     const double Energy2 = Ths[VI].Energy2;
@@ -1205,10 +1174,6 @@ void __fastcall TMainForm::OnParamChange(TObject *Sender)
         (!Edit->Text.IsEmpty() && Sysutils::StrToFloatDef(Edit->Text, -1) < 0))
     {
         return;
-    }
-    if (Sender == SampleDensity)
-    {
-        CreateVirtualSpectra();
     }
     if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
         RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
@@ -1264,7 +1229,7 @@ void __fastcall TMainForm::FinalSpcChartMouseUp(TObject *Sender, TMouseButton Bu
                 StatInfo.sprintf(L"Tanlangan soha: %d - %d / %.2f keV - %.2f keV (%d kanallar / %.2f keV)\n"
                                  L"Markaz: %.2f / %.2f keV\n"
                                  L"Jami hisob: %.0f\n"
-                                 L"Fotocho'qqi yuzasi: %.0f",
+                                 L"Fotocho‘qqi yuzasi: %.0f",
                                  StartCh, EndCh, StartVal, EndVal, ChannelCount,
                                  EndVal - StartVal, Centroid.first, Centroid.second, TotalCounts, NetCounts);
             }
@@ -1997,7 +1962,7 @@ bool TMainForm::OpenSampleSpectrum(const String &FileName)
     }
     else if (!Utils::IsEqual(Spc.Volume, Ths[VI].Volume))
     {
-        String ErrorMessage = L"Spektrda namuna hajmi noto'g'ri.";
+        String ErrorMessage = L"Spektrda namuna hajmi noto‘g‘ri.";
         if (LangID == 1)
         {
             ErrorMessage = L"Sample volume is not valid.";
@@ -2008,11 +1973,7 @@ bool TMainForm::OpenSampleSpectrum(const String &FileName)
     SampleSpc = Spc;
     OrigSampleSpc = SampleSpc;
     SampleFileName = FileName;
-    SampleTime->Text = Utils::RoundFloatValue(SampleSpc.Duration);
-    const double Weight =
-        SameText(SampleSpc.WeightUnit, L"kg") ? (SampleSpc.Weight * 1000) : SampleSpc.Weight;
-    SampleMass->Text = Utils::RoundFloatValue(Weight);
-    SampleDensity->Text = Utils::RoundFloatValue(SampleSpc.DensityInGramPerLitre);
+    DensityInGramPerLitre = SampleSpc.DensityInGramPerLitre;
 
     SmpChan1Edit->OnChange = 0;
     SmpChan2Edit->OnChange = 0;
@@ -2078,7 +2039,7 @@ void __fastcall TMainForm::OpenParametersActionExecute(TObject *Sender)
     KSnSe2->Text = IniFile->ReadString(L"Input", KSnSe2->Name, L"");
     CsSnSe2->Text = IniFile->ReadString(L"Input", CsSnSe2->Name, L"");
 
-    SampleDensity->Text = IniFile->ReadString(L"Input", SampleDensity->Name, L"");
+    DensityInGramPerLitre = StrToFloatDef(IniFile->ReadString(L"Input", L"SampleDensity", L""), 0);
     SampleOrigMass->Text = IniFile->ReadString(L"Input", SampleOrigMass->Name, L"");
     SampleSquare->Text = IniFile->ReadString(L"Input", SampleSquare->Name, L"");
 
@@ -2169,7 +2130,7 @@ void __fastcall TMainForm::SaveSpectraActionExecute(TObject *Sender)
         return;
     }
 
-    String Msg0 = L"Quyidagi spektrni yaratib bo'lmadi:\r\n\r\n";
+    String Msg0 = L"Quyidagi spektrni yaratib bo‘lmadi:\r\n\r\n";
     String ResultMsgText = L"Barcha spektrlar saqlandi.";
     String ResultMsgTitle = L"Ma'lumot";
     String Smp = L"Nam";
@@ -2335,7 +2296,7 @@ void TMainForm::SaveParametersFile(const String &FileName)
         IniFile->WriteString(L"Input", KSnSe2->Name, KSnSe2->Text);
         IniFile->WriteString(L"Input", CsSnSe2->Name, CsSnSe2->Text);
 
-        IniFile->WriteString(L"Input", SampleDensity->Name, SampleDensity->Text);
+        IniFile->WriteString(L"Input", L"SampleDensity", DensityInGramPerLitre);
         IniFile->WriteString(L"Input", SampleOrigMass->Name, SampleOrigMass->Text);
         IniFile->WriteString(L"Input", SampleSquare->Name, SampleSquare->Text);
 
@@ -2472,7 +2433,7 @@ void TMainForm::ChangeUILanguage()
         SaveSpectraAction->Caption = L"Spektralrni saqlash";
         SaveParametersAction->Caption = L"Parameterlarni saqlash";
 
-        BatchProcessButton->Caption = L"Ko'p sonli spektrlar tahlili";
+        BatchProcessButton->Caption = L"Ko‘p sonli spektrlar tahlili";
         SelectFilesAction->Caption = L"Fayllarni tanlash";
         SelectDirectoryAction->Caption = L"Manzilni tanlash";
 
@@ -2480,38 +2441,12 @@ void TMainForm::ChangeUILanguage()
         SettingsButton->Caption = L"Sozlamalar";
         HelpButton->Caption = L"Dastur haqida";
 
-        ThLabel->Caption = L"Etalon namunada";
-        RaLabel->Caption = ThLabel->Caption;
-        KLabel->Caption = ThLabel->Caption;
-        CsLabel->Caption = ThLabel->Caption;
-
-        ThDurLabel->Caption = L"O'lch. vaqti (sek):";
-        RaDurLabel->Caption = ThDurLabel->Caption;
-        KDurLabel->Caption = ThDurLabel->Caption;
-        CsDurLabel->Caption = ThDurLabel->Caption;
-
-        ThPhotoPeakLabel->Caption = L"Fotocho'qqi, Se:";
-        RaPhotoPeakLabel->Caption = ThPhotoPeakLabel->Caption;
-        KPhotoPeakLabel->Caption = ThPhotoPeakLabel->Caption;
-        CsPhotoPeakLabel->Caption = ThPhotoPeakLabel->Caption;
-
-        ThActLabel->Caption = L"Aktivligi (Bk):";
-        RaActLabel->Caption = ThActLabel->Caption;
-        KActLabel->Caption = ThActLabel->Caption;
-        CsActLabel->Caption = ThActLabel->Caption;
-
         ThMDALabel->Caption = L"AMA (Bk/kg):";
         RaMDALabel->Caption = ThMDALabel->Caption;
         KMDALabel->Caption = ThMDALabel->Caption;
         CsMDALabel->Caption = ThMDALabel->Caption;
 
-        ThSmpLabel->Caption = L"O'rganilayotgan namunada";
-        RaSmpLabel->Caption = ThSmpLabel->Caption;
-        KSmpLabel->Caption = ThSmpLabel->Caption;
-        CsSmpLabel->Caption = ThSmpLabel->Caption;
-        BeSmpLabel->Caption = ThSmpLabel->Caption;
-
-        SmpThPhotoPeakLabel->Caption = L"Fotocho'qqi, Sn:";
+        SmpThPhotoPeakLabel->Caption = L"Fotocho‘qqi, Sn:";
         SmpRaPhotoPeakLabel->Caption = SmpThPhotoPeakLabel->Caption;
         SmpKPhotoPeakLabel->Caption = SmpThPhotoPeakLabel->Caption;
         SmpCsPhotoPeakLabel->Caption = SmpThPhotoPeakLabel->Caption;
@@ -2535,7 +2470,7 @@ void TMainForm::ChangeUILanguage()
         SmpKErrorLabel->Caption = SmpThErrorLabel->Caption;
         SmpCsErrorLabel->Caption = SmpThErrorLabel->Caption;
 
-        BePhotoPeakLabel->Caption = L"Fotocho'qqi:";
+        BePhotoPeakLabel->Caption = L"Fotocho‘qqi:";
         if (BeActivityPerKgOrSq->Tag)
         {
             BeActLabel->Caption = L"Aktivligi (Bk/kg):";
@@ -2547,12 +2482,8 @@ void TMainForm::ChangeUILanguage()
             BeErrorLabel->Caption = L"Xatolik (Bk/m²):";
         }
         BeMDALabel->Caption = L"AMA (Bk/kg):";
-        SmpLabel->Caption = L"Namuna o'lchamlari";
-        SmpDurLabel->Caption = L"O'lch. vaqti (sek):";
-        SmpMassLabel->Caption = L"Massasi (Gr):";
-        SmpDensityLabel->Caption = L"Zichligi (Gr/L):";
-        SmpTotalMassLabel->Caption = L"Um. massasi (Gr):";
-        SmpSquareLabel->Caption = L"Yuzasi (Sm²):";
+        SmpTotalMassLabel->Caption = L"Um. massasi (gr):";
+        SmpSquareLabel->Caption = L"Yuzasi (sm²):";
 
         FinalSpcChart->Title->Text->Text = L"Natijaviy spektr";
         FinalSpcChart->LeftAxis->Title->Caption = L"Impuls";
@@ -2602,13 +2533,13 @@ void TMainForm::ChangeUILanguage()
             BeActivityPerKgOrSq->Text = AMA;
         }
 
-        ThCoeffCalcLabel->Hint = L"  Namunadagi fotocho'qqining etalon namunadagi fotocho'qqi yuzasiga nisbati  ";
+        ThCoeffCalcLabel->Hint = L"  Namunadagi fotocho‘qqining etalon namunadagi fotocho‘qqi yuzasiga nisbati  ";
         RaCoeffCalcLabel->Hint = ThCoeffCalcLabel->Hint;
         KCoeffCalcLabel->Hint = ThCoeffCalcLabel->Hint;
         CsCoeffCalcLabel->Hint = ThCoeffCalcLabel->Hint;
 
-        ThCoeffLabel->Hint = L"  Namunadagi fotocho'qqining etalon namunadagi fotocho'qqi yuzasiga nisbati  \r\n"
-                             L"  O'zgartirish mumkin  ";
+        ThCoeffLabel->Hint = L"  Namunadagi fotocho‘qqining etalon namunadagi fotocho‘qqi yuzasiga nisbati  \r\n"
+                             L"  O‘zgartirish mumkin  ";
         RaCoeffLabel->Hint = ThCoeffLabel->Hint;
         KCoeffLabel->Hint = ThCoeffLabel->Hint;
         CsCoeffLabel->Hint = ThCoeffLabel->Hint;
@@ -2633,7 +2564,7 @@ void TMainForm::ChangeUILanguage()
         BeMDALabel->Hint = ThMDALabel->Hint;
         BeMDA->Hint = ThMDALabel->Hint;
 
-        const String Str = L" energiyaga to'g'ri keluvchi kanal raqami  ";
+        const String Str = L" energiyaga to‘g‘ri keluvchi kanal raqami  ";
         const String E1 = Sysutils::StringReplace(ThE1Label->Caption, L":", L"", TReplaceFlags() << rfReplaceAll);
         const String E2 = Sysutils::StringReplace(ThE2Label->Caption, L":", L"", TReplaceFlags() << rfReplaceAll);
         const String keV = L" keV";
@@ -2664,6 +2595,9 @@ void TMainForm::ChangeUILanguage()
 
         ChangeFinalSpcScaleAction->Caption = L"Logarifmli masshtabda";
         SmoothFInalSpectrumAction->Caption = L"Silliqlangan";
+        SampleDensityMI->Caption = L"Namuna zichligi";
+        IncreaseSampleDensityAction->Caption = L"Zichlikni orttir";
+        DecreaseSampleDensityAction->Caption = L"Zichlikni kamaytir";
     }
     else if (__LangID == 1)
     {
@@ -2688,36 +2622,10 @@ void TMainForm::ChangeUILanguage()
         SettingsButton->Caption = L"Settings";
         HelpButton->Caption = L"About";
 
-        ThLabel->Caption = L"In reference sample";
-        RaLabel->Caption = ThLabel->Caption;
-        KLabel->Caption = ThLabel->Caption;
-        CsLabel->Caption = ThLabel->Caption;
-
-        ThDurLabel->Caption = L"Meas. durat. (sec):";
-        RaDurLabel->Caption = ThDurLabel->Caption;
-        KDurLabel->Caption = ThDurLabel->Caption;
-        CsDurLabel->Caption = ThDurLabel->Caption;
-
-        ThPhotoPeakLabel->Caption = L"Photopeak, Sr:";
-        RaPhotoPeakLabel->Caption = ThPhotoPeakLabel->Caption;
-        KPhotoPeakLabel->Caption = ThPhotoPeakLabel->Caption;
-        CsPhotoPeakLabel->Caption = ThPhotoPeakLabel->Caption;
-
-        ThActLabel->Caption = L"Activity (Bq):";
-        RaActLabel->Caption = ThActLabel->Caption;
-        KActLabel->Caption = ThActLabel->Caption;
-        CsActLabel->Caption = ThActLabel->Caption;
-
         ThMDALabel->Caption = L"MDA (Bq/kg):";
         RaMDALabel->Caption = ThMDALabel->Caption;
         KMDALabel->Caption = ThMDALabel->Caption;
         CsMDALabel->Caption = ThMDALabel->Caption;
-
-        ThSmpLabel->Caption = L"In studying sample";
-        RaSmpLabel->Caption = ThSmpLabel->Caption;
-        KSmpLabel->Caption = ThSmpLabel->Caption;
-        CsSmpLabel->Caption = ThSmpLabel->Caption;
-        BeSmpLabel->Caption = ThSmpLabel->Caption;
 
         SmpThPhotoPeakLabel->Caption = L"Photopeak, Ss:";
         SmpRaPhotoPeakLabel->Caption = SmpThPhotoPeakLabel->Caption;
@@ -2755,12 +2663,8 @@ void TMainForm::ChangeUILanguage()
             BeErrorLabel->Caption = L"Error (Bq/m²):";
         }
         BeMDALabel->Caption = L"MDA (Bq/kg):";
-        SmpLabel->Caption = L"Sample parameters";
-        SmpDurLabel->Caption = L"Meas. durat. (sec):";
-        SmpMassLabel->Caption = L"Mass (Gr):";
-        SmpDensityLabel->Caption = L"Density (Gr/L):";
-        SmpTotalMassLabel->Caption = L"Total mass (Gr):";
-        SmpSquareLabel->Caption = L"Square (Cm²):";
+        SmpTotalMassLabel->Caption = L"Total mass (gr):";
+        SmpSquareLabel->Caption = L"Area (cm²):";
 
         FinalSpcChart->Title->Text->Text = L"Residual spectrum";
         FinalSpcChart->LeftAxis->Title->Caption = L"Count";
@@ -2872,6 +2776,9 @@ void TMainForm::ChangeUILanguage()
 
         ChangeFinalSpcScaleAction->Caption = L"Logarithmic scale";
         SmoothFInalSpectrumAction->Caption = L"Smoothed";
+        SampleDensityMI->Caption = L"Sample density";
+        IncreaseSampleDensityAction->Caption = L"Increase sample density";
+        DecreaseSampleDensityAction->Caption = L"Decrease sample density";
     }
     else
     {
@@ -2890,7 +2797,7 @@ void TMainForm::ChangeUILanguage()
     KSmpLabel->Left = (KInfoPanel->Width - KSmpLabel->Width) / 2;
     CsSmpLabel->Left = (CsInfoPanel->Width - CsSmpLabel->Width) / 2;
 
-    SmpLabel->Left = (SampleInfoPanel->Width - SmpLabel->Width) / 2;*/
+    SmpLabel->Left = (BeInfoPanel->Width - SmpLabel->Width) / 2;*/
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::LanguageActionExecute(TObject *Sender)
@@ -3166,6 +3073,63 @@ void __fastcall TMainForm::SmoothFInalSpectrumActionExecute(TObject *Sender)
 void __fastcall TMainForm::SmoothFInalSpectrumActionUpdate(TObject *Sender)
 {
     SmoothFInalSpectrumAction->Enabled = FinalSpectrum->Count() > 0;
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::IncreaseSampleDensityActionExecute(TObject *Sender)
+{
+    DensityInGramPerLitre += 50;
+    try
+    {
+        CreateVirtualSpectra();
+        if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
+            RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
+        {
+            DecomposeSampleSpectrum();
+        }
+    }
+    catch (const Exception &E)
+    {
+        LOGEXCEPTION(E);
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::DecreaseSampleDensityActionExecute(TObject *Sender)
+{
+    DensityInGramPerLitre -= 50;
+    if (DensityInGramPerLitre < 0)
+    {
+        DensityInGramPerLitre = 0;
+    }
+    try
+    {
+        CreateVirtualSpectra();
+        if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
+            RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
+        {
+            DecomposeSampleSpectrum();
+        }
+    }
+    catch (const Exception &E)
+    {
+        LOGEXCEPTION(E);
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::OnSampleDensityActionUpdate(TObject *Sender)
+{
+    TAction *Action = dynamic_cast<TAction *>(Sender);
+    Action->Enabled = SampleSpc.IsValid();
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::FinalSpcPopupMenuPopup(TObject *Sender)
+{
+    SampleDensityMI->Enabled = SampleSpc.IsValid();
+    FSA_MI->Enabled = SampleDensityMI->Enabled;
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::FSA_MIClick(TObject *Sender)
+{
+    FSA_MI->Checked = !FSA_MI->Checked;
 }
 //---------------------------------------------------------------------------
 

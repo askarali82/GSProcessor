@@ -1,4 +1,4 @@
-#ifndef SpectrumH
+﻿#ifndef SpectrumH
 #define SpectrumH
 
 #include <vector>
@@ -83,25 +83,25 @@ public:
         FileExistenceError = L" fayli mavjud emas.";
         ErrorHeader = L"Quyidagi xatolik yuz berdi:\r\n\r\n";
         ErrorBoxTitle = L"Xato";
-        MeasurementDurationError = L"O'lchash davomiyligi noma'lum.";
+        MeasurementDurationError = L"O‘lchash davomiyligi noma'lum.";
         SampleMassError = L"Namuna massasi noma'lum.";
         SampleVolumeError = L"Namuna hajmi noma'lum.";
-        SampleMassUnitError = L"Namuna massasining o'lchov birligi noma'lum.";
-        SampleVolumeUnitError = L"Namuna hajmining o'lchov birligi noma'lum.";
+        SampleMassUnitError = L"Namuna massasining o‘lchov birligi noma'lum.";
+        SampleVolumeUnitError = L"Namuna hajmining o‘lchov birligi noma'lum.";
         SampleDensityError = L"Namunaning zichligi noma'lum.";
         ChannelCountError = L"Kanallar soni noma'lum.";
-        EnergyCalibrationError = L"Energiya bo'yicha kalibrovka bajarilmagan.";
+        EnergyCalibrationError = L"Energiya bo‘yicha kalibrovka bajarilmagan.";
         NoSpectrumError = L"Faylda spektr mavjud emas.";
-        EnergyChannelValueError = L"Kanal va energiya qiymatlari 0 dan katta bo'lishi shart.";
-        AddingSpectraChannelsError = L"Qo'shiluvchi va qo'shuvchi spektrlarda kanallar soni teng emas.";
-        AddingSpectraEnergyCalibrationError = L"Qo'shiluvchi yoki qo'shuvchi spektrda energiya bo'yicha kalibrovka noto'g'ri.";
+        EnergyChannelValueError = L"Kanal va energiya qiymatlari 0 dan katta bo‘lishi shart.";
+        AddingSpectraChannelsError = L"Qo‘shiluvchi va qo‘shuvchi spektrlarda kanallar soni teng emas.";
+        AddingSpectraEnergyCalibrationError = L"Qo‘shiluvchi yoki qo‘shuvchi spektrda energiya bo‘yicha kalibrovka noto‘g‘ri.";
         SubtractingSpectraChannelsError = L"Ayriluvchi va ayiruvchi spektrlarda kanallar soni teng emas.";
-        SubtractingSpectraEnergyCalibrationError = L"Ayriluvchi yoki ayiruvchi spektrda energiya bo'yicha kalibrovka noto'g'ri.";
-        SubtractedSpectrumDurationError = L"Ayriluvchi spektrning o'lchash davomiyligi noto'g'ri.";
-        SubtractingSpectrumDurationError = L"Ayiruvchi spektrning o'lchash davomiyligi noto'g'ri.";
-        ShiftingRefSampleChannelNumbersError = L"Siljitish: etalon namuna spektri uchun kanallar qiymatlari noto'g'ri.";
-        ShiftingSampleChannelNumbersError = L"Siljitish: siljitiladigan spektr uchun kanallar qiymatlari noto'g'ri.";
-        ShiftingEnergyValuesError = L"Siljitish: energiya qiymatlari noto'g'ri.";
+        SubtractingSpectraEnergyCalibrationError = L"Ayriluvchi yoki ayiruvchi spektrda energiya bo‘yicha kalibrovka noto‘g‘ri.";
+        SubtractedSpectrumDurationError = L"Ayriluvchi spektrning o‘lchash davomiyligi noto‘g‘ri.";
+        SubtractingSpectrumDurationError = L"Ayiruvchi spektrning o‘lchash davomiyligi noto‘g‘ri.";
+        ShiftingRefSampleChannelNumbersError = L"Siljitish: etalon namuna spektri uchun kanallar qiymatlari noto‘g‘ri.";
+        ShiftingSampleChannelNumbersError = L"Siljitish: siljitiladigan spektr uchun kanallar qiymatlari noto‘g‘ri.";
+        ShiftingEnergyValuesError = L"Siljitish: energiya qiymatlari noto‘g‘ri.";
         ShiftingChannelsCountError = L"Siljitish: siljitiladigan spektrda kanallar soni noma'lum.";
 
         if (LangID == 1)
@@ -669,9 +669,9 @@ bool TSpectrum::CorrectToCalibration(TSpectrum &Spc) const
     try
     {
         CheckError(Counts.size() == Spc.Counts.size(),
-            L"To'g'irlovchi va to'g'irlanuvchi spektrlarda kanallar soni teng emas.");
+            L"To‘g‘irlovchi va to‘g‘irlanuvchi spektrlarda kanallar soni teng emas.");
         CheckError(Energies.size() == Counts.size() && Energies.size() == Spc.Energies.size() && K != 0 && Spc.K != 0,
-            L"To'g'irlovchi yoki to'g'irlanuvchi spektrda energiya bo'yicha kalibrovka noto'g'ri.");
+            L"To‘g‘irlovchi yoki to‘g‘irlanuvchi spektrda energiya bo‘yicha kalibrovka noto‘g‘ri.");
         std::vector<double> TMPCounts(Counts.size(), 0);
         for (size_t i = 0; i < Counts.size(); i++)
         {
@@ -862,7 +862,7 @@ double TSpectrum::GetCountValueByIndex(const size_t I) const
     }
 }
 //---------------------------------------------------------------------------
-// Savitzky�Golay smoothing
+// Savitzky–Golay smoothing
 // windowSize - must be odd (e.g., 5, 7, 9)
 // polyOrder  - polynomial order (usually 2 or 3)
 TSpectrum TSpectrum::SavitzkyGolaySmooth(const int windowSize, const int polyOrder) const

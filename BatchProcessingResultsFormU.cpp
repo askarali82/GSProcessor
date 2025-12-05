@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 #include <vcl.h>
 #pragma hdrstop
 
@@ -340,9 +340,9 @@ void TBatchProcessingResultsForm::ChangeUILanguage()
 
     if (__LangID == 0)
     {
-        Caption = L"Ko'p sonli spektrlar tahlili - Natijalar";
+        Caption = L"Ko‘p sonli spektrlar tahlili - Natijalar";
         SaveToCSVFIleAction->Caption = L"CSV faylga saqlash";
-        MoveToMainWindowAction->Caption = L"Asosiy oynaga o'tkazish";
+        MoveToMainWindowAction->Caption = L"Asosiy oynaga o‘tkazish";
         ResultsList->Column[1]->Caption = L"Fayl nomi";
         ResultsList->Column[2]->Caption = L"Th-232 - A, Bk/kg";
         ResultsList->Column[3]->Caption = L"Ra-226 - A, Bk/kg";

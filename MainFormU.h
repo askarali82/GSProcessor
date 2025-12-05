@@ -24,6 +24,7 @@
 #include "BatchProcessingThreadU.h"
 #include <System.Actions.hpp>
 #include <Vcl.ActnList.hpp>
+#include "FSAWrapper.h"
 //---------------------------------------------------------------------------
 // Language ID
 // 0 => Uzbek
@@ -57,20 +58,12 @@ __published:
     TChart *CsChart;
     TChart *FinalSpcChart;
     TPanel *ThInfoPanel;
-    TLabel *ThDurLabel;
-    TLabel *ThPhotoPeakLabel;
-    TLabel *ThActLabel;
     TLabel *ThMDALabel;
-    TLabel *ThLabel;
-    TLabel *ThSmpLabel;
     TLabel *ThCoeffLabel;
     TLabel *ThCoeffCalcLabel;
     TLabel *SmpThPhotoPeakLabel;
     TLabel *SmpThErrorLabel;
     TLabel *SmpThActLabel;
-    TEdit *ThTime;
-    TEdit *ThSum;
-    TEdit *ThActivity;
     TEdit *ThMDA;
     TEdit *SampleThActivity;
     TEdit *ThSnSe2;
@@ -78,20 +71,12 @@ __published:
     TEdit *SampleThSum;
     TEdit *SampleThError;
     TPanel *RaInfoPanel;
-    TLabel *RaDurLabel;
-    TLabel *RaPhotoPeakLabel;
-    TLabel *RaActLabel;
     TLabel *RaMDALabel;
-    TLabel *RaLabel;
-    TLabel *RaSmpLabel;
     TLabel *RaCoeffLabel;
     TLabel *RaCoeffCalcLabel;
     TLabel *SmpRaPhotoPeakLabel;
     TLabel *SmpRaErrorLabel;
     TLabel *SmpRaActLabel;
-    TEdit *RaTime;
-    TEdit *RaSum;
-    TEdit *RaActivity;
     TEdit *RaMDA;
     TEdit *SampleRaActivity;
     TEdit *RaSnSe2;
@@ -99,20 +84,12 @@ __published:
     TEdit *SampleRaSum;
     TEdit *SampleRaError;
     TPanel *KInfoPanel;
-    TLabel *KDurLabel;
-    TLabel *KPhotoPeakLabel;
-    TLabel *KActLabel;
     TLabel *KMDALabel;
-    TLabel *KLabel;
-    TLabel *KSmpLabel;
     TLabel *KCoeffLabel;
     TLabel *KCoeffCalcLabel;
     TLabel *SmpKPhotoPeakLabel;
     TLabel *SmpKErrorLabel;
     TLabel *SmpKActLabel;
-    TEdit *KTime;
-    TEdit *KSum;
-    TEdit *KActivity;
     TEdit *KMDA;
     TEdit *SampleKActivity;
     TEdit *KSnSe2;
@@ -120,31 +97,22 @@ __published:
     TEdit *SampleKSum;
     TEdit *SampleKError;
     TPanel *CsInfoPanel;
-    TLabel *CsDurLabel;
-    TLabel *CsPhotoPeakLabel;
-    TLabel *CsActLabel;
     TLabel *CsMDALabel;
-    TLabel *CsLabel;
-    TLabel *CsSmpLabel;
     TLabel *CsCoeffLabel;
     TLabel *CsCoeffCalcLabel;
     TLabel *SmpCsPhotoPeakLabel;
     TLabel *SmpCsErrorLabel;
     TLabel *SmpCsActLabel;
-    TEdit *CsTime;
-    TEdit *CsSum;
-    TEdit *CsActivity;
     TEdit *CsMDA;
     TEdit *SampleCsActivity;
     TEdit *CsSnSe2;
     TEdit *CsSnSe1;
     TEdit *SampleCsSum;
     TEdit *SampleCsError;
-    TPanel *SampleInfoPanel;
+    TPanel *BeInfoPanel;
     TLabel *BePhotoPeakLabel;
     TLabel *BeActLabel;
     TLabel *BeMDALabel;
-    TLabel *SmpDensityLabel;
     TEdit *BeSum;
     TEdit *BeActivityPerKgOrSq;
     TEdit *BeMDA;
@@ -155,12 +123,7 @@ __published:
     TLabel *SmpTotalMassLabel;
     TEdit *SampleSquare;
     TLabel *SmpSquareLabel;
-    TLabel *SmpLabel;
     TOpenDialog *OpenDialog;
-    TEdit *SampleMass;
-    TLabel *SmpMassLabel;
-    TEdit *SampleTime;
-    TLabel *SmpDurLabel;
     TTimer *SpectraLoadTimer;
     TStatusBar *StatusBar;
     TImageList *ImageList;
@@ -269,7 +232,6 @@ __published:
     TLabel *Label3;
     TLabel *Label4;
     TLabel *Label5;
-    TLabel *BeSmpLabel;
     TAction *ChangeFinalSpcScaleAction;
     TPopupMenu *FinalSpcPopupMenu;
     TMenuItem *Logarifmlimasshtabda1;
@@ -278,6 +240,13 @@ __published:
     TToolButton *ToolButton1;
     TAction *SmoothFInalSpectrumAction;
     TMenuItem *Silliqlangan1;
+    TAction *IncreaseSampleDensityAction;
+    TAction *DecreaseSampleDensityAction;
+    TMenuItem *SampleDensityMI;
+    TMenuItem *Zichlikniorttir1;
+    TMenuItem *Zichliknikamaytir1;
+    TMenuItem *N1;
+    TMenuItem *FSA_MI;
     void __fastcall FormResize(TObject *Sender);
     void __fastcall SettingsButtonClick(TObject *Sender);
     void __fastcall OnSpectraLoadTimer(TObject *Sender);
@@ -323,6 +292,11 @@ __published:
     void __fastcall SubtractBkgActionUpdate(TObject *Sender);
     void __fastcall SmoothFInalSpectrumActionExecute(TObject *Sender);
     void __fastcall SmoothFInalSpectrumActionUpdate(TObject *Sender);
+    void __fastcall IncreaseSampleDensityActionExecute(TObject *Sender);
+    void __fastcall DecreaseSampleDensityActionExecute(TObject *Sender);
+    void __fastcall OnSampleDensityActionUpdate(TObject *Sender);
+    void __fastcall FinalSpcPopupMenuPopup(TObject *Sender);
+    void __fastcall FSA_MIClick(TObject *Sender);
 
 
 private:
@@ -368,6 +342,12 @@ private:
     double KCount = 0;
     double CsCount = 0;
 
+    // Activities
+    double ThActivity = 0;
+    double RaActivity = 0;
+    double KActivity = 0;
+    double CsActivity = 0;
+
     // Std samples activity errors
     double ThActivityErrors[3] = {0, 0, 0};
     double RaActivityErrors[3] = {0, 0, 0};
@@ -404,6 +384,7 @@ private:
     double CsC = 0;
 
     // Miscl.
+    double DensityInGramPerLitre = 0;
     wchar_t DispName[MAX_PATH];
     BROWSEINFOW BrowseInfo;
     String SampleFileName;
@@ -412,6 +393,7 @@ private:
     int SelectStartX = 0;
     int SelectEndX = 0;
     std::unique_ptr<TBatchProcessingThread> BatchProcessingThread;
+    std::unique_ptr<TFullSpectrumAnalysis> FSAnalysis;
 
     // Strings
     String ErrorTitle;
