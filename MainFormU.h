@@ -24,7 +24,6 @@
 #include "BatchProcessingThreadU.h"
 #include <System.Actions.hpp>
 #include <Vcl.ActnList.hpp>
-#include "FSAWrapper.h"
 //---------------------------------------------------------------------------
 // Language ID
 // 0 => Uzbek
@@ -247,6 +246,7 @@ __published:
     TMenuItem *Zichliknikamaytir1;
     TMenuItem *N1;
     TMenuItem *FSA_MI;
+    TTimer *ShiftingRepeaterTimer;
     void __fastcall FormResize(TObject *Sender);
     void __fastcall SettingsButtonClick(TObject *Sender);
     void __fastcall OnSpectraLoadTimer(TObject *Sender);
@@ -297,6 +297,14 @@ __published:
     void __fastcall OnSampleDensityActionUpdate(TObject *Sender);
     void __fastcall FinalSpcPopupMenuPopup(TObject *Sender);
     void __fastcall FSA_MIClick(TObject *Sender);
+    void __fastcall OnSpcPanelClick(TObject *Sender);
+    void __fastcall OnSpcShiftEditEnter(TObject *Sender);
+    void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+    void __fastcall OnShiftingRepeaterTimer(TObject *Sender);
+    void __fastcall FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift);
+    void __fastcall OnChartClick(TObject *Sender);
+    void __fastcall FinalSpcChartClickAxis(TCustomChart *Sender, TChartAxis *Axis,
+          TMouseButton Button, TShiftState Shift, int X, int Y);
 
 
 private:
@@ -393,7 +401,6 @@ private:
     int SelectStartX = 0;
     int SelectEndX = 0;
     std::unique_ptr<TBatchProcessingThread> BatchProcessingThread;
-    std::unique_ptr<TFullSpectrumAnalysis> FSAnalysis;
 
     // Strings
     String ErrorTitle;
@@ -406,6 +413,9 @@ private:
     String BeErrorPerSquare;
 
     bool ShowResultsWithMDA;
+    bool ShiftingKeysPressed;
+    TPanel *SelectedSpcPanel;
+    int FinalSpcChartLeftAxisMinimum;
 
     void InitStdSamples(TSettingsForm *Form);
     void SubtractBkgFromStandardSources(const int Idx);
@@ -417,7 +427,8 @@ private:
     void CalculateCountsInStdSamples();
     void DrawSpectrum(const TSpectrum &Spc, TLineSeries *LineSeries);
     bool OpenSampleSpectrum(const String &FileName);
-    void DecomposeSampleSpectrum();
+    void DecomposeSampleSpectrum(const bool OpeningNewSpectrum = false);
+    void AnalyzeByFSA();
     void PopulateStandardSourcesInfo(TSettingsForm *Settings);
     void SetEnergyRanges(TSettingsForm *Settings);
     bool ValidSpectra(const int Idx) const;

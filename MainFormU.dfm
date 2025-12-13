@@ -10,9 +10,12 @@ object MainForm: TMainForm
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
   Position = poScreenCenter
   WindowState = wsMaximized
+  OnKeyDown = FormKeyDown
+  OnKeyUp = FormKeyUp
   OnResize = FormResize
   DesignSize = (
     1400
@@ -31,6 +34,7 @@ object MainForm: TMainForm
     ParentBackground = False
     ParentDoubleBuffered = False
     TabOrder = 5
+    OnClick = OnSpcPanelClick
     DesignSize = (
       589
       100)
@@ -269,6 +273,7 @@ object MainForm: TMainForm
       TabStop = False
       TabOrder = 4
       Anchors = [akLeft, akTop, akRight, akBottom]
+      OnClick = OnChartClick
       OnDblClick = SampleChartDblClick
       OnMouseMove = OnChartMouseMove
       DefaultCanvas = 'TGDIPlusCanvas'
@@ -309,6 +314,7 @@ object MainForm: TMainForm
       ShowHint = True
       TabOrder = 0
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
     object SmpDValEdit1: TEdit
       Left = 464
@@ -323,6 +329,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       TabOrder = 2
+      OnEnter = OnSpcShiftEditEnter
     end
     object SmpDValEdit2: TEdit
       Left = 541
@@ -337,6 +344,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       TabOrder = 3
+      OnEnter = OnSpcShiftEditEnter
     end
     object SmpChan2Edit: TEdit
       Left = 541
@@ -354,6 +362,7 @@ object MainForm: TMainForm
       ShowHint = True
       TabOrder = 1
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
   end
   object BkgPanel: TPanel
@@ -365,8 +374,10 @@ object MainForm: TMainForm
     BevelKind = bkFlat
     BevelOuter = bvNone
     DoubleBuffered = True
+    ParentBackground = False
     ParentDoubleBuffered = False
     TabOrder = 6
+    OnClick = OnSpcPanelClick
     DesignSize = (
       589
       100)
@@ -592,6 +603,7 @@ object MainForm: TMainForm
       TabStop = False
       TabOrder = 4
       Anchors = [akLeft, akTop, akRight, akBottom]
+      OnClick = OnChartClick
       OnMouseMove = OnChartMouseMove
       DefaultCanvas = 'TGDIPlusCanvas'
       PrintMargins = (
@@ -627,6 +639,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       TabOrder = 3
+      OnEnter = OnSpcShiftEditEnter
     end
     object BkgDValEdit1: TEdit
       Left = 464
@@ -641,6 +654,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       TabOrder = 2
+      OnEnter = OnSpcShiftEditEnter
     end
     object BkgChan2Edit: TEdit
       Left = 541
@@ -658,6 +672,7 @@ object MainForm: TMainForm
       ShowHint = True
       TabOrder = 1
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
     object BkgChan1Edit: TEdit
       Left = 464
@@ -675,6 +690,7 @@ object MainForm: TMainForm
       ShowHint = True
       TabOrder = 0
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
   end
   object ThPanel: TPanel
@@ -686,8 +702,10 @@ object MainForm: TMainForm
     BevelKind = bkFlat
     BevelOuter = bvNone
     DoubleBuffered = True
+    ParentBackground = False
     ParentDoubleBuffered = False
     TabOrder = 7
+    OnClick = OnSpcPanelClick
     DesignSize = (
       589
       100)
@@ -939,6 +957,7 @@ object MainForm: TMainForm
       TabStop = False
       TabOrder = 6
       Anchors = [akLeft, akTop, akRight, akBottom]
+      OnClick = OnChartClick
       OnMouseMove = OnChartMouseMove
       DefaultCanvas = 'TGDIPlusCanvas'
       PrintMargins = (
@@ -974,6 +993,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       TabOrder = 4
+      OnEnter = OnSpcShiftEditEnter
     end
     object ThDValEdit2: TEdit
       Left = 541
@@ -988,6 +1008,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       TabOrder = 5
+      OnEnter = OnSpcShiftEditEnter
     end
     object ThChan2Edit: TEdit
       Left = 541
@@ -1003,6 +1024,7 @@ object MainForm: TMainForm
       ParentFont = False
       TabOrder = 3
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
     object ThChan1Edit: TEdit
       Left = 464
@@ -1018,6 +1040,7 @@ object MainForm: TMainForm
       ParentFont = False
       TabOrder = 2
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
     object Energy2Edit: TEdit
       Left = 541
@@ -1036,6 +1059,7 @@ object MainForm: TMainForm
       ReadOnly = True
       TabOrder = 1
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
     object Energy1Edit: TEdit
       Left = 464
@@ -1054,6 +1078,7 @@ object MainForm: TMainForm
       ReadOnly = True
       TabOrder = 0
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
   end
   object RaPanel: TPanel
@@ -1065,8 +1090,10 @@ object MainForm: TMainForm
     BevelKind = bkFlat
     BevelOuter = bvNone
     DoubleBuffered = True
+    ParentBackground = False
     ParentDoubleBuffered = False
     TabOrder = 8
+    OnClick = OnSpcPanelClick
     DesignSize = (
       589
       100)
@@ -1292,6 +1319,7 @@ object MainForm: TMainForm
       TabStop = False
       TabOrder = 4
       Anchors = [akLeft, akTop, akRight, akBottom]
+      OnClick = OnChartClick
       OnMouseMove = OnChartMouseMove
       DefaultCanvas = 'TGDIPlusCanvas'
       PrintMargins = (
@@ -1327,6 +1355,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       TabOrder = 2
+      OnEnter = OnSpcShiftEditEnter
     end
     object RaDValEdit2: TEdit
       Left = 541
@@ -1341,6 +1370,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       TabOrder = 3
+      OnEnter = OnSpcShiftEditEnter
     end
     object RaChan2Edit: TEdit
       Left = 541
@@ -1358,6 +1388,7 @@ object MainForm: TMainForm
       ShowHint = True
       TabOrder = 1
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
     object RaChan1Edit: TEdit
       Left = 464
@@ -1375,6 +1406,7 @@ object MainForm: TMainForm
       ShowHint = True
       TabOrder = 0
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
   end
   object KPanel: TPanel
@@ -1386,8 +1418,10 @@ object MainForm: TMainForm
     BevelKind = bkFlat
     BevelOuter = bvNone
     DoubleBuffered = True
+    ParentBackground = False
     ParentDoubleBuffered = False
     TabOrder = 9
+    OnClick = OnSpcPanelClick
     DesignSize = (
       589
       100)
@@ -1613,6 +1647,7 @@ object MainForm: TMainForm
       TabStop = False
       TabOrder = 4
       Anchors = [akLeft, akTop, akRight, akBottom]
+      OnClick = OnChartClick
       OnMouseMove = OnChartMouseMove
       DefaultCanvas = 'TGDIPlusCanvas'
       PrintMargins = (
@@ -1648,6 +1683,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       TabOrder = 2
+      OnEnter = OnSpcShiftEditEnter
     end
     object KDValEdit2: TEdit
       Left = 541
@@ -1662,6 +1698,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       TabOrder = 3
+      OnEnter = OnSpcShiftEditEnter
     end
     object KChan2Edit: TEdit
       Left = 541
@@ -1679,6 +1716,7 @@ object MainForm: TMainForm
       ShowHint = True
       TabOrder = 1
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
     object KChan1Edit: TEdit
       Left = 464
@@ -1696,6 +1734,7 @@ object MainForm: TMainForm
       ShowHint = True
       TabOrder = 0
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
   end
   object CsPanel: TPanel
@@ -1707,8 +1746,10 @@ object MainForm: TMainForm
     BevelKind = bkFlat
     BevelOuter = bvNone
     DoubleBuffered = True
+    ParentBackground = False
     ParentDoubleBuffered = False
     TabOrder = 10
+    OnClick = OnSpcPanelClick
     DesignSize = (
       589
       100)
@@ -1934,6 +1975,7 @@ object MainForm: TMainForm
       TabStop = False
       TabOrder = 4
       Anchors = [akLeft, akTop, akRight, akBottom]
+      OnClick = OnChartClick
       OnMouseMove = OnChartMouseMove
       DefaultCanvas = 'TGDIPlusCanvas'
       PrintMargins = (
@@ -1969,6 +2011,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       TabOrder = 2
+      OnEnter = OnSpcShiftEditEnter
     end
     object CsDValEdit2: TEdit
       Left = 538
@@ -1983,6 +2026,7 @@ object MainForm: TMainForm
       Font.Style = []
       ParentFont = False
       TabOrder = 3
+      OnEnter = OnSpcShiftEditEnter
     end
     object CsChan2Edit: TEdit
       Left = 541
@@ -2000,6 +2044,7 @@ object MainForm: TMainForm
       ShowHint = True
       TabOrder = 1
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
     object CsChan1Edit: TEdit
       Left = 464
@@ -2017,6 +2062,7 @@ object MainForm: TMainForm
       ShowHint = True
       TabOrder = 0
       OnChange = OnShiftingDataChange
+      OnEnter = OnSpcShiftEditEnter
     end
   end
   object FinalSpcChart: TChart
@@ -2045,6 +2091,7 @@ object MainForm: TMainForm
     Title.Margins.Bottom = 0
     Title.Text.Strings = (
       'Natijaviy spektr')
+    OnClickAxis = FinalSpcChartClickAxis
     BottomAxis.Automatic = False
     BottomAxis.AutomaticMaximum = False
     BottomAxis.AutomaticMinimum = False
@@ -2057,6 +2104,8 @@ object MainForm: TMainForm
     BottomAxis.Title.Font.Name = 'Tahoma'
     BottomAxis.Title.RoundSize = 12
     BottomAxis.Title.ShapeStyle = fosRoundRectangle
+    LeftAxis.Automatic = False
+    LeftAxis.AutomaticMinimum = False
     LeftAxis.Axis.Width = 1
     LeftAxis.Increment = 250.000000000000000000
     LeftAxis.LabelsFormat.Font.Name = 'Tahoma'
@@ -2064,6 +2113,8 @@ object MainForm: TMainForm
     LeftAxis.LabelsFormat.Margins.Top = 0
     LeftAxis.LabelsFormat.Margins.Right = 0
     LeftAxis.LabelsFormat.Margins.Bottom = 0
+    LeftAxis.Minimum = -100.000000000000000000
+    LeftAxis.PositionUnits = muPixels
     LeftAxis.Title.Caption = 'Impuls'
     LeftAxis.Title.Font.Name = 'Tahoma'
     Panning.MouseWheel = pmwNone
@@ -4470,6 +4521,7 @@ object MainForm: TMainForm
     object SubtractBkgAction: TAction
       Caption = 'Fon ayriladi'
       Checked = True
+      Visible = False
       OnExecute = SubtractBkgActionExecute
       OnUpdate = SubtractBkgActionUpdate
     end
@@ -4526,5 +4578,12 @@ object MainForm: TMainForm
       Caption = 'To'#8216'liq spektrli tahlil'
       OnClick = FSA_MIClick
     end
+  end
+  object ShiftingRepeaterTimer: TTimer
+    Enabled = False
+    Interval = 50
+    OnTimer = OnShiftingRepeaterTimer
+    Left = 696
+    Top = 384
   end
 end

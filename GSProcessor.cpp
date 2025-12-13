@@ -9,6 +9,7 @@ USEFORM("MainFormU.cpp", MainForm);
 USEFORM("SettingsFormU.cpp", SettingsForm);
 USEFORM("ShiftingFormU.cpp", ShiftingForm);
 USEFORM("BatchProcessingResultsFormU.cpp", BatchProcessingResultsForm);
+USEFORM("AxisMinMaxFormU.cpp", AxisMinMaxForm);
 //---------------------------------------------------------------------------
 std::atomic<int> LangID = 0;
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)

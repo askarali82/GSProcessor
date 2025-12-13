@@ -163,6 +163,12 @@
         <LinkPackageStatics>rtl.lib;vcl.lib;Tee.lib;vclimg.lib</LinkPackageStatics>
     </PropertyGroup>
     <ItemGroup>
+        <CppCompile Include="AxisMinMaxFormU.cpp">
+            <Form>AxisMinMaxForm</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>AxisMinMaxFormU.h</DependentOn>
+            <BuildOrder>10</BuildOrder>
+        </CppCompile>
         <CppCompile Include="BatchProcessingResultsFormU.cpp">
             <Form>BatchProcessingResultsForm</Form>
             <FormType>dfm</FormType>
@@ -212,6 +218,7 @@
         <FormResources Include="SettingsFormU.dfm"/>
         <FormResources Include="ShiftingFormU.dfm"/>
         <FormResources Include="BatchProcessingResultsFormU.dfm"/>
+        <FormResources Include="AxisMinMaxFormU.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

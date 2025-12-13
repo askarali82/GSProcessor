@@ -23,6 +23,8 @@ extern std::atomic<int> LangID;
 class TSpectrum
 {
 private:
+    enum TCalibrationType {Linear, Quadratic};
+
     static String FileExistenceError;
     static String ErrorHeader;
     static String ErrorBoxTitle;
@@ -47,6 +49,104 @@ private:
     static String ShiftingEnergyValuesError;
     static String ShiftingChannelsCountError;
 
+    bool InvertMatrix3x3(const double Matrix[3][3], double Inverse[3][3]) const
+    {
+        const double Det =
+            Matrix[0][0] * (Matrix[1][1] * Matrix[2][2] - Matrix[1][2] * Matrix[2][1]) -
+            Matrix[0][1] * (Matrix[1][0] * Matrix[2][2] - Matrix[1][2] * Matrix[2][0]) +
+            Matrix[0][2] * (Matrix[1][0] * Matrix[2][1] - Matrix[1][1] * Matrix[2][0]);
+
+        if (std::abs(Det) < 1e-10)
+        {
+            return false;
+        }
+
+        const double InvDet = 1.0 / Det;
+
+        Inverse[0][0] = (Matrix[1][1] * Matrix[2][2] - Matrix[1][2] * Matrix[2][1]) * InvDet;
+        Inverse[0][1] = (Matrix[0][2] * Matrix[2][1] - Matrix[0][1] * Matrix[2][2]) * InvDet;
+        Inverse[0][2] = (Matrix[0][1] * Matrix[1][2] - Matrix[0][2] * Matrix[1][1]) * InvDet;
+
+        Inverse[1][0] = (Matrix[1][2] * Matrix[2][0] - Matrix[1][0] * Matrix[2][2]) * InvDet;
+        Inverse[1][1] = (Matrix[0][0] * Matrix[2][2] - Matrix[0][2] * Matrix[2][0]) * InvDet;
+        Inverse[1][2] = (Matrix[0][2] * Matrix[1][0] - Matrix[0][0] * Matrix[1][2]) * InvDet;
+
+        Inverse[2][0] = (Matrix[1][0] * Matrix[2][1] - Matrix[1][1] * Matrix[2][0]) * InvDet;
+        Inverse[2][1] = (Matrix[0][1] * Matrix[2][0] - Matrix[0][0] * Matrix[2][1]) * InvDet;
+        Inverse[2][2] = (Matrix[0][0] * Matrix[1][1] - Matrix[0][1] * Matrix[1][0]) * InvDet;
+
+        return true;
+    }
+
+    void CalibrateWithQuadraticFunction()
+    {
+        const double Channels[6] = {Channel1, Channel2, Channel3, Channel4, Channel5, Channel6};
+        const double Energies[6] = {Energy1, Energy2, Energy3, Energy4, Energy5, Energy6};
+
+        double SumC0 = 0.0;
+        double SumC1 = 0.0;
+        double SumC2 = 0.0;
+        double SumC3 = 0.0;
+        double SumC4 = 0.0;
+
+        double SumE0 = 0.0;
+        double SumE1 = 0.0;
+        double SumE2 = 0.0;
+
+        for (int i = 0; i < CalibrationPoints; ++i)
+        {
+            double C = Channels[i];
+            double E = Energies[i];
+
+            double C2 = C * C;
+            double C3 = C2 * C;
+            double C4 = C2 * C2;
+
+            SumC0 += 1.0;
+            SumC1 += C;
+            SumC2 += C2;
+            SumC3 += C3;
+            SumC4 += C4;
+
+            SumE0 += E;
+            SumE1 += E * C;
+            SumE2 += E * C2;
+        }
+
+        const double NormalMatrix[3][3] =
+        {
+            {SumC0, SumC1, SumC2},
+            {SumC1, SumC2, SumC3},
+            {SumC2, SumC3, SumC4}
+        };
+
+        const double RightHandSide[3] = {SumE0, SumE1, SumE2};
+
+        double InverseMatrix[3][3];
+        if (!InvertMatrix3x3(NormalMatrix, InverseMatrix))
+        {
+            throw Exception(L"Matrix inversion failed - singular matrix");
+        }
+
+        A = InverseMatrix[0][0] * RightHandSide[0]
+                 + InverseMatrix[0][1] * RightHandSide[1]
+                 + InverseMatrix[0][2] * RightHandSide[2];
+
+        B = InverseMatrix[1][0] * RightHandSide[0]
+                 + InverseMatrix[1][1] * RightHandSide[1]
+                 + InverseMatrix[1][2] * RightHandSide[2];
+
+        C = InverseMatrix[2][0] * RightHandSide[0]
+                 + InverseMatrix[2][1] * RightHandSide[1]
+                 + InverseMatrix[2][2] * RightHandSide[2];
+
+        for (size_t i = 0; i < this->Energies.size(); i++)
+        {
+            const double ChannelVal = static_cast<double>(i);
+            this->Energies[i] = A + B * ChannelVal + C * ChannelVal * ChannelVal;
+        }
+    }
+
 public:
     // ******************* Data members *******************
     mutable String ErrorMessage;
@@ -60,12 +160,23 @@ public:
     String VolumeUnit = 0;
 
     // Energy calibration
+    TCalibrationType CalibrationType = Linear;
     double Channel1 = 0;
     double Channel2 = 0;
+    double Channel3 = 0;
+    double Channel4 = 0;
+    double Channel5 = 0;
+    double Channel6 = 0;
     double Energy1 = 0;
     double Energy2 = 0;
-    double K = 0;
+    double Energy3 = 0;
+    double Energy4 = 0;
+    double Energy5 = 0;
+    double Energy6 = 0;
+    double A = 0;
     double B = 0;
+    double C = 0;
+    int CalibrationPoints = 0;
 
     // Spectrum
     int ChannelCount = 0;
@@ -78,6 +189,43 @@ public:
     double ExtraFloatData = 0;
 
     // ******************* Member functions *******************
+    static double EnergyToChannel(const double e, const double a, const double b, const double c)
+    {
+        const double Const = a - e;
+        if (std::abs(c) < 1e-10)
+        {
+            if (std::abs(b) < 1e-10)
+            {
+                throw Exception(EnergyCalibrationError);
+            }
+            return -Const / b;
+        }
+        const double Discriminant = b * b - 4.0 * c * Const;
+        if (Discriminant < 0.0)
+        {
+            throw Exception(EnergyCalibrationError);
+        }
+        const double SqrtDiscriminant = std::sqrt(Discriminant);
+        const double Ch1 = (-b + SqrtDiscriminant) / (2.0 * c);
+        const double Ch2 = (-b - SqrtDiscriminant) / (2.0 * c);
+        if (Ch1 >= 0.0 && Ch2 >= 0.0)
+        {
+            return (Ch1 < Ch2) ? Ch1 : Ch2;
+        }
+        else if (Ch1 >= 0.0)
+        {
+            return Ch1;
+        }
+        else if (Ch2 >= 0.0)
+        {
+            return Ch2;
+        }
+        else
+        {
+            throw Exception(EnergyCalibrationError);
+        }
+    }
+
     static void SetLanguage()
     {
         FileExistenceError = L" fayli mavjud emas.";
@@ -184,12 +332,6 @@ public:
 
     TSpectrum Multiply(const double To) const;
 
-    bool CorrectToCalibration(TSpectrum &SpcToCorrect) const;
-
-    void Recalibrate(
-        const double Ch1, const double En1, const double Ch2,
-        const double En2, const bool ShowExceptionMsg = true);
-
     bool Shift(
         const double SrcCh1,
         const double SrcCh2,
@@ -274,10 +416,41 @@ bool TSpectrum::LoadFromFile(const String &FileName, const bool ShowExceptionMsg
 
         Channel1 = wcstod(Lines->ReadString(L"Energy_calibration", L"Channel1", L"0").c_str(), nullptr) - 1;
         Channel2 = wcstod(Lines->ReadString(L"Energy_calibration", L"Channel2", L"0").c_str(), nullptr) - 1;
+        Channel3 = wcstod(Lines->ReadString(L"Energy_calibration", L"Channel3", L"0").c_str(), nullptr) - 1;
+        Channel4 = wcstod(Lines->ReadString(L"Energy_calibration", L"Channel4", L"0").c_str(), nullptr) - 1;
+        Channel5 = wcstod(Lines->ReadString(L"Energy_calibration", L"Channel5", L"0").c_str(), nullptr) - 1;
+        Channel6 = wcstod(Lines->ReadString(L"Energy_calibration", L"Channel6", L"0").c_str(), nullptr) - 1;
         Energy1 = wcstod(Lines->ReadString(L"Energy_calibration", L"Energy1", L"0").c_str(), nullptr);
         Energy2 = wcstod(Lines->ReadString(L"Energy_calibration", L"Energy2", L"0").c_str(), nullptr);
+        Energy3 = wcstod(Lines->ReadString(L"Energy_calibration", L"Energy3", L"0").c_str(), nullptr);
+        Energy4 = wcstod(Lines->ReadString(L"Energy_calibration", L"Energy4", L"0").c_str(), nullptr);
+        Energy5 = wcstod(Lines->ReadString(L"Energy_calibration", L"Energy5", L"0").c_str(), nullptr);
+        Energy6 = wcstod(Lines->ReadString(L"Energy_calibration", L"Energy6", L"0").c_str(), nullptr);
         CheckError(Channel1 > 0 && Channel2 > 0 && Energy1 > 0 && Energy2 > 0, EnergyCalibrationError);
-
+        CalibrationPoints = 2;
+        if (Channel3 > 0 && Energy3 > 0)
+        {
+            CalibrationPoints++;
+        }
+        if (Channel4 > 0 && Energy4 > 0)
+        {
+            CheckError(CalibrationPoints > 2, EnergyCalibrationError);
+            CalibrationPoints++;
+        }
+        if (Channel5 > 0 && Energy5 > 0)
+        {
+            CheckError(CalibrationPoints > 3, EnergyCalibrationError);
+            CalibrationPoints++;
+        }
+        if (Channel6 > 0 && Energy6 > 0)
+        {
+            CheckError(CalibrationPoints > 4, EnergyCalibrationError);
+            CalibrationPoints++;
+        }
+        if (CalibrationPoints > 2)
+        {
+            CalibrationType = Quadratic;
+        }
         BkgFileName = Lines->ReadString(L"Filenames", L"Bkg", L"");
 
         if (Lines->SectionExists(L"BEGIN"))
@@ -340,12 +513,19 @@ bool TSpectrum::LoadFromFile(const String &FileName, const bool ShowExceptionMsg
 
         CheckError(Counts.size() == ChannelCount, NoSpectrumError);
         Counts[ChannelCount - 1] = Counts[ChannelCount - 2];
-        K = (Energy1 - Energy2) / (Channel1 - Channel2);
-        B = Energy1 - K * Channel1;
-        int X = 0;
-        for (auto &E : Energies)
+        if (CalibrationType == Linear)
         {
-            E = K * (X++) + B;
+            B = (Energy1 - Energy2) / (Channel1 - Channel2);
+            A = Energy1 - B * Channel1;
+            int X = 0;
+            for (auto &E : Energies)
+            {
+                E = A + B * (X++);
+            }
+        }
+        else
+        {
+            CalibrateWithQuadraticFunction();
         }
 
         return true;
@@ -372,6 +552,7 @@ bool TSpectrum::IsValid() const
         CheckError(SameText(WeightUnit, L"g") || SameText(WeightUnit, L"kg"));
         CheckError(SameText(VolumeUnit, L"l") || SameText(VolumeUnit, L"ml"));
         CheckError(Channel1 > 0 && Channel2 > 0 && Energy1 > 0 && Energy2 > 0);
+        CheckError(CalibrationType == Linear || CalibrationType == Quadratic);
         CheckError(ChannelCount == 1024 || ChannelCount == 4096);
         CheckError(Counts.size() == ChannelCount && Energies.size() == ChannelCount);
     }
@@ -380,41 +561,6 @@ bool TSpectrum::IsValid() const
         return false;
     }
     return true;
-}
-//---------------------------------------------------------------------------
-void TSpectrum::Recalibrate(
-    const double Ch1, const double En1, const double Ch2,
-    const double En2, const bool ShowExceptionMsg)
-{
-    try
-    {
-        CheckError(ChannelCount == 1024 || ChannelCount == 4096, ChannelCountError);
-        CheckError(Ch1 > 0 && En1 > 0 && Ch2 > 0 && En2 > 0, EnergyChannelValueError);
-        const double k = (En1 - En2) / (Ch1 - Ch2);
-        const double b = En1 - k * Ch1;
-        int x = 0;
-        std::vector<double> Ens(ChannelCount, 0);
-        for (auto &e : Ens)
-        {
-            e = k * (x++) + b;
-        }
-        Energy1 = En1;
-        Energy2 = En2;
-        Channel1 = Ch1;
-        Channel2 = Ch2;
-        K = k;
-        B = b;
-        Energies = Ens;
-    }
-    catch (const Exception &E)
-    {
-        ErrorMessage = E.Message;
-        if (ShowExceptionMsg)
-        {
-            const String &Msg = ErrorHeader + ErrorMessage;
-            Application->MessageBox(Msg.c_str(), ErrorBoxTitle.c_str(), MB_OK | MB_ICONERROR);
-        }
-    }
 }
 //---------------------------------------------------------------------------
 double TSpectrum::CalculateCountByEnergyRange(const double Start, const double End) const
@@ -563,7 +709,10 @@ bool TSpectrum::Add(const TSpectrum &Spc, TSpectrum &ResultSpc, const bool ByEne
         CheckError(Counts.size() == Spc.Counts.size(), AddingSpectraChannelsError);
         if (ByEnergy)
         {
-            CheckError(Energies.size() == Counts.size() && Energies.size() == Spc.Energies.size() && K != 0 && Spc.K != 0,
+            CheckError(
+                Energies.size() == Counts.size() &&
+                Energies.size() == Spc.Energies.size() &&
+                B != 0 && Spc.B != 0,
                 AddingSpectraEnergyCalibrationError);
         }
         NewSpc.Counts.resize(Counts.size());
@@ -572,7 +721,7 @@ bool TSpectrum::Add(const TSpectrum &Spc, TSpectrum &ResultSpc, const bool ByEne
             int X = (int)i;
             if (ByEnergy)
             {
-                X = Math::Ceil((Energies[i] - Spc.B) / Spc.K);
+                X = Math::Ceil(EnergyToChannel(Energies[i], Spc.A, Spc.B, Spc.C));
                 if (X < 0)
                 {
                     X = 0;
@@ -606,7 +755,10 @@ bool TSpectrum::Subtract(
         CheckError(Counts.size() == Spc.Counts.size(), SubtractingSpectraChannelsError);
         if (ByEnergy)
         {
-            CheckError(Energies.size() == Counts.size() && Energies.size() == Spc.Energies.size() && K != 0 && Spc.K != 0,
+            CheckError(
+                Energies.size() == Counts.size() &&
+                Energies.size() == Spc.Energies.size() &&
+                B != 0 && Spc.B != 0,
                 AddingSpectraEnergyCalibrationError);
         }
         if (ByDuration)
@@ -620,7 +772,7 @@ bool TSpectrum::Subtract(
             int X = (int)i;
             if (ByEnergy)
             {
-                X = Math::Ceil((Energies[i] - Spc.B) / Spc.K);
+                X = Math::Ceil(EnergyToChannel(Energies[i], Spc.A, Spc.B, Spc.C));
                 if (X < 0)
                 {
                     X = 0;
@@ -662,47 +814,6 @@ TSpectrum TSpectrum::Multiply(const double To) const
     return Result;
 }
 //---------------------------------------------------------------------------
-bool TSpectrum::CorrectToCalibration(TSpectrum &Spc) const
-{
-    bool Result = false;
-    ErrorMessage = L"";
-    try
-    {
-        CheckError(Counts.size() == Spc.Counts.size(),
-            L"To‘g‘irlovchi va to‘g‘irlanuvchi spektrlarda kanallar soni teng emas.");
-        CheckError(Energies.size() == Counts.size() && Energies.size() == Spc.Energies.size() && K != 0 && Spc.K != 0,
-            L"To‘g‘irlovchi yoki to‘g‘irlanuvchi spektrda energiya bo‘yicha kalibrovka noto‘g‘ri.");
-        std::vector<double> TMPCounts(Counts.size(), 0);
-        for (size_t i = 0; i < Counts.size(); i++)
-        {
-            int X = Math::Ceil((Energies[i] - Spc.B) / Spc.K);
-            if (X < 0)
-            {
-                X = 0;
-            }
-            else if (X >= Counts.size())
-            {
-                X = Counts.size() - 1;
-            }
-            TMPCounts[i] = Spc.Counts[X];
-        }
-        Spc.Channel1 = Channel1;
-        Spc.Channel2 = Channel2;
-        Spc.Energy1 = Energy1;
-        Spc.Energy2 = Energy2;
-        Spc.B = B;
-        Spc.K = K;
-        Spc.Energies = Energies;
-        Spc.Counts = TMPCounts;
-        Result = true;
-    }
-    catch (const Exception &E)
-    {
-        ErrorMessage = E.Message;
-    }
-    return Result;
-}
-//---------------------------------------------------------------------------
 bool TSpectrum::Shift(const double SrcCh1, const double SrcCh2, const double SmpCh1,
     const double SmpCh2, const double En1, const double En2, TSpectrum &ResultSpc) const
 {
@@ -715,16 +826,16 @@ bool TSpectrum::Shift(const double SrcCh1, const double SrcCh2, const double Smp
         CheckError(En1 > 0 && En2 > En1, ShiftingEnergyValuesError);
         CheckError(Counts.size() == 1024 || Counts.size() == 4096, ShiftingChannelsCountError);
         ResultSpc = *this;
-        const double SrcK = (En2 - En1) / (SrcCh2 - SrcCh1);
-        const double SmpK = (En2 - En1) / (SmpCh2 - SmpCh1);
-        const double SrcB = En1 - SrcK * SrcCh1;
-        const double SmpB = En1 - SmpK * SmpCh1;
+        const double SrcB = (En2 - En1) / (SrcCh2 - SrcCh1);
+        const double SmpB = (En2 - En1) / (SmpCh2 - SmpCh1);
+        const double SrcA = En1 - SrcB * SrcCh1;
+        const double SmpA = En1 - SmpB * SmpCh1;
 
         for (size_t i = 0; i < Counts.size(); i++)
         {
             ResultSpc.Counts[i] = 0;
-            const double SrcCal = SrcK * i + SrcB;
-            int X = Math::Ceil((SrcCal - SmpB) / SmpK);
+            const double SrcCal = SrcA + SrcB * i;
+            int X = Math::Ceil((SrcCal - SmpA) / SmpB);
             if (X < 0)
             {
                 X = 0;
@@ -737,7 +848,7 @@ bool TSpectrum::Shift(const double SrcCh1, const double SrcCh2, const double Smp
             while (I < 1000)
             {
                 const double d = double(I) / 1000.0;
-                const int En = Math::Ceil(1000 * (SmpK * (X + d) + SmpB));
+                const int En = Math::Ceil(1000 * (SmpA + SmpB * (X + d)));
                 ResultSpc.Counts[i] = Counts[X] + Math::Ceil(d * (Counts[X + 1] - Counts[X]));
                 if (En > Math::Ceil(1000 * SrcCal))
                 {
@@ -748,14 +859,24 @@ bool TSpectrum::Shift(const double SrcCh1, const double SrcCh2, const double Smp
         }
         ResultSpc.Channel1 = SrcCh1;
         ResultSpc.Channel2 = SrcCh2;
+        ResultSpc.Channel3 = 0;
+        ResultSpc.Channel4 = 0;
+        ResultSpc.Channel5 = 0;
+        ResultSpc.Channel6 = 0;
         ResultSpc.Energy1 = En1;
         ResultSpc.Energy2 = En2;
-        ResultSpc.K = SrcK;
+        ResultSpc.Energy3 = 0;
+        ResultSpc.Energy4 = 0;
+        ResultSpc.Energy5 = 0;
+        ResultSpc.Energy6 = 0;
+        ResultSpc.A = SrcA;
         ResultSpc.B = SrcB;
+        ResultSpc.C = 0;
+        ResultSpc.CalibrationType = Linear;
         int X = 0;
         for (auto &E : ResultSpc.Energies)
         {
-            E = ResultSpc.K * (X++) + ResultSpc.B;
+            E = ResultSpc.A + ResultSpc.B * (X++);
         }
         Result = true;
     }
@@ -882,10 +1003,8 @@ TSpectrum TSpectrum::SavitzkyGolaySmooth(const int windowSize, const int polyOrd
         TSpectrum Result = *this;
         const int n = Counts.size();
 
-        // Precompute convolution coefficients
         std::vector<double> coeff(windowSize, 0.0);
 
-        // Compute least-squares matrix (V^T * V) and its inverse
         std::vector<std::vector<double>> A(windowSize, std::vector<double>(polyOrder + 1, 0.0));
         for (int i = -halfWindow; i <= halfWindow; ++i)
         {
@@ -911,7 +1030,6 @@ TSpectrum TSpectrum::SavitzkyGolaySmooth(const int windowSize, const int polyOrd
             }
         }
 
-        // Invert ATA (small matrix, so we can use Gaussian elimination)
         std::vector<std::vector<double>> invATA = ATA;
         int m = polyOrder + 1;
         std::vector<std::vector<double>> I(m, std::vector<double>(m, 0.0));
@@ -945,7 +1063,6 @@ TSpectrum TSpectrum::SavitzkyGolaySmooth(const int windowSize, const int polyOrd
             }
         }
 
-        // Convolution coefficients for smoothing (centered at 0th derivative)
         for (int k = 0; k < windowSize; ++k)
         {
             coeff[k] = 0.0;
@@ -955,7 +1072,6 @@ TSpectrum TSpectrum::SavitzkyGolaySmooth(const int windowSize, const int polyOrd
             }
         }
 
-        // Apply convolution
         for (int i = 0; i < n; ++i)
         {
             double sum = 0.0;
@@ -964,7 +1080,7 @@ TSpectrum TSpectrum::SavitzkyGolaySmooth(const int windowSize, const int polyOrd
                 int idx = i + j;
                 if (idx < 0)
                 {
-                    idx = 0; // clamp at edges
+                    idx = 0;
                 }
                 else if (idx >= n)
                 {

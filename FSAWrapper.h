@@ -1,22 +1,62 @@
-#ifndef FSAWrapperH
+﻿#ifndef FSAWrapperH
 #define FSAWrapperH
 
 #include <System.hpp>
 #include <vector>
 #include "FSA/fsa.h"
 
+class TCalibration
+{
+public:
+    double A;  // Offset (keV)
+    double B;  // Linear coefficient (keV/channel)
+    double C;  // Quadratic coefficient (keV/channel²)
+
+    TCalibration() : A(0), B(1), C(0) {}
+    TCalibration(double a, double b, double c) : A(a), B(b), C(c) {}
+
+    // Calculate energy for a given channel
+    double ChannelToEnergy(int channel) const
+    {
+        return A + B * channel + C * channel * channel;
+    }
+
+    // Convert to C structure
+    FSACalibration ToCStruct() const
+    {
+        FSACalibration cal;
+        cal.a = A;
+        cal.b = B;
+        cal.c = C;
+        return cal;
+    }
+
+    // Create from linear calibration (a + b*C)
+    static TCalibration Linear(double offset, double gain)
+    {
+        return TCalibration(offset, gain, 0.0);
+    }
+
+    // Create from quadratic calibration (a + b*C + c*C²)
+    static TCalibration Quadratic(double offset, double gain, double quadratic)
+    {
+        return TCalibration(offset, gain, quadratic);
+    }
+};
+
 class TFullSpectrumAnalysis
 {
 private:
     FSAHandle FHandle;
-    int FNumChannels;
     int FNumNuclides;
 
 public:
-    TFullSpectrumAnalysis(int numChannels, int numNuclides)
-        : FNumChannels(numChannels), FNumNuclides(numNuclides)
+    // Constructor for energy-based mode
+    TFullSpectrumAnalysis(double energyMin, double energyMax,
+                          double energyStep, int numNuclides)
+        : FNumNuclides(numNuclides)
     {
-        FHandle = FSA_Create(numChannels, numNuclides);
+        FHandle = FSA_Create(energyMin, energyMax, energyStep, numNuclides);
         if (!FHandle)
         {
             throw Exception("Failed to create FSA instance: " +
@@ -32,24 +72,19 @@ public:
         }
     }
 
-    void AddReferenceSpectrum(int nuclideIdx,
-                             const std::vector<double>& spectrum,
-                             const std::vector<double>& refBackground,
-                             double activity,
-                             double measTime,
-                             const String& name)
+    void AddReferenceSpectrum(
+        int nuclideIdx,
+        const std::vector<double>& spectrum,
+        const TCalibration& calibration,
+        double activity,
+        double measTime)
     {
-        AnsiString ansiName(name);
+        FSACalibration cal = calibration.ToCStruct();
+
         int result = FSA_AddReferenceSpectrum(
-            FHandle,
-            nuclideIdx,
-            spectrum.data(),
-            refBackground.data(),
-            spectrum.size(),
-            activity,
-            measTime,
-            ansiName.c_str()
-        );
+            FHandle, nuclideIdx,
+            spectrum.data(), spectrum.size(),
+            &cal, activity, measTime);
 
         if (!result)
         {
@@ -58,33 +93,15 @@ public:
         }
     }
 
-    void AddNormalizedReference(int nuclideIdx,
-                               const std::vector<double>& normalizedSpectrum,
-                               const String& name)
+    void SetBackground(
+        const std::vector<double>& background,
+        const TCalibration& calibration,
+        double measTime)
     {
-        AnsiString ansiName(name);
-        int result = FSA_AddNormalizedReference(
-            FHandle,
-            nuclideIdx,
-            normalizedSpectrum.data(),
-            normalizedSpectrum.size(),
-            ansiName.c_str()
-        );
+        FSACalibration cal = calibration.ToCStruct();
 
-        if (!result)
-        {
-            throw Exception("Failed to add normalized reference: " +
-                          String(FSA_GetLastError()));
-        }
-    }
-
-    void SetBackground(const std::vector<double>& background)
-    {
         int result = FSA_SetBackground(
-            FHandle,
-            background.data(),
-            background.size()
-        );
+            FHandle, background.data(), background.size(), &cal, measTime);
 
         if (!result)
         {
@@ -93,48 +110,74 @@ public:
         }
     }
 
-    std::vector<double> Analyze(const std::vector<double>& measuredSpectrum,
-                                double measTime)
+    std::vector<double> Analyze(
+        const std::vector<double>& measuredSpectrum,
+        const TCalibration& calibration,
+        double measTime)
     {
         std::vector<double> activities(FNumNuclides);
+        FSACalibration cal = calibration.ToCStruct();
 
         int result = FSA_Analyze(
             FHandle,
             measuredSpectrum.data(),
             measuredSpectrum.size(),
+            &cal,
             measTime,
             activities.data(),
-            activities.size()
-        );
+            activities.size());
 
         if (!result)
         {
-            throw Exception("Analysis failed: " + String(FSA_GetLastError()));
+            throw Exception("NNLS Analysis failed: " + String(FSA_GetLastError()));
         }
 
         return activities;
     }
 
-    std::vector<double> AnalyzeQR(const std::vector<double>& measuredSpectrum,
-                                  double measTime)
+    double GetInterpolatedTotalCounts(
+        const std::vector<double>& spectrum,
+        const TCalibration& calibration,
+        std::vector<double>& interpolatedSpectrum)
     {
-        std::vector<double> activities(FNumNuclides);
+        FSACalibration cal = calibration.ToCStruct();
 
-        int result = FSA_AnalyzeQR(
-            FHandle,
-            measuredSpectrum.data(),
-            measuredSpectrum.size(),
-            measTime,
-            activities.data(),
-            activities.size()
-        );
+        double *interpSpc;
+        int interpSpcSize = 0;
+        double total = FSA_GetInterpolatedTotalCounts(
+            FHandle, spectrum.data(), spectrum.size(), &cal, &interpSpc, &interpSpcSize);
 
-        if (!result)
+        if (total < 0)
         {
-            throw Exception("QR Analysis failed: " + String(FSA_GetLastError()));
+            throw Exception("Failed to get interpolated counts: " +
+                          String(FSA_GetLastError()));
         }
 
-        return activities;
+        interpolatedSpectrum.resize(interpSpcSize);
+        for (int i = 0; i < interpSpcSize; i++)
+        {
+            interpolatedSpectrum[i] = interpSpc[i];
+        }
+
+        return total;
+    }
+
+    double GetBackgroundScale(const std::vector<double>& measuredSpectrum,
+                             double measTime)
+    {
+        double scale = FSA_GetBackgroundScale(
+            FHandle,
+            measuredSpectrum.data(),
+            measTime
+        );
+
+        if (scale < 0)
+        {
+            throw Exception("Failed to get background scale: " +
+                          String(FSA_GetLastError()));
+        }
+
+        return scale;
     }
 
     double CalculateChiSquare(const std::vector<double>& measuredSpectrum,
@@ -144,9 +187,7 @@ public:
         double chi2 = FSA_CalculateChiSquare(
             FHandle,
             measuredSpectrum.data(),
-            measuredSpectrum.size(),
             activities.data(),
-            activities.size(),
             measTime
         );
 
@@ -166,9 +207,7 @@ public:
         int result = FSA_CalculateUncertainties(
             FHandle,
             measuredSpectrum.data(),
-            measuredSpectrum.size(),
-            uncertainties.data(),
-            uncertainties.size()
+            uncertainties.data()
         );
 
         if (!result)
@@ -180,7 +219,6 @@ public:
         return uncertainties;
     }
 
-    int GetNumChannels() const { return FNumChannels; }
     int GetNumNuclides() const { return FNumNuclides; }
 };
 

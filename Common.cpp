@@ -64,7 +64,15 @@ void Utils::LogException(const Exception &E, const AnsiString &Func, const AnsiS
 //---------------------------------------------------------------------------
 String Utils::RoundFloatValue(const double Value, const int D, const bool DeleteZeroes)
 {
-    String Result = Sysutils::FloatToStrF(Value, ffFixed, 15, D);
+    String Result;
+    if (std::abs(Value) < 0.000001)
+    {
+        Result = Sysutils::FloatToStrF(Value, ffExponent, 15, D);
+    }
+    else
+    {
+        Result = Sysutils::FloatToStrF(Value, ffFixed, 15, D);
+    }
     if (Value != 0.0 && DeleteZeroes)
     {
         bool ZeroFound = Result[Result.Length()] == L'0';

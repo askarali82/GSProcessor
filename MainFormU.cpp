@@ -13,18 +13,25 @@
 #include "ShiftingFormU.h"
 #include "Common.h"
 #include "BatchProcessingResultsFormU.h"
+#include "FSAWrapper.h"
+#include "AxisMinMaxFormU.h"
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
-#pragma comment(lib, "fsa_omf.lib")
+#pragma comment(lib, "bin/fsa_omf.lib")
 
 TMainForm *MainForm;
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner):
     TForm(Owner),
     AppName(L"GSProcessor"),
-    ShowResultsWithMDA(true)
+    ShowResultsWithMDA(true),
+    ShiftingKeysPressed(false),
+    SelectedSpcPanel(nullptr),
+    FinalSpcChartLeftAxisMinimum(-100)
 {
+    static const double CHAN_STEP = 0.1;
     Application->Title = AppName;
     Application->ModalPopupMode = pmAuto;
     Application->OnException = OnAppException;
@@ -34,18 +41,18 @@ __fastcall TMainForm::TMainForm(TComponent* Owner):
     FormatSettings.DateSeparator = L'.';
     FormatSettings.DecimalSeparator = L'.';
     FormatSettings.ShortDateFormat = L"dd.mm.yyyy";
-    SmpDValEdit1->Text = 0.01;
-    SmpDValEdit2->Text = 0.01;
-    BkgDValEdit1->Text = 0.01;
-    BkgDValEdit2->Text = 0.01;
-    ThDValEdit1->Text = 0.01;
-    ThDValEdit2->Text = 0.01;
-    RaDValEdit1->Text = 0.01;
-    RaDValEdit2->Text = 0.01;
-    KDValEdit1->Text = 0.01;
-    KDValEdit2->Text = 0.01;
-    CsDValEdit1->Text = 0.01;
-    CsDValEdit2->Text = 0.01;
+    SmpDValEdit1->Text = CHAN_STEP;
+    SmpDValEdit2->Text = CHAN_STEP;
+    BkgDValEdit1->Text = CHAN_STEP;
+    BkgDValEdit2->Text = CHAN_STEP;
+    ThDValEdit1->Text = CHAN_STEP;
+    ThDValEdit2->Text = CHAN_STEP;
+    RaDValEdit1->Text = CHAN_STEP;
+    RaDValEdit2->Text = CHAN_STEP;
+    KDValEdit1->Text = CHAN_STEP;
+    KDValEdit2->Text = CHAN_STEP;
+    CsDValEdit1->Text = CHAN_STEP;
+    CsDValEdit2->Text = CHAN_STEP;
 
     std::unique_ptr<TIniFile> SettingsFile(new TIniFile(L".\\Settings.ini"));
     LanguageAction->Tag = SettingsFile->ReadString(L"UILanguage", L"LangID", L"0").ToIntDef(0);
@@ -279,6 +286,7 @@ void TMainForm::InitStdSamples(TSettingsForm *Form)
 
         SubtractBkgFromStandardSources(0);
     }
+
     if (Form->Density_2_SamplesValid())
     {
         Bkgs[1].LoadFromFile(Form->Bkg2FileName->Text);
@@ -308,6 +316,7 @@ void TMainForm::InitStdSamples(TSettingsForm *Form)
 
         SubtractBkgFromStandardSources(1);
     }
+
     if (Form->Density_3_SamplesValid())
     {
         Bkgs[2].LoadFromFile(Form->Bkg3FileName->Text);
@@ -337,6 +346,7 @@ void TMainForm::InitStdSamples(TSettingsForm *Form)
 
         SubtractBkgFromStandardSources(2);
     }
+
     SetEnergyRanges(Form);
     if (ValidSpectra(0) && ValidSpectra(1) && ValidSpectra(2))
     {
@@ -872,7 +882,115 @@ void TMainForm::CalculateCountsInStdSamples()
     CsCount = CsSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
 }
 //---------------------------------------------------------------------------
-void TMainForm::DecomposeSampleSpectrum()
+void TMainForm::AnalyzeByFSA()
+{
+    try
+    {
+        const double ThActivityError =
+            System::Sqrt(Utils::Sqr(ThActivityErrors[0]) + Utils::Sqr(ThActivityErrors[1]) + Utils::Sqr(ThActivityErrors[2]));
+        const double RaActivityError =
+            System::Sqrt(Utils::Sqr(RaActivityErrors[0]) + Utils::Sqr(RaActivityErrors[1]) + Utils::Sqr(RaActivityErrors[2]));
+        const double KActivityError =
+            System::Sqrt(Utils::Sqr(KActivityErrors[0]) + Utils::Sqr(KActivityErrors[1]) + Utils::Sqr(KActivityErrors[2]));
+        const double CsActivityError =
+            System::Sqrt(Utils::Sqr(CsActivityErrors[0]) + Utils::Sqr(CsActivityErrors[1]) + Utils::Sqr(CsActivityErrors[2]));
+
+        const double MassCoeff =
+            SameText(SampleSpc.WeightUnit, L"kg") ? SampleSpc.Weight : SampleSpc.Weight * 0.001;
+
+        TFullSpectrumAnalysis Fsa(50, 2800, 1, 4);
+
+        TCalibration Cal = TCalibration::Linear(OrigThSpc.A, OrigThSpc.B);
+        Fsa.AddReferenceSpectrum(0, OrigThSpc.Counts, Cal, 1, OrigThSpc.Duration);
+
+        Cal = TCalibration::Linear(OrigRaSpc.A, OrigRaSpc.B);
+        Fsa.AddReferenceSpectrum(1, OrigRaSpc.Counts, Cal, 1, OrigRaSpc.Duration);
+
+        Cal = TCalibration::Linear(OrigKSpc.A, OrigKSpc.B);
+        Fsa.AddReferenceSpectrum(2, OrigKSpc.Counts, Cal, 1, OrigKSpc.Duration);
+
+        Cal = TCalibration::Linear(OrigCsSpc.A, OrigCsSpc.B);
+        Fsa.AddReferenceSpectrum(3, OrigCsSpc.Counts, Cal, 1, OrigCsSpc.Duration);
+
+        Cal = TCalibration::Linear(OrigBkgSpc.A, OrigBkgSpc.B);
+        Fsa.SetBackground(OrigBkgSpc.Counts, Cal, OrigBkgSpc.Duration);
+
+        Cal = TCalibration::Quadratic(OrigSampleSpc.A, OrigSampleSpc.B, OrigSampleSpc.C);
+        const auto &Activities = Fsa.Analyze(OrigSampleSpc.Counts, Cal, OrigSampleSpc.Duration);
+        std::vector<double> interpSpc;
+        Fsa.GetInterpolatedTotalCounts(
+            OrigSampleSpc.Counts,
+            TCalibration::Quadratic(OrigSampleSpc.A, OrigSampleSpc.B, OrigSampleSpc.C),
+            interpSpc);
+        String Str;
+        for (const auto &c : interpSpc)
+            Str += Utils::RoundFloatValue(c) + L"\r\n";
+        LOG(L"\r\n" + Str + L"\r\n");
+
+        const String &Results =
+            L"Th-232:\t" + Utils::RoundFloatValue((Activities[0] * ThActivity) / MassCoeff) + L"\r\n" +
+            L"Ra-226:\t" + Utils::RoundFloatValue((Activities[1] * RaActivity) / MassCoeff) + L"\r\n" +
+            L"K-40:\t" + Utils::RoundFloatValue((Activities[2] * KActivity)  / MassCoeff) + L"\r\n" +
+            L"Cs-137:\t" + Utils::RoundFloatValue((Activities[3] * CsActivity) / MassCoeff);
+
+        Application->MessageBox(Results.c_str(), L"To‘liq Spektrli Tahlil", MB_OK | MB_ICONINFORMATION);
+
+        double ot, it, e;
+        ot = OrigThSpc.CalculateTotalCount();
+        std::vector<double> interpTh;
+        it = Fsa.GetInterpolatedTotalCounts(OrigThSpc.Counts, TCalibration::Linear(OrigThSpc.A, OrigThSpc.B), interpTh);
+        e = std::abs(ot - it) / ot * 100;
+        LOG(L"Th-232: Orig. total = " + Utils::RoundFloatValue(ot));
+        LOG(L"Th-232: Interp. total = " + Utils::RoundFloatValue(it));
+        LOG(L"Th-232: Error = " + Utils::RoundFloatValue(e));
+        Str = L"";
+        for (const auto &c : interpTh)
+            Str += Utils::RoundFloatValue(c) + L"\r\n";
+        LOG(L"\r\n" + Str + L"\r\n");
+
+        ot = OrigRaSpc.CalculateTotalCount();
+        std::vector<double> interpRa;
+        it = Fsa.GetInterpolatedTotalCounts(OrigRaSpc.Counts, TCalibration::Linear(OrigRaSpc.A, OrigRaSpc.B), interpRa);
+        e = std::abs(ot - it) / ot * 100;
+        LOG(L"Ra-226: Orig. total = " + Utils::RoundFloatValue(ot));
+        LOG(L"Ra-226: Interp. total = " + Utils::RoundFloatValue(it));
+        LOG(L"Ra-226: Error = " + Utils::RoundFloatValue(e));
+        Str = L"";
+        for (const auto &c : interpRa)
+            Str += Utils::RoundFloatValue(c) + L"\r\n";
+        LOG(L"\r\n" + Str + L"\r\n");
+
+        ot = OrigKSpc.CalculateTotalCount();
+        std::vector<double> interpK;
+        it = Fsa.GetInterpolatedTotalCounts(OrigKSpc.Counts, TCalibration::Linear(OrigKSpc.A, OrigKSpc.B), interpK);
+        e = std::abs(ot - it) / ot * 100;
+        LOG(L"K-40: Orig. total = " + Utils::RoundFloatValue(ot));
+        LOG(L"K-40: Interp. total = " + Utils::RoundFloatValue(it));
+        LOG(L"K-40: Error = " + Utils::RoundFloatValue(e));
+        Str = L"";
+        for (const auto &c : interpK)
+            Str += Utils::RoundFloatValue(c) + L"\r\n";
+        LOG(L"\r\n" + Str + L"\r\n");
+
+        ot = OrigCsSpc.CalculateTotalCount();
+        std::vector<double> interpCs;
+        it = Fsa.GetInterpolatedTotalCounts(OrigCsSpc.Counts, TCalibration::Linear(OrigCsSpc.A, OrigCsSpc.B), interpCs);
+        e = std::abs(ot - it) / ot * 100;
+        LOG(L"Cs-137: Orig. total = " + Utils::RoundFloatValue(ot));
+        LOG(L"Cs-137: Interp. total = " + Utils::RoundFloatValue(it));
+        LOG(L"Cs-137: Error = " + Utils::RoundFloatValue(e));
+        Str = L"";
+        for (const auto &c : interpCs)
+            Str += Utils::RoundFloatValue(c) + L"\r\n";
+        LOG(L"\r\n" + Str + L"\r\n");
+    }
+    catch (const Exception &E)
+    {
+        Application->MessageBox(E.Message.c_str(), ErrorTitle.c_str(), MB_OK | MB_ICONERROR);
+    }
+}
+//---------------------------------------------------------------------------
+void TMainForm::DecomposeSampleSpectrum(const bool OpeningNewSpectrum)
 {
     try
     {
@@ -930,6 +1048,10 @@ void TMainForm::DecomposeSampleSpectrum()
         Coeff = Coeff < 0 ? 0 : Coeff;
         SampleThSum->Text = Utils::RoundFloatValue(Count);
         ThSnSe1->Text = Utils::RoundFloatValue(Coeff, 5);
+        if (OpeningNewSpectrum)
+        {
+            ThSnSe2->Text = ThSnSe1->Text;
+        }
         ThC = Sysutils::StrToFloatDef(ThSnSe2->Text, 0);
         const double MDATh =
             3 * System::Sqrt(BkgTh) * (ThActivity / (ThCount * (SampleSpc.Duration / ThSpc.Duration) * MassCoeff));
@@ -967,6 +1089,10 @@ void TMainForm::DecomposeSampleSpectrum()
         Coeff = Coeff < 0 ? 0 : Coeff;
         SampleRaSum->Text = Utils::RoundFloatValue(Count);
         RaSnSe1->Text = Utils::RoundFloatValue(Coeff, 5);
+        if (OpeningNewSpectrum)
+        {
+            RaSnSe2->Text = RaSnSe1->Text;
+        }
         RaC = Sysutils::StrToFloatDef(RaSnSe2->Text, 0);
         const double MDARa =
             3 * System::Sqrt(BkgRa + ThRa) * (RaActivity / (RaCount * (SampleSpc.Duration / RaSpc.Duration) * MassCoeff));
@@ -1003,6 +1129,10 @@ void TMainForm::DecomposeSampleSpectrum()
         Coeff = Coeff < 0 ? 0 : Coeff;
         SampleKSum->Text = Utils::RoundFloatValue(Count);
         KSnSe1->Text = Utils::RoundFloatValue(Coeff, 5);
+        if (OpeningNewSpectrum)
+        {
+            KSnSe2->Text = KSnSe1->Text;
+        }
         KC = Sysutils::StrToFloatDef(KSnSe2->Text, 0);
         const double MDAK =
             3 * System::Sqrt(BkgK + ThK + RaK) * (KActivity / (KCount * (SampleSpc.Duration / KSpc.Duration) * MassCoeff));
@@ -1038,6 +1168,10 @@ void TMainForm::DecomposeSampleSpectrum()
         Coeff = Coeff < 0 ? 0 : Coeff;
         SampleCsSum->Text = Utils::RoundFloatValue(Count);
         CsSnSe1->Text = Utils::RoundFloatValue(Coeff, 5);
+        if (OpeningNewSpectrum)
+        {
+            CsSnSe2->Text = CsSnSe1->Text;
+        }
         CsC = Sysutils::StrToFloatDef(CsSnSe2->Text, 0);
         const double MDACs =
             3 * System::Sqrt(BkgCs + ThCs + RaCs + KCs) * (CsActivity / (CsCount * (SampleSpc.Duration / CsSpc.Duration) * MassCoeff));
@@ -1147,7 +1281,13 @@ void TMainForm::PopulateStandardSourcesInfo(TSettingsForm *Settings)
 
     CsActivity =
         StrToFloatDef(CsSpc.ExtraStringData, 0) *
-        System::Exp(-(System::Ln(2) / 30) * CsSpc.ExtraFloatData);
+        System::Exp(-(System::Ln(2) / 30.17) * CsSpc.ExtraFloatData);
+
+    LOG(L"Standard sources activities:"
+        L"  Th-232: " + Utils::RoundFloatValue(ThActivity) +
+        L"  Ra-226: " + Utils::RoundFloatValue(RaActivity) +
+        L"  K-40: "   + Utils::RoundFloatValue(KActivity) +
+        L"  Cs-137: " + Utils::RoundFloatValue(CsActivity));
 
     const double Energy1 = Ths[VI].Energy1;
     const double Energy2 = Ths[VI].Energy2;
@@ -1185,7 +1325,7 @@ void __fastcall TMainForm::OnParamChange(TObject *Sender)
 void __fastcall TMainForm::FinalSpcChartMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y)
 {
-    if (Button == mbLeft)
+    if (Button == mbLeft && !Shift.Contains(ssDouble))
     {
         Selecting = true;
         SelectStartX = X;
@@ -1944,7 +2084,7 @@ int TMainForm::CalcCenterOfPeak(const TSpectrum &Spc, const double Energy) const
     {
         if (Spc.IsValid())
         {
-            return Math::Ceil((Energy - Spc.B) / Spc.K);
+            return Math::Ceil(TSpectrum::EnergyToChannel(Energy, Spc.A, Spc.B, Spc.C));
         }
     }
     catch (Exception &)
@@ -1970,6 +2110,8 @@ bool TMainForm::OpenSampleSpectrum(const String &FileName)
         Application->MessageBox(ErrorMessage.c_str(), ErrorTitle.c_str(), MB_OK | MB_ICONERROR);
         return false;
     }
+    LOG(L"Opened spectrum \"" + FileName + L"\"");
+    LOG(L"Calibration Type: " + String(int(Spc.CalibrationType)) + L", Points: " + String(Spc.CalibrationPoints));
     SampleSpc = Spc;
     OrigSampleSpc = SampleSpc;
     SampleFileName = FileName;
@@ -1986,15 +2128,6 @@ bool TMainForm::OpenSampleSpectrum(const String &FileName)
     {
         SmpChan1Edit->OnChange = OnShiftingDataChange;
         SmpChan2Edit->OnChange = OnShiftingDataChange;
-    }
-
-    ShiftSrc();
-    CreateVirtualSpectra();
-    if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
-        RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
-    {
-        LOG(L"Decomposing sample spectrum.");
-        DecomposeSampleSpectrum();
     }
     Caption = AppName + L" - " + FileName;
     return true;
@@ -2022,9 +2155,19 @@ void __fastcall TMainForm::OpenSpectrumActionExecute(TObject *Sender)
     {
         OpenParametersAction->Execute();
     }
-    else
+    else if (OpenSampleSpectrum(OpenDialog->FileName))
     {
-        OpenSampleSpectrum(OpenDialog->FileName);
+        ThSnSe2->Text = L"";
+        RaSnSe2->Text = L"";
+        KSnSe2->Text = L"";
+        CsSnSe2->Text = L"";
+        ShiftSrc();
+        CreateVirtualSpectra();
+        if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
+            RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
+        {
+            DecomposeSampleSpectrum(true);
+        }
     }
 }
 //---------------------------------------------------------------------------
@@ -2032,49 +2175,48 @@ void __fastcall TMainForm::OpenParametersActionExecute(TObject *Sender)
 {
     std::unique_ptr<TIniFile> IniFile(new TIniFile(OpenDialog->FileName));
 
-    const bool OK = OpenSampleSpectrum(IniFile->ReadString(L"Path", L"FileName", L""));
-
-    ThSnSe2->Text = IniFile->ReadString(L"Input", ThSnSe2->Name, L"");
-    RaSnSe2->Text = IniFile->ReadString(L"Input", RaSnSe2->Name, L"");
-    KSnSe2->Text = IniFile->ReadString(L"Input", KSnSe2->Name, L"");
-    CsSnSe2->Text = IniFile->ReadString(L"Input", CsSnSe2->Name, L"");
-
-    DensityInGramPerLitre = StrToFloatDef(IniFile->ReadString(L"Input", L"SampleDensity", L""), 0);
-    SampleOrigMass->Text = IniFile->ReadString(L"Input", SampleOrigMass->Name, L"");
-    SampleSquare->Text = IniFile->ReadString(L"Input", SampleSquare->Name, L"");
-
-    SmpChan1Edit->Text = IniFile->ReadString(L"Input", SmpChan1Edit->Name, L"");
-    SmpChan2Edit->Text = IniFile->ReadString(L"Input", SmpChan2Edit->Name, L"");
-    SmpDValEdit1->Text = IniFile->ReadString(L"Input", SmpDValEdit1->Name, L"");
-    SmpDValEdit2->Text = IniFile->ReadString(L"Input", SmpDValEdit2->Name, L"");
-
-    BkgChan1Edit->Text = IniFile->ReadString(L"Input", BkgChan1Edit->Name, L"");
-    BkgChan2Edit->Text = IniFile->ReadString(L"Input", BkgChan2Edit->Name, L"");
-    BkgDValEdit1->Text = IniFile->ReadString(L"Input", BkgDValEdit1->Name, L"");
-    BkgDValEdit2->Text = IniFile->ReadString(L"Input", BkgDValEdit2->Name, L"");
-
-    ThChan1Edit->Text = IniFile->ReadString(L"Input", ThChan1Edit->Name, L"");
-    ThChan2Edit->Text = IniFile->ReadString(L"Input", ThChan2Edit->Name, L"");
-    ThDValEdit1->Text = IniFile->ReadString(L"Input", ThDValEdit1->Name, L"");
-    ThDValEdit2->Text = IniFile->ReadString(L"Input", ThDValEdit2->Name, L"");
-
-    RaChan1Edit->Text = IniFile->ReadString(L"Input", RaChan1Edit->Name, L"");
-    RaChan2Edit->Text = IniFile->ReadString(L"Input", RaChan2Edit->Name, L"");
-    RaDValEdit1->Text = IniFile->ReadString(L"Input", RaDValEdit1->Name, L"");
-    RaDValEdit2->Text = IniFile->ReadString(L"Input", RaDValEdit2->Name, L"");
-
-    KChan1Edit->Text = IniFile->ReadString(L"Input", KChan1Edit->Name, L"");
-    KChan2Edit->Text = IniFile->ReadString(L"Input", KChan2Edit->Name, L"");
-    KDValEdit1->Text = IniFile->ReadString(L"Input", KDValEdit1->Name, L"");
-    KDValEdit2->Text = IniFile->ReadString(L"Input", KDValEdit2->Name, L"");
-
-    CsChan1Edit->Text = IniFile->ReadString(L"Input", CsChan1Edit->Name, L"");
-    CsChan2Edit->Text = IniFile->ReadString(L"Input", CsChan2Edit->Name, L"");
-    CsDValEdit1->Text = IniFile->ReadString(L"Input", CsDValEdit1->Name, L"");
-    CsDValEdit2->Text = IniFile->ReadString(L"Input", CsDValEdit2->Name, L"");
-
-    if (OK)
+    if (OpenSampleSpectrum(IniFile->ReadString(L"Path", L"FileName", L"")))
     {
+        ThSnSe2->Text = IniFile->ReadString(L"Input", ThSnSe2->Name, L"");
+        RaSnSe2->Text = IniFile->ReadString(L"Input", RaSnSe2->Name, L"");
+        KSnSe2->Text = IniFile->ReadString(L"Input", KSnSe2->Name, L"");
+        CsSnSe2->Text = IniFile->ReadString(L"Input", CsSnSe2->Name, L"");
+
+        DensityInGramPerLitre = StrToFloatDef(IniFile->ReadString(L"Input", L"SampleDensity", L""), 0);
+        SampleOrigMass->Text = IniFile->ReadString(L"Input", SampleOrigMass->Name, L"");
+        SampleSquare->Text = IniFile->ReadString(L"Input", SampleSquare->Name, L"");
+
+        SmpChan1Edit->Text = IniFile->ReadString(L"Input", SmpChan1Edit->Name, L"");
+        SmpChan2Edit->Text = IniFile->ReadString(L"Input", SmpChan2Edit->Name, L"");
+        SmpDValEdit1->Text = IniFile->ReadString(L"Input", SmpDValEdit1->Name, L"");
+        SmpDValEdit2->Text = IniFile->ReadString(L"Input", SmpDValEdit2->Name, L"");
+
+        BkgChan1Edit->Text = IniFile->ReadString(L"Input", BkgChan1Edit->Name, L"");
+        BkgChan2Edit->Text = IniFile->ReadString(L"Input", BkgChan2Edit->Name, L"");
+        BkgDValEdit1->Text = IniFile->ReadString(L"Input", BkgDValEdit1->Name, L"");
+        BkgDValEdit2->Text = IniFile->ReadString(L"Input", BkgDValEdit2->Name, L"");
+
+        ThChan1Edit->Text = IniFile->ReadString(L"Input", ThChan1Edit->Name, L"");
+        ThChan2Edit->Text = IniFile->ReadString(L"Input", ThChan2Edit->Name, L"");
+        ThDValEdit1->Text = IniFile->ReadString(L"Input", ThDValEdit1->Name, L"");
+        ThDValEdit2->Text = IniFile->ReadString(L"Input", ThDValEdit2->Name, L"");
+
+        RaChan1Edit->Text = IniFile->ReadString(L"Input", RaChan1Edit->Name, L"");
+        RaChan2Edit->Text = IniFile->ReadString(L"Input", RaChan2Edit->Name, L"");
+        RaDValEdit1->Text = IniFile->ReadString(L"Input", RaDValEdit1->Name, L"");
+        RaDValEdit2->Text = IniFile->ReadString(L"Input", RaDValEdit2->Name, L"");
+
+        KChan1Edit->Text = IniFile->ReadString(L"Input", KChan1Edit->Name, L"");
+        KChan2Edit->Text = IniFile->ReadString(L"Input", KChan2Edit->Name, L"");
+        KDValEdit1->Text = IniFile->ReadString(L"Input", KDValEdit1->Name, L"");
+        KDValEdit2->Text = IniFile->ReadString(L"Input", KDValEdit2->Name, L"");
+
+        CsChan1Edit->Text = IniFile->ReadString(L"Input", CsChan1Edit->Name, L"");
+        CsChan2Edit->Text = IniFile->ReadString(L"Input", CsChan2Edit->Name, L"");
+        CsDValEdit1->Text = IniFile->ReadString(L"Input", CsDValEdit1->Name, L"");
+        CsDValEdit2->Text = IniFile->ReadString(L"Input", CsDValEdit2->Name, L"");
+
+        ShiftSrc();
         CreateVirtualSpectra();
         if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
             RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
@@ -2405,6 +2547,7 @@ void TMainForm::OpenFromBatchResult(
         RaSnSe2->Text = RaC;
         KSnSe2->Text = KC;
         CsSnSe2->Text = CsC;
+        ShiftSrc();
         CreateVirtualSpectra();
         if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
             RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
@@ -2824,13 +2967,7 @@ void __fastcall TMainForm::LanguageActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::ThCoeffCalcLabelClick(TObject *Sender)
 {
-    const int P = ThSnSe1->Text.Pos(L".");
-    String Value = ThSnSe1->Text;
-    if (P > 0)
-    {
-        Value = ThSnSe1->Text.SubString(1, P + 3);
-    }
-    ThSnSe2->Text = Value;
+    ThSnSe2->Text = ThSnSe1->Text;
     ThSnSe2->SetFocus();
     ThSnSe2->SelectAll();
     OnParamChange(ThSnSe2);
@@ -2838,13 +2975,7 @@ void __fastcall TMainForm::ThCoeffCalcLabelClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::RaCoeffCalcLabelClick(TObject *Sender)
 {
-    const int P = RaSnSe1->Text.Pos(L".");
-    String Value = RaSnSe1->Text;
-    if (P > 0)
-    {
-        Value = RaSnSe1->Text.SubString(1, P + 3);
-    }
-    RaSnSe2->Text = Value;
+    RaSnSe2->Text = RaSnSe1->Text;
     RaSnSe2->SetFocus();
     RaSnSe2->SelectAll();
     OnParamChange(RaSnSe2);
@@ -2852,13 +2983,7 @@ void __fastcall TMainForm::RaCoeffCalcLabelClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::KCoeffCalcLabelClick(TObject *Sender)
 {
-    const int P = KSnSe1->Text.Pos(L".");
-    String Value = KSnSe1->Text;
-    if (P > 0)
-    {
-        Value = KSnSe1->Text.SubString(1, P + 3);
-    }
-    KSnSe2->Text = Value;
+    KSnSe2->Text = KSnSe1->Text;
     KSnSe2->SetFocus();
     KSnSe2->SelectAll();
     OnParamChange(KSnSe2);
@@ -2866,13 +2991,7 @@ void __fastcall TMainForm::KCoeffCalcLabelClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::CsCoeffCalcLabelClick(TObject *Sender)
 {
-    const int P = CsSnSe1->Text.Pos(L".");
-    String Value = CsSnSe1->Text;
-    if (P > 0)
-    {
-        Value = CsSnSe1->Text.SubString(1, P + 3);
-    }
-    CsSnSe2->Text = Value;
+    CsSnSe2->Text = CsSnSe1->Text;
     CsSnSe2->SetFocus();
     CsSnSe2->SelectAll();
     OnParamChange(CsSnSe2);
@@ -3028,14 +3147,15 @@ void __fastcall TMainForm::ChangeFinalSpcScaleActionExecute(TObject *Sender)
 {
     if (!FinalSpcChart->LeftAxis->Logarithmic)
     {
+        FinalSpcChartLeftAxisMinimum = FinalSpcChart->LeftAxis->Minimum;
         FinalSpcChart->LeftAxis->Minimum = 0;
         FinalSpcChart->LeftAxis->Increment = 0;
     }
     FinalSpcChart->LeftAxis->Logarithmic = !FinalSpcChart->LeftAxis->Logarithmic;
     if (!FinalSpcChart->LeftAxis->Logarithmic)
     {
-        FinalSpcChart->LeftAxis->Minimum = -300;
-        FinalSpcChart->LeftAxis->Increment = 300;
+        FinalSpcChart->LeftAxis->Minimum = FinalSpcChartLeftAxisMinimum;
+        FinalSpcChart->LeftAxis->Increment = 250;
     }
     ChangeFinalSpcScaleAction->Checked = FinalSpcChart->LeftAxis->Logarithmic;
 }
@@ -3057,7 +3177,7 @@ void __fastcall TMainForm::SubtractBkgActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SubtractBkgActionUpdate(TObject *Sender)
 {
-    SubtractBkgAction->Enabled = FinalSpectrum->Count() > 0;
+    SubtractBkgAction->Enabled = false;//FinalSpectrum->Count() > 0;
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SmoothFInalSpectrumActionExecute(TObject *Sender)
@@ -3129,7 +3249,265 @@ void __fastcall TMainForm::FinalSpcPopupMenuPopup(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::FSA_MIClick(TObject *Sender)
 {
-    FSA_MI->Checked = !FSA_MI->Checked;
+    CreateVirtualSpectra();
+    if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
+        RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
+    {
+        AnalyzeByFSA();
+    }
 }
 //---------------------------------------------------------------------------
+void __fastcall TMainForm::OnSpcPanelClick(TObject *Sender)
+{
+    if (SelectedSpcPanel != nullptr)
+    {
+        SelectedSpcPanel->Color = clBtnFace;
+    }
+    TPanel *Panel = dynamic_cast<TPanel *>(Sender);
+    Panel->Color = TColor(0x00D6D6D6);
+    SelectedSpcPanel = Panel;
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::OnSpcShiftEditEnter(TObject *Sender)
+{
+    TEdit *Edit = dynamic_cast<TEdit *>(Sender);
+    OnSpcPanelClick(Edit->Parent);
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::OnChartClick(TObject *Sender)
+{
+    TChart *Chart = dynamic_cast<TChart *>(Sender);
+    OnSpcPanelClick(Chart->Parent);
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+    if (SelectedSpcPanel == nullptr || ShiftingKeysPressed)
+    {
+        return;
+    }
+    if (Shift.Contains(ssCtrl) && Shift.Contains(ssShift))
+    {
+        if (Key == VK_LEFT || Key == VK_RIGHT)
+        {
+            ShiftingKeysPressed = true;
+            OnShiftingRepeaterTimer(nullptr);
+            ShiftingRepeaterTimer->Enabled = true;
+        }
+    }
+    else if (Shift.Contains(ssCtrl))
+    {
+        if (Key == VK_LEFT || Key == VK_RIGHT)
+        {
+            ShiftingKeysPressed = true;
+            OnShiftingRepeaterTimer(nullptr);
+            ShiftingRepeaterTimer->Enabled = true;
+        }
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::FormKeyUp(TObject *Sender, WORD &Key, TShiftState Shift)
+{
+    if (Key == VK_LEFT || Key == VK_RIGHT || Key == VK_CONTROL || Key == VK_SHIFT)
+    {
+        ShiftingKeysPressed = false;
+        ShiftingRepeaterTimer->Enabled = false;
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::OnShiftingRepeaterTimer(TObject *Sender)
+{
+    if (ShiftingKeysPressed)
+    {
+        if ((GetAsyncKeyState(VK_CONTROL) & 0x8000) && (GetAsyncKeyState(VK_SHIFT) & 0x8000))
+        {
+            WORD Key;
+            if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+                Key = VK_LEFT;
+            else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+                Key = VK_RIGHT;
+
+            if (SelectedSpcPanel == SamplePanel)
+            {
+                if (Key == VK_LEFT)
+                {
+                    SmpCh1LeftShiftBtn->Click();
+                }
+                else if (Key == VK_RIGHT)
+                {
+                    SmpCh1RightShiftBtn->Click();
+                }
+            }
+            else if (SelectedSpcPanel == BkgPanel)
+            {
+                if (Key == VK_LEFT)
+                {
+                    BkgCh1LeftShiftBtn->Click();
+                }
+                else if (Key == VK_RIGHT)
+                {
+                    BkgCh1RightShiftBtn->Click();
+                }
+            }
+            else if (SelectedSpcPanel == ThPanel)
+            {
+                if (Key == VK_LEFT)
+                {
+                    ThCh1LeftShiftBtn->Click();
+                }
+                else if (Key == VK_RIGHT)
+                {
+                    ThCh1RightShiftBtn->Click();
+                }
+            }
+            else if (SelectedSpcPanel == RaPanel)
+            {
+                if (Key == VK_LEFT)
+                {
+                    RaCh1LeftShiftBtn->Click();
+                }
+                else if (Key == VK_RIGHT)
+                {
+                    RaCh1RightShiftBtn->Click();
+                }
+            }
+            else if (SelectedSpcPanel == KPanel)
+            {
+                if (Key == VK_LEFT)
+                {
+                    KCh1LeftShiftBtn->Click();
+                }
+                else if (Key == VK_RIGHT)
+                {
+                    KCh1RightShiftBtn->Click();
+                }
+            }
+            else if (SelectedSpcPanel == CsPanel)
+            {
+                if (Key == VK_LEFT)
+                {
+                    CsCh1LeftShiftBtn->Click();
+                }
+                else if (Key == VK_RIGHT)
+                {
+                    CsCh1RightShiftBtn->Click();
+                }
+            }
+
+            Application->ProcessMessages();
+        }
+        else if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
+        {
+            WORD Key;
+            if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+                Key = VK_LEFT;
+            else if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+                Key = VK_RIGHT;
+
+            if (SelectedSpcPanel == SamplePanel)
+            {
+                if (Key == VK_LEFT)
+                {
+                    SmpCh2LeftShiftBtn->Click();
+                }
+                else if (Key == VK_RIGHT)
+                {
+                    SmpCh2RightShiftBtn->Click();
+                }
+            }
+            else if (SelectedSpcPanel == BkgPanel)
+            {
+                if (Key == VK_LEFT)
+                {
+                    BkgCh2LeftShiftBtn->Click();
+                }
+                else if (Key == VK_RIGHT)
+                {
+                    BkgCh2RightShiftBtn->Click();
+                }
+            }
+            else if (SelectedSpcPanel == ThPanel)
+            {
+                if (Key == VK_LEFT)
+                {
+                    ThCh2LeftShiftBtn->Click();
+                }
+                else if (Key == VK_RIGHT)
+                {
+                    ThCh2RightShiftBtn->Click();
+                }
+            }
+            else if (SelectedSpcPanel == RaPanel)
+            {
+                if (Key == VK_LEFT)
+                {
+                    RaCh2LeftShiftBtn->Click();
+                }
+                else if (Key == VK_RIGHT)
+                {
+                    RaCh2RightShiftBtn->Click();
+                }
+            }
+            else if (SelectedSpcPanel == KPanel)
+            {
+                if (Key == VK_LEFT)
+                {
+                    KCh2LeftShiftBtn->Click();
+                }
+                else if (Key == VK_RIGHT)
+                {
+                    KCh2RightShiftBtn->Click();
+                }
+            }
+            else if (SelectedSpcPanel == CsPanel)
+            {
+                if (Key == VK_LEFT)
+                {
+                    CsCh2LeftShiftBtn->Click();
+                }
+                else if (Key == VK_RIGHT)
+                {
+                    CsCh2RightShiftBtn->Click();
+                }
+            }
+
+            Application->ProcessMessages();
+        }
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::FinalSpcChartClickAxis(TCustomChart *Sender, TChartAxis *Axis,
+          TMouseButton Button, TShiftState Shift, int X, int Y)
+{
+    if (Button == mbLeft && Shift.Contains(ssDouble) && Axis == FinalSpcChart->LeftAxis)
+    {
+        const TRect &ChartRect = FinalSpcChart->ChartRect;
+        const int LabelLeft  = Axis->PosLabels;
+        const int LabelRight = LabelLeft + Axis->MaxLabelsWidth();
+        if (X >= LabelLeft && X <= LabelRight && Y >= ChartRect.Top && Y <= ChartRect.Bottom)
+        {
+            TAxisMinMaxForm *Form = new TAxisMinMaxForm(this);
+            const int CurMin = int(FinalSpcChart->LeftAxis->Minimum);
+            const int CurMax = int(FinalSpcChart->LeftAxis->Maximum);
+            Form->MinEdit->Text = CurMin;
+            Form->MaxEdit->Text = CurMax;
+            if (Form->ShowModal() == mrOk)
+            {
+                if (!Form->MinEdit->Text.IsEmpty())
+                {
+                    FinalSpcChart->LeftAxis->AutomaticMinimum = false;
+                    FinalSpcChart->LeftAxis->Minimum = Form->MinEdit->Text.ToIntDef(CurMin);
+                }
+                if (!Form->MaxEdit->Text.IsEmpty())
+                {
+                    FinalSpcChart->LeftAxis->AutomaticMaximum = false;
+                    FinalSpcChart->LeftAxis->Maximum = Form->MaxEdit->Text.ToIntDef(CurMax);
+                }
+            }
+        }
+    }
+
+}
+//---------------------------------------------------------------------------
+
 

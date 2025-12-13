@@ -1,7 +1,5 @@
-#ifndef FSA_H
+﻿#ifndef FSA_H
 #define FSA_H
-
-#define WIN32_LEAN_AND_MEAN
 
 #ifdef FSA_EXPORTS
 #define FSA_API __declspec(dllexport)
@@ -15,74 +13,84 @@ extern "C" {
 
     typedef void* FSAHandle;
 
-    FSA_API FSAHandle __cdecl FSA_Create(int numChannels, int numNuclides);
+    typedef struct {
+        double a;
+        double b;
+        double c;
+    } FSACalibration;
 
-    FSA_API void __cdecl FSA_Destroy(FSAHandle handle);
+    FSA_API FSAHandle FSA_Create(double energyMin, double energyMax,
+        double energyStep, int numNuclides);
 
-    FSA_API int __cdecl FSA_AddReferenceSpectrum(
+    FSA_API void FSA_Destroy(FSAHandle handle);
+
+    FSA_API int FSA_AddReferenceSpectrum(
         FSAHandle handle,
         int nuclideIdx,
         const double* spectrum,
-        const double* refBackground,
         int spectrumSize,
+        const FSACalibration* calibration,
         double activity,
-        double measTime,
-        const char* name
-    );
-
-    FSA_API int __cdecl FSA_AddNormalizedReference(
-        FSAHandle handle,
-        int nuclideIdx,
-        const double* normalizedSpectrum,
-        int spectrumSize,
-        const char* name
-    );
-
-    FSA_API int __cdecl FSA_SetBackground(
-        FSAHandle handle,
-        const double* background,
-        int size
-    );
-
-    FSA_API int __cdecl FSA_Analyze(
-        FSAHandle handle,
-        const double* measuredSpectrum,
-        int spectrumSize,
-        double measTime,
-        double* activities,
-        int activitiesSize
-    );
-
-    FSA_API int __cdecl FSA_AnalyzeQR(
-        FSAHandle handle,
-        const double* measuredSpectrum,
-        int spectrumSize,
-        double measTime,
-        double* activities,
-        int activitiesSize
-    );
-
-    FSA_API double __cdecl FSA_CalculateChiSquare(
-        FSAHandle handle,
-        const double* measuredSpectrum,
-        int spectrumSize,
-        const double* activities,
-        int activitiesSize,
         double measTime
     );
 
-    FSA_API int __cdecl FSA_CalculateUncertainties(
+    FSA_API int FSA_SetBackground(
+        FSAHandle handle,
+        const double* background,
+        int backgroundSize,
+        const FSACalibration* calibration,
+        double measTime
+    );
+
+    FSA_API int FSA_Analyze(
         FSAHandle handle,
         const double* measuredSpectrum,
         int spectrumSize,
-        double* uncertainties,
-        int uncertaintiesSize
+        const FSACalibration* calibration,
+        double measTime,
+        double* activities,
+        int activitiesSize
     );
 
-    FSA_API const char* __cdecl FSA_GetLastError();
+    /*
+    * NOTE: This function allocates memory for interpSpectrum.
+    * The caller is responsible for freeing this memory by calling FSA_FreeMemory.
+    */
+    FSA_API double FSA_GetInterpolatedTotalCounts(
+        FSAHandle handle,
+        const double* spectrum,
+        int spectrumSize,
+        const FSACalibration* calibration,
+        double** interpSpectrum,
+        int* interpSpectrumSize
+    );
+
+    FSA_API double FSA_GetBackgroundScale(
+        FSAHandle handle,
+        const double* measuredSpectrum,
+        double measTime
+    );
+
+    FSA_API double FSA_CalculateChiSquare(
+        FSAHandle handle,
+        const double* measuredSpectrum,
+        const double* activities,
+        double measTime
+    );
+
+    FSA_API int FSA_CalculateUncertainties(
+        FSAHandle handle,
+        const double* measuredSpectrum,
+        double* uncertainties
+    );
+
+    FSA_API const char* FSA_GetLastError();
+
+    FSA_API void FSA_FreeMemory(void* buffer);
+
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif // FSA_H
