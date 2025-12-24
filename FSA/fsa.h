@@ -11,20 +11,24 @@
 extern "C" {
 #endif
 
+    // Opaque handle to the FSA object
     typedef void* FSAHandle;
 
+    // Energy calibration structure
     typedef struct {
-        double a;
-        double b;
-        double c;
+        double a;  // Offset (keV)
+        double b;  // Linear coefficient (keV/channel)
+        double c;  // Quadratic coefficient (keV/channel²)
     } FSACalibration;
 
-    FSA_API FSAHandle FSA_Create(double energyMin, double energyMax,
-        double energyStep, int numNuclides);
+    // Create FSA in energy-aware mode (no rebinning)
+    FSA_API FSAHandle FSA_Create(int numNuclides);
 
+    // Destroy an FSA instance
     FSA_API void FSA_Destroy(FSAHandle handle);
 
-    FSA_API int FSA_AddReferenceSpectrum(
+    // Add reference spectrum with energy calibration
+    FSA_API int FSA_AddReference(
         FSAHandle handle,
         int nuclideIdx,
         const double* spectrum,
@@ -34,14 +38,15 @@ extern "C" {
         double measTime
     );
 
+    // Set background spectrum with energy calibration
     FSA_API int FSA_SetBackground(
         FSAHandle handle,
         const double* background,
         int backgroundSize,
-        const FSACalibration* calibration,
-        double measTime
+        const FSACalibration* calibration
     );
 
+    // Analyze using NNLS (background always as component)
     FSA_API int FSA_Analyze(
         FSAHandle handle,
         const double* measuredSpectrum,
@@ -52,42 +57,28 @@ extern "C" {
         int activitiesSize
     );
 
-    /*
-    * NOTE: This function allocates memory for interpSpectrum.
-    * The caller is responsible for freeing this memory by calling FSA_FreeMemory.
-    */
-    FSA_API double FSA_GetInterpolatedTotalCounts(
-        FSAHandle handle,
-        const double* spectrum,
-        int spectrumSize,
-        const FSACalibration* calibration,
-        double** interpSpectrum,
-        int* interpSpectrumSize
-    );
-
+    // Get background scale factor
     FSA_API double FSA_GetBackgroundScale(
         FSAHandle handle,
         const double* measuredSpectrum,
+        int spectrumSize,
+        const FSACalibration* calibration,
         double measTime
     );
 
+    // Calculate chi-square goodness of fit
     FSA_API double FSA_CalculateChiSquare(
         FSAHandle handle,
         const double* measuredSpectrum,
+        int spectrumSize,
+        const FSACalibration* calibration,
         const double* activities,
+        int activitiesSize,
         double measTime
     );
 
-    FSA_API int FSA_CalculateUncertainties(
-        FSAHandle handle,
-        const double* measuredSpectrum,
-        double* uncertainties
-    );
-
+    // Get last error message
     FSA_API const char* FSA_GetLastError();
-
-    FSA_API void FSA_FreeMemory(void* buffer);
-
 
 #ifdef __cplusplus
 }

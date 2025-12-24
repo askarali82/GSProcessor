@@ -1,7 +1,11 @@
 ﻿#include "FSA.h"
 #include <Eigen/Dense>
 #include <string>
+#include <vector>
 #include <stdexcept>
+#include <cmath>
+#include <algorithm>
+#include <map>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -16,7 +20,7 @@ void SetLastError(const std::string& error)
 class EnergyCalibration
 {
 public:
-    double a, b, c;
+    double a, b, c;  // E = a + b*C + c*C²
 
     EnergyCalibration() : a(0), b(1), c(0) {}
     EnergyCalibration(double a_, double b_, double c_) : a(a_), b(b_), c(c_) {}
@@ -25,148 +29,306 @@ public:
     {
         return a + b * channel + c * channel * channel;
     }
+
+    // Inverse: Energy to channel (for binary search)
+    double EnergyToChannel(double energy) const
+    {
+        if (std::abs(c) < 1e-12)  // Linear calibration
+        {
+            return (energy - a) / b;
+        }
+
+        // Quadratic formula: C = (-b ± sqrt(b² - 4c(a-E))) / (2c)
+        double discriminant = b * b - 4.0 * c * (a - energy);
+
+        if (discriminant < 0)
+        {
+            return -1;
+        }
+
+        // Take positive root
+        double ch1 = (-b + std::sqrt(discriminant)) / (2.0 * c);
+        double ch2 = (-b - std::sqrt(discriminant)) / (2.0 * c);
+
+        if (ch1 >= 0 && ch1 < 100000) return ch1;
+        if (ch2 >= 0 && ch2 < 100000) return ch2;
+
+        return -1;
+    }
 };
 
-// Area-preserving interpolation to common energy grid
-class SpectrumInterpolator
+// Structure to hold a spectrum with its calibration
+struct SpectrumWithCalibration
+{
+    std::vector<double> Counts;
+    EnergyCalibration Cal;
+    int NumChannels;
+
+    SpectrumWithCalibration() : NumChannels(0) {}
+
+    SpectrumWithCalibration(const double* counts, int size, const EnergyCalibration& cal)
+        : Counts(counts, counts + size), Cal(cal), NumChannels(size) {
+    }
+
+    double GetEnergyStart(int channel) const
+    {
+        return Cal.ChannelToEnergy(channel);
+    }
+
+    double GetEnergyEnd(int channel) const
+    {
+        return Cal.ChannelToEnergy(channel + 1);
+    }
+};
+
+// Energy-aware overlap calculator
+class EnergyOverlapCalculator
 {
 private:
-    std::vector<double> EnergyGrid;  // Common energy grid (bin edges)
-    int NumBins;
+    static const double EPSILON;
 
 public:
-    SpectrumInterpolator(double energyMin, double energyMax, double energyStep)
+    struct OverlapInfo
     {
-        NumBins = static_cast<int>((energyMax - energyMin) / energyStep) + 1;
-        EnergyGrid.resize(NumBins);
+        int RefChannel;
+        double Fraction;
+    };
 
-        for (int i = 0; i < NumBins; i++)
-        {
-            EnergyGrid[i] = energyMin + i * energyStep;
-        }
-    }
-
-    // Area-preserving interpolation
-    std::vector<double> Interpolate(const double* spectrum, int spectrumSize,
-        const EnergyCalibration& calibration)
+    static std::vector<OverlapInfo> FindOverlaps(
+        double energyStart,
+        double energyEnd,
+        const SpectrumWithCalibration& reference)
     {
-        size_t SourceChannels = static_cast<size_t>(spectrumSize);
-        for (size_t i = 1; i < EnergyGrid.size(); ++i)
+        std::vector<OverlapInfo> overlaps;
+
+        int startChannel = FindStartChannel(reference, energyStart);
+        int endChannel = FindEndChannel(reference, energyEnd);
+
+        for (int refCh = startChannel; refCh <= endChannel && refCh < reference.NumChannels; refCh++)
         {
-            if (EnergyGrid[i] <= EnergyGrid[i - 1])
+            double refStart = reference.GetEnergyStart(refCh);
+            double refEnd = reference.GetEnergyEnd(refCh);
+
+            double overlapStart = std::max(energyStart, refStart);
+            double overlapEnd = std::min(energyEnd, refEnd);
+
+            if (overlapEnd > overlapStart + EPSILON)
             {
-                throw std::invalid_argument("Energy Grid must be strictly increasing.");
-            }
-        }
+                double overlapWidth = overlapEnd - overlapStart;
+                double refWidth = refEnd - refStart;
 
-        size_t TargetBins = EnergyGrid.size() - 1;
-        std::vector<double> TargetCounts(TargetBins, 0.0);
-        std::vector<double> SourceEdges(SourceChannels + 1, 0.0);
-        for (size_t ch = 0; ch <= SourceChannels; ++ch)
-        {
-            SourceEdges[ch] = calibration.ChannelToEnergy(static_cast<int>(ch));
-        }
-
-        // For each source bin, distribute its counts into overlapping target bins
-        for (size_t src = 0; src < SourceChannels; ++src)
-        {
-            double SLo = SourceEdges[src];
-            double SHi = SourceEdges[src + 1];
-
-            // If degenerate or inverted (should not happen with monotonic calibration), skip
-            if (!(SHi > SLo))
-            {
-                continue;
-            }
-
-            double SourceCounts = spectrum[src];
-
-            // Quick rejection: if source bin entirely left or right of target grid, skip
-            if (SHi <= EnergyGrid.front() || SLo >= EnergyGrid.back())
-            {
-                continue;
-            }
-
-            // Find starting target bin index:
-            // lower_bound finds first edge >= SLo, we subtract 1 to get bin containing SLo
-            auto It = std::lower_bound(EnergyGrid.begin(), EnergyGrid.end(), SLo);
-            long StartBin = static_cast<long>(It - EnergyGrid.begin()) - 1;
-            if (StartBin < 0)
-            {
-                StartBin = 0;
-            }
-
-            // Iterate target bins from StartBin until no overlap
-            for (long tgt = StartBin; tgt < static_cast<long>(TargetBins); ++tgt)
-            {
-                double TLo = EnergyGrid[static_cast<size_t>(tgt)];
-                double THi = EnergyGrid[static_cast<size_t>(tgt + 1)];
-
-                // If target bin starts >= source high edge, no further overlaps
-                if (TLo >= SHi)
+                if (refWidth > EPSILON)
                 {
-                    break;
-                }
-
-                // Compute overlap
-                double OverlapLo = std::max(SLo, TLo);
-                double OverlapHi = std::min(SHi, THi);
-                double Overlap = OverlapHi - OverlapLo;
-
-                if (Overlap > 0.0)
-                {
-                    double SourceBinWidth = SHi - SLo;
-                    double Fraction = Overlap / SourceBinWidth;
-                    TargetCounts[static_cast<size_t>(tgt)] += SourceCounts * Fraction;
+                    OverlapInfo info;
+                    info.RefChannel = refCh;
+                    info.Fraction = overlapWidth / refWidth;
+                    overlaps.push_back(info);
                 }
             }
         }
-        return TargetCounts;
+
+        return overlaps;
     }
 
-    int GetNumBins() const { return NumBins; }
-
-    const std::vector<double>& GetEnergyGrid() const { return EnergyGrid; }
-
-    double GetTotalCounts(const std::vector<double>& spectrum) const
+private:
+    static int FindStartChannel(const SpectrumWithCalibration& spectrum, double energy)
     {
-        double total = 0.0;
-        for (size_t i = 0; i < spectrum.size(); i++)
+        double approxChannel = spectrum.Cal.EnergyToChannel(energy);
+
+        if (approxChannel < 0)
         {
-            total += spectrum[i];
+            return 0;
         }
-        return total;
+
+        int start = std::max(0, (int)approxChannel - 10);
+        int end = std::min(spectrum.NumChannels - 1, (int)approxChannel + 10);
+
+        while (start < end)
+        {
+            int mid = (start + end) / 2;
+            double midEnergy = spectrum.GetEnergyEnd(mid);
+
+            if (midEnergy < energy)
+            {
+                start = mid + 1;
+            }
+            else
+            {
+                end = mid;
+            }
+        }
+
+        return std::max(0, start - 1);
+    }
+
+    static int FindEndChannel(const SpectrumWithCalibration& spectrum, double energy)
+    {
+        double approxChannel = spectrum.Cal.EnergyToChannel(energy);
+
+        if (approxChannel < 0 || approxChannel >= spectrum.NumChannels)
+        {
+            return spectrum.NumChannels - 1;
+        }
+
+        int start = std::max(0, (int)approxChannel - 10);
+        int end = std::min(spectrum.NumChannels - 1, (int)approxChannel + 10);
+
+        while (start < end)
+        {
+            int mid = (start + end + 1) / 2;
+            double midEnergy = spectrum.GetEnergyStart(mid);
+
+            if (midEnergy <= energy)
+            {
+                start = mid;
+            }
+            else
+            {
+                end = mid - 1;
+            }
+        }
+
+        return std::min(spectrum.NumChannels - 1, end + 1);
     }
 };
 
+const double EnergyOverlapCalculator::EPSILON = 1e-9;
+
+// Main FSA class
 class FullSpectrumAnalysis
 {
 private:
-    int NumChannels;
     int NumNuclides;
-    MatrixXd ReferenceMatrix;
-    VectorXd Background;
-    SpectrumInterpolator* Interpolator;
+    std::vector<SpectrumWithCalibration> References;
+    std::vector<double> Activities;
+    std::vector<double> MeasTimes;
+    SpectrumWithCalibration Background;
 
-    // Lawson-Hanson Non-Negative Least Squares algorithm
-    VectorXd SolveLawsonHansonNNLS(const MatrixXd& A, const VectorXd& b, bool useQR = true)
+public:
+    FullSpectrumAnalysis(int numNuclides)
+        : NumNuclides(numNuclides)
     {
-        const int m = A.rows();  // Number of channels
-        const int n = A.cols();  // Number of nuclides
+        References.resize(numNuclides);
+        Activities.resize(numNuclides, 0.0);
+        MeasTimes.resize(numNuclides, 0.0);
+    }
+
+    void AddReference(int nuclideIdx,
+        const double* spectrum,
+        int spectrumSize,
+        const EnergyCalibration& calibration,
+        double activity,
+        double measTime)
+    {
+        if (nuclideIdx < 0 || nuclideIdx >= NumNuclides)
+        {
+            throw std::out_of_range("Nuclide index out of range");
+        }
+
+        References[nuclideIdx] = SpectrumWithCalibration(spectrum, spectrumSize, calibration);
+        Activities[nuclideIdx] = activity;
+        MeasTimes[nuclideIdx] = measTime;
+    }
+
+    void SetBackground(const double* background,
+        int backgroundSize,
+        const EnergyCalibration& calibration)
+    {
+        Background = SpectrumWithCalibration(background, backgroundSize, calibration);
+    }
+
+    MatrixXd BuildDesignMatrix(const SpectrumWithCalibration& measured, double measTime)
+    {
+        int M = measured.NumChannels;
+        int N = NumNuclides;
+
+        MatrixXd A(M, N);
+
+        for (int m = 0; m < M; m++)
+        {
+            double measEnergyStart = measured.GetEnergyStart(m);
+            double measEnergyEnd = measured.GetEnergyEnd(m);
+
+            for (int n = 0; n < N; n++)
+            {
+                const SpectrumWithCalibration& ref = References[n];
+                double refActivity = Activities[n];
+                double refMeasTime = MeasTimes[n];
+
+                auto overlaps = EnergyOverlapCalculator::FindOverlaps(
+                    measEnergyStart, measEnergyEnd, ref);
+
+                double totalContribution = 0.0;
+
+                for (const auto& overlap : overlaps)
+                {
+                    int refCh = overlap.RefChannel;
+                    double fraction = overlap.Fraction;
+
+                    double refCounts = ref.Counts[refCh];
+                    double normalizedCounts = refCounts / (refActivity * refMeasTime);
+
+                    totalContribution += fraction * normalizedCounts;
+                }
+
+                A(m, n) = totalContribution * measTime;
+            }
+        }
+
+        return A;
+    }
+
+    VectorXd CalculateBackgroundContribution(const SpectrumWithCalibration& measured)
+    {
+        int M = measured.NumChannels;
+        VectorXd bgContribution(M);
+
+        if (Background.NumChannels == 0)
+        {
+            bgContribution.setZero();
+            return bgContribution;
+        }
+
+        for (int m = 0; m < M; m++)
+        {
+            double measEnergyStart = measured.GetEnergyStart(m);
+            double measEnergyEnd = measured.GetEnergyEnd(m);
+
+            auto overlaps = EnergyOverlapCalculator::FindOverlaps(
+                measEnergyStart, measEnergyEnd, Background);
+
+            double totalBg = 0.0;
+
+            for (const auto& overlap : overlaps)
+            {
+                int bgCh = overlap.RefChannel;
+                double fraction = overlap.Fraction;
+
+                totalBg += fraction * Background.Counts[bgCh];
+            }
+
+            bgContribution(m) = totalBg;
+        }
+
+        return bgContribution;
+    }
+
+    // Lawson-Hanson NNLS algorithm
+    VectorXd SolveLawsonHansonNNLS(const MatrixXd& A, const VectorXd& b)
+    {
+        const int m = A.rows();
+        const int n = A.cols();
         const double tolerance = 1e-10;
         const int maxIterations = 3 * n;
 
-        VectorXd x = VectorXd::Zero(n);  // Solution vector
-        std::vector<bool> passiveSet(n, false);  // True if variable is in passive set
+        VectorXd x = VectorXd::Zero(n);
+        std::vector<bool> passiveSet(n, false);
 
         for (int mainIter = 0; mainIter < maxIterations; mainIter++)
         {
-            // Step 1: Compute gradient w = A^T * (b - A*x)
             VectorXd residual = b - A * x;
             VectorXd w = A.transpose() * residual;
 
-            // Step 2: Check optimality conditions
-            // Find maximum gradient component in active set (where x = 0)
             int maxGradIdx = -1;
             double maxGrad = tolerance;
 
@@ -179,19 +341,15 @@ private:
                 }
             }
 
-            // If all gradients for active constraints are <= 0, we're done
             if (maxGradIdx == -1)
             {
                 break;
             }
 
-            // Step 3: Move variable with largest gradient to passive set
             passiveSet[maxGradIdx] = true;
 
-            // Step 4: Solve least squares with passive variables
             while (true)
             {
-                // Build list of passive indices
                 std::vector<int> passiveIdx;
                 for (int i = 0; i < n; i++)
                 {
@@ -204,27 +362,14 @@ private:
                 int np = passiveIdx.size();
                 if (np == 0) break;
 
-                // Build submatrix with only passive columns
                 MatrixXd Ap(m, np);
                 for (int i = 0; i < np; i++)
                 {
                     Ap.col(i) = A.col(passiveIdx[i]);
                 }
 
-                // Solve unconstrained least squares for passive variables
-                VectorXd sp;
-                if (useQR)
-                {
-                    // QR decomposition - more stable, especially for ill-conditioned problems
-                    sp = Ap.colPivHouseholderQr().solve(b);
-                }
-                else
-                {
-                    // Normal equations - faster but less stable
-                    sp = (Ap.transpose() * Ap).ldlt().solve(Ap.transpose() * b);
-                }
+                VectorXd sp = Ap.colPivHouseholderQr().solve(b);
 
-                // Check if all passive variables are non-negative
                 bool allPositive = true;
                 for (int i = 0; i < np; i++)
                 {
@@ -237,7 +382,6 @@ private:
 
                 if (allPositive)
                 {
-                    // Accept solution
                     x.setZero();
                     for (int i = 0; i < np; i++)
                     {
@@ -246,8 +390,6 @@ private:
                     break;
                 }
 
-                // Step 5: Interpolation to find constraint that blocks the way
-                // Find alpha = min { x_i / (x_i - s_i) : s_i < 0 }
                 double alpha = 1.0;
                 int blockingIdx = -1;
 
@@ -256,9 +398,7 @@ private:
                     int idx = passiveIdx[i];
                     if (sp(i) <= 0)
                     {
-                        double denominator = x(idx) - sp(i);
-                        if (std::abs(denominator) < 1e-15) continue;
-                        double ratio = x(idx) / denominator;
+                        double ratio = x(idx) / (x(idx) - sp(i));
                         if (ratio < alpha)
                         {
                             alpha = ratio;
@@ -267,14 +407,12 @@ private:
                     }
                 }
 
-                // Interpolate: x_new = x + alpha * (s - x)
                 VectorXd xNew = VectorXd::Zero(n);
                 for (int i = 0; i < np; i++)
                 {
                     int idx = passiveIdx[i];
                     xNew(idx) = x(idx) + alpha * (sp(i) - x(idx));
 
-                    // Ensure numerical stability
                     if (std::abs(xNew(idx)) < tolerance)
                     {
                         xNew(idx) = 0.0;
@@ -282,20 +420,17 @@ private:
                 }
                 x = xNew;
 
-                // Move blocking variable back to active set
                 if (blockingIdx >= 0)
                 {
                     passiveSet[blockingIdx] = false;
                 }
                 else
                 {
-                    // Shouldn't happen, but safety break
                     break;
                 }
             }
         }
 
-        // Final cleanup: ensure all values are non-negative
         for (int i = 0; i < n; i++)
         {
             if (x(i) < 0)
@@ -307,190 +442,102 @@ private:
         return x;
     }
 
-    void AnalyzeNNLS(const double* measuredSpectrum, double measTime, double* activities)
+    void Analyze(const double* measuredSpectrum,
+        int spectrumSize,
+        const EnergyCalibration& calibration,
+        double measTime,
+        double* activities)
     {
-        VectorXd measured(NumChannels);
-        for (int i = 0; i < NumChannels; i++)
+        SpectrumWithCalibration measured(measuredSpectrum, spectrumSize, calibration);
+        MatrixXd A = BuildDesignMatrix(measured, measTime);
+        VectorXd bgContribution = CalculateBackgroundContribution(measured);
+
+        VectorXd b(spectrumSize);
+        for (int i = 0; i < spectrumSize; i++)
         {
-            measured(i) = measuredSpectrum[i];
+            b(i) = measuredSpectrum[i];
         }
-        MatrixXd scaledReference = ReferenceMatrix * measTime;
-        MatrixXd designMatrix = MatrixXd(NumChannels, NumNuclides + 1);
-        designMatrix.leftCols(NumNuclides) = scaledReference;
-        designMatrix.col(NumNuclides) = Background * measTime;
-        const VectorXd result = SolveLawsonHansonNNLS(designMatrix, measured, true);
+
+        // Always use background as component
+        MatrixXd designMatrix(spectrumSize, NumNuclides + 1);
+        designMatrix.leftCols(NumNuclides) = A;
+        designMatrix.col(NumNuclides) = bgContribution;
+
+        VectorXd result = SolveLawsonHansonNNLS(designMatrix, b);
+
         for (int i = 0; i < NumNuclides; i++)
         {
             activities[i] = result(i);
         }
     }
 
-public:
-    FullSpectrumAnalysis(double energyMin, double energyMax, double energyStep, int nuclides)
-        : NumNuclides(nuclides)
-    {
-        Interpolator = new SpectrumInterpolator(energyMin, energyMax, energyStep);
-        NumChannels = Interpolator->GetNumBins();
-        ReferenceMatrix = MatrixXd::Zero(NumChannels, nuclides);
-        Background = VectorXd::Zero(NumChannels);
-    }
-
-    ~FullSpectrumAnalysis()
-    {
-        if (Interpolator)
-        {
-            delete Interpolator;
-        }
-    }
-
-    void AddReferenceSpectrum(
-        int nuclideIdx,
-        const double* spectrum,
+    double GetBackgroundScale(const double* measuredSpectrum,
         int spectrumSize,
-        const EnergyCalibration& calibration,
-        double activity,
-        double measTime)
-    {
-        if (!Interpolator)
-        {
-            throw std::runtime_error("Energy mode not enabled");
-        }
-        if (nuclideIdx < 0 || nuclideIdx >= NumNuclides)
-        {
-            throw std::out_of_range("Nuclide index out of range");
-        }
-        std::vector<double> interpSpec = Interpolator->Interpolate(spectrum, spectrumSize, calibration);
-        for (int i = 0; i < NumChannels; i++)
-        {
-            ReferenceMatrix(i, nuclideIdx) = interpSpec[i] < 0 ? 0 : (interpSpec[i] / (activity * measTime));
-        }
-    }
-
-    void SetBackground(
-        const double* background,
-        int backgroundSize,
         const EnergyCalibration& calibration,
         double measTime)
     {
-        if (!Interpolator)
-        {
-            throw std::runtime_error("Energy mode not enabled");
-        }
-        std::vector<double> interpBg = Interpolator->Interpolate(background, backgroundSize, calibration);
-        for (int i = 0; i < NumChannels; i++)
-        {
-            Background(i) = interpBg[i] < 0 ? 0 : (interpBg[i] / measTime);
-        }
-    }
+        SpectrumWithCalibration measured(measuredSpectrum, spectrumSize, calibration);
+        MatrixXd A = BuildDesignMatrix(measured, measTime);
+        VectorXd bgContribution = CalculateBackgroundContribution(measured);
 
-    void Analyze(
-        const double* measuredSpectrum,
-        int spectrumSize,
-        const EnergyCalibration& calibration,
-        double measTime,
-        double* activities)
-    {
-        if (!Interpolator)
+        VectorXd b(spectrumSize);
+        for (int i = 0; i < spectrumSize; i++)
         {
-            throw std::runtime_error("Energy mode not enabled");
+            b(i) = measuredSpectrum[i];
         }
 
-        const std::vector<double> &interpSpec = Interpolator->Interpolate(measuredSpectrum, spectrumSize, calibration);
+        MatrixXd designMatrix(spectrumSize, NumNuclides + 1);
+        designMatrix.leftCols(NumNuclides) = A;
+        designMatrix.col(NumNuclides) = bgContribution;
 
-        AnalyzeNNLS(interpSpec.data(), measTime, activities);
-    }
+        VectorXd result = SolveLawsonHansonNNLS(designMatrix, b);
 
-    double GetInterpolatedTotalCounts(
-        const double* spectrum,
-        int spectrumSize,
-        const EnergyCalibration& calibration,
-        double** interpSpectrum,
-        int* interpSpectrumSize)
-    {
-        if (!Interpolator)
-        {
-            SetLastError("Energy mode not enabled");
-            return -1.0;
-        }
-
-        const std::vector<double> &interpSpec = Interpolator->Interpolate(spectrum, spectrumSize, calibration);
-        *interpSpectrumSize = static_cast<int>(interpSpec.size());
-        *interpSpectrum = new double[interpSpec.size()];
-        for (size_t i = 0; i < interpSpec.size(); i++)
-        {
-            (*interpSpectrum)[i] = interpSpec[i];
-        }
-
-        return Interpolator->GetTotalCounts(interpSpec);
-    }
-
-    double GetBackgroundScale(const double* measuredSpectrum, double measTime)
-    {
-        VectorXd measured(NumChannels);
-        for (int i = 0; i < NumChannels; i++)
-        {
-            measured(i) = measuredSpectrum[i];
-        }
-
-        MatrixXd scaledReference = ReferenceMatrix * measTime;
-        MatrixXd designMatrix(NumChannels, NumNuclides + 1);
-        designMatrix.leftCols(NumNuclides) = scaledReference;
-        designMatrix.col(NumNuclides) = Background * measTime;
-
-        VectorXd result = (designMatrix.transpose() * designMatrix)
-            .ldlt()
-            .solve(designMatrix.transpose() * measured);
-
-        return result(NumNuclides);
+        return result(NumNuclides);  // Last element is background scale
     }
 
     double CalculateChiSquare(const double* measuredSpectrum,
+        int spectrumSize,
+        const EnergyCalibration& calibration,
         const double* activities,
         double measTime)
     {
-        VectorXd measured(NumChannels);
-        VectorXd act(NumNuclides);
+        SpectrumWithCalibration measured(measuredSpectrum, spectrumSize, calibration);
+        MatrixXd A = BuildDesignMatrix(measured, measTime);
+        VectorXd bgContribution = CalculateBackgroundContribution(measured);
 
-        for (int i = 0; i < NumChannels; i++)
+        // Recalculate to get background scale
+        VectorXd b(spectrumSize);
+        for (int i = 0; i < spectrumSize; i++)
         {
-            measured(i) = measuredSpectrum[i];
+            b(i) = measuredSpectrum[i];
         }
 
+        MatrixXd designMatrix(spectrumSize, NumNuclides + 1);
+        designMatrix.leftCols(NumNuclides) = A;
+        designMatrix.col(NumNuclides) = bgContribution;
+
+        VectorXd result = SolveLawsonHansonNNLS(designMatrix, b);
+        double bgScale = result(NumNuclides);
+
+        // Calculate expected spectrum
+        VectorXd act(NumNuclides);
         for (int i = 0; i < NumNuclides; i++)
         {
             act(i) = activities[i];
         }
 
-        MatrixXd scaledReference = ReferenceMatrix * measTime;
-        MatrixXd designMatrix(NumChannels, NumNuclides + 1);
-        designMatrix.leftCols(NumNuclides) = scaledReference;
-        designMatrix.col(NumNuclides) = Background * measTime;
-        const VectorXd &llsq_coeffs = (designMatrix.transpose() * designMatrix)
-            .ldlt()
-            .solve(designMatrix.transpose() * measured);
+        VectorXd expected = A * act + bgScale * bgContribution;
 
-        // Build the expected spectrum using the LLSQ-derived coefficients
-        // llsq_coeffs contains activities for nuclides (0 to NumNuclides-1) and background scale (NumNuclides)
-        const VectorXd expected = designMatrix * llsq_coeffs;
-
+        // Chi-square
         double chi2 = 0.0;
-        for (int i = 0; i < NumChannels; i++)
+        for (int i = 0; i < spectrumSize; i++)
         {
-            double diff = measured(i) - expected(i);
-            double variance = std::max(measured(i), 1.0);
+            double diff = measured.Counts[i] - expected(i);
+            double variance = std::max(measured.Counts[i], 1.0);
             chi2 += (diff * diff) / variance;
         }
 
         return chi2;
-    }
-
-    void CalculateUncertainties(const double* measuredSpectrum, double* uncertainties)
-    {
-        g_LastError.clear();
-        SetLastError("Uncertainty calculation for NNLS is not supported with current implementation.");
-        for (int i = 0; i < NumNuclides; ++i) {
-            uncertainties[i] = 0.0; // Or some other default/error value
-        }
     }
 };
 
@@ -498,14 +545,11 @@ public:
 // C API Implementation
 // ============================================================================
 
-FSA_API FSAHandle FSA_Create(double energyMin, double energyMax,
-    double energyStep, int numNuclides)
+FSA_API FSAHandle FSA_Create(int numNuclides)
 {
-    g_LastError.clear();
     try
     {
-        FullSpectrumAnalysis* fsa = new FullSpectrumAnalysis(
-            energyMin, energyMax, energyStep, numNuclides);
+        FullSpectrumAnalysis* fsa = new FullSpectrumAnalysis(numNuclides);
         return static_cast<FSAHandle>(fsa);
     }
     catch (const std::exception& e)
@@ -517,7 +561,6 @@ FSA_API FSAHandle FSA_Create(double energyMin, double energyMax,
 
 FSA_API void FSA_Destroy(FSAHandle handle)
 {
-    g_LastError.clear();
     if (handle)
     {
         FullSpectrumAnalysis* fsa = static_cast<FullSpectrumAnalysis*>(handle);
@@ -525,7 +568,7 @@ FSA_API void FSA_Destroy(FSAHandle handle)
     }
 }
 
-FSA_API int FSA_AddReferenceSpectrum(
+FSA_API int FSA_AddReference(
     FSAHandle handle,
     int nuclideIdx,
     const double* spectrum,
@@ -534,7 +577,6 @@ FSA_API int FSA_AddReferenceSpectrum(
     double activity,
     double measTime)
 {
-    g_LastError.clear();
     if (!handle || !calibration)
     {
         SetLastError("Invalid handle or calibration");
@@ -545,12 +587,12 @@ FSA_API int FSA_AddReferenceSpectrum(
     {
         FullSpectrumAnalysis* fsa = static_cast<FullSpectrumAnalysis*>(handle);
         EnergyCalibration cal(calibration->a, calibration->b, calibration->c);
-        fsa->AddReferenceSpectrum(nuclideIdx, spectrum, spectrumSize, cal, activity, measTime);
+        fsa->AddReference(nuclideIdx, spectrum, spectrumSize, cal, activity, measTime);
         return 1;
     }
     catch (const std::exception& e)
     {
-        SetLastError(std::string("FSA_AddReferenceSpectrumWithCalibration failed: ") + e.what());
+        SetLastError(std::string("FSA_AddReference failed: ") + e.what());
         return 0;
     }
 }
@@ -559,10 +601,8 @@ FSA_API int FSA_SetBackground(
     FSAHandle handle,
     const double* background,
     int backgroundSize,
-    const FSACalibration* calibration,
-    double measTime)
+    const FSACalibration* calibration)
 {
-    g_LastError.clear();
     if (!handle || !calibration)
     {
         SetLastError("Invalid handle or calibration");
@@ -573,7 +613,7 @@ FSA_API int FSA_SetBackground(
     {
         FullSpectrumAnalysis* fsa = static_cast<FullSpectrumAnalysis*>(handle);
         EnergyCalibration cal(calibration->a, calibration->b, calibration->c);
-        fsa->SetBackground(background, backgroundSize, cal, measTime);
+        fsa->SetBackground(background, backgroundSize, cal);
         return 1;
     }
     catch (const std::exception& e)
@@ -582,7 +622,6 @@ FSA_API int FSA_SetBackground(
         return 0;
     }
 }
-
 
 FSA_API int FSA_Analyze(
     FSAHandle handle,
@@ -593,7 +632,6 @@ FSA_API int FSA_Analyze(
     double* activities,
     int activitiesSize)
 {
-    g_LastError.clear();
     if (!handle || !calibration)
     {
         SetLastError("Invalid handle or calibration");
@@ -614,15 +652,13 @@ FSA_API int FSA_Analyze(
     }
 }
 
-FSA_API double FSA_GetInterpolatedTotalCounts(
+FSA_API double FSA_GetBackgroundScale(
     FSAHandle handle,
-    const double* spectrum,
+    const double* measuredSpectrum,
     int spectrumSize,
     const FSACalibration* calibration,
-    double** interpSpectrum,
-    int* interpSpectrumSize)
+    double measTime)
 {
-    g_LastError.clear();
     if (!handle || !calibration)
     {
         SetLastError("Invalid handle or calibration");
@@ -633,31 +669,7 @@ FSA_API double FSA_GetInterpolatedTotalCounts(
     {
         FullSpectrumAnalysis* fsa = static_cast<FullSpectrumAnalysis*>(handle);
         EnergyCalibration cal(calibration->a, calibration->b, calibration->c);
-        return fsa->GetInterpolatedTotalCounts(spectrum, spectrumSize, cal, interpSpectrum, interpSpectrumSize);
-    }
-    catch (const std::exception& e)
-    {
-        SetLastError(std::string("FSA_GetInterpolatedTotalCounts failed: ") + e.what());
-        return -1.0;
-    }
-}
-
-FSA_API double FSA_GetBackgroundScale(
-    FSAHandle handle,
-    const double* measuredSpectrum,
-    double measTime)
-{
-    g_LastError.clear();
-    if (!handle)
-    {
-        SetLastError("Invalid handle");
-        return -1.0;
-    }
-
-    try
-    {
-        FullSpectrumAnalysis* fsa = static_cast<FullSpectrumAnalysis*>(handle);
-        return fsa->GetBackgroundScale(measuredSpectrum, measTime);
+        return fsa->GetBackgroundScale(measuredSpectrum, spectrumSize, cal, measTime);
     }
     catch (const std::exception& e)
     {
@@ -669,20 +681,24 @@ FSA_API double FSA_GetBackgroundScale(
 FSA_API double FSA_CalculateChiSquare(
     FSAHandle handle,
     const double* measuredSpectrum,
+    int spectrumSize,
+    const FSACalibration* calibration,
     const double* activities,
+    int activitiesSize,
     double measTime)
 {
-    g_LastError.clear();
-    if (!handle)
+    if (!handle || !calibration)
     {
-        SetLastError("Invalid handle");
+        SetLastError("Invalid handle or calibration");
         return -1.0;
     }
 
     try
     {
         FullSpectrumAnalysis* fsa = static_cast<FullSpectrumAnalysis*>(handle);
-        return fsa->CalculateChiSquare(measuredSpectrum, activities, measTime);
+        EnergyCalibration cal(calibration->a, calibration->b, calibration->c);
+        return fsa->CalculateChiSquare(measuredSpectrum, spectrumSize, cal,
+            activities, measTime);
     }
     catch (const std::exception& e)
     {
@@ -691,42 +707,14 @@ FSA_API double FSA_CalculateChiSquare(
     }
 }
 
-FSA_API int FSA_CalculateUncertainties(
-    FSAHandle handle,
-    const double* measuredSpectrum,
-    double* uncertainties)
-{
-    g_LastError.clear();
-    if (!handle)
-    {
-        SetLastError("Invalid handle");
-        return 0;
-    }
-
-    try
-    {
-        FullSpectrumAnalysis* fsa = static_cast<FullSpectrumAnalysis*>(handle);
-        fsa->CalculateUncertainties(measuredSpectrum, uncertainties);
-        return 1;
-    }
-    catch (const std::exception& e)
-    {
-        SetLastError(std::string("FSA_CalculateUncertainties failed: ") + e.what());
-        return 0;
-    }
-}
-
 FSA_API const char* FSA_GetLastError()
 {
     return g_LastError.c_str();
 }
 
-FSA_API void FSA_FreeMemory(void* buffer)
-{
-    g_LastError.clear();
-    delete[] static_cast<double*>(buffer);
-}
-
+// ============================================================================
+// DLL Entry Point
+// ============================================================================
 #ifdef _WIN32
 #include <windows.h>
 

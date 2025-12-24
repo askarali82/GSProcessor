@@ -52,11 +52,10 @@ private:
 
 public:
     // Constructor for energy-based mode
-    TFullSpectrumAnalysis(double energyMin, double energyMax,
-                          double energyStep, int numNuclides)
+    TFullSpectrumAnalysis(int numNuclides)
         : FNumNuclides(numNuclides)
     {
-        FHandle = FSA_Create(energyMin, energyMax, energyStep, numNuclides);
+        FHandle = FSA_Create(numNuclides);
         if (!FHandle)
         {
             throw Exception("Failed to create FSA instance: " +
@@ -81,10 +80,14 @@ public:
     {
         FSACalibration cal = calibration.ToCStruct();
 
-        int result = FSA_AddReferenceSpectrum(
-            FHandle, nuclideIdx,
-            spectrum.data(), spectrum.size(),
-            &cal, activity, measTime);
+        int result = FSA_AddReference(
+            FHandle,
+            nuclideIdx,
+            spectrum.data(),
+            spectrum.size(),
+            &cal,
+            activity,
+            measTime);
 
         if (!result)
         {
@@ -95,13 +98,15 @@ public:
 
     void SetBackground(
         const std::vector<double>& background,
-        const TCalibration& calibration,
-        double measTime)
+        const TCalibration& calibration)
     {
         FSACalibration cal = calibration.ToCStruct();
 
         int result = FSA_SetBackground(
-            FHandle, background.data(), background.size(), &cal, measTime);
+            FHandle,
+            background.data(),
+            background.size(),
+            &cal);
 
         if (!result)
         {
@@ -135,39 +140,15 @@ public:
         return activities;
     }
 
-    double GetInterpolatedTotalCounts(
-        const std::vector<double>& spectrum,
-        const TCalibration& calibration,
-        std::vector<double>& interpolatedSpectrum)
+    double GetBackgroundScale(
+        const std::vector<double>& measuredSpectrum, const TCalibration& calibration, double measTime)
     {
         FSACalibration cal = calibration.ToCStruct();
-
-        double *interpSpc;
-        int interpSpcSize = 0;
-        double total = FSA_GetInterpolatedTotalCounts(
-            FHandle, spectrum.data(), spectrum.size(), &cal, &interpSpc, &interpSpcSize);
-
-        if (total < 0)
-        {
-            throw Exception("Failed to get interpolated counts: " +
-                          String(FSA_GetLastError()));
-        }
-
-        interpolatedSpectrum.resize(interpSpcSize);
-        for (int i = 0; i < interpSpcSize; i++)
-        {
-            interpolatedSpectrum[i] = interpSpc[i];
-        }
-
-        return total;
-    }
-
-    double GetBackgroundScale(const std::vector<double>& measuredSpectrum,
-                             double measTime)
-    {
         double scale = FSA_GetBackgroundScale(
             FHandle,
             measuredSpectrum.data(),
+            measuredSpectrum.size(),
+            &cal,
             measTime
         );
 
@@ -182,12 +163,17 @@ public:
 
     double CalculateChiSquare(const std::vector<double>& measuredSpectrum,
                              const std::vector<double>& activities,
+                             const TCalibration& calibration,
                              double measTime)
     {
+        FSACalibration cal = calibration.ToCStruct();
         double chi2 = FSA_CalculateChiSquare(
             FHandle,
             measuredSpectrum.data(),
+            measuredSpectrum.size(),
+            &cal,
             activities.data(),
+            activities.size(),
             measTime
         );
 
@@ -198,25 +184,6 @@ public:
         }
 
         return chi2;
-    }
-
-    std::vector<double> CalculateUncertainties(const std::vector<double>& measuredSpectrum)
-    {
-        std::vector<double> uncertainties(FNumNuclides);
-
-        int result = FSA_CalculateUncertainties(
-            FHandle,
-            measuredSpectrum.data(),
-            uncertainties.data()
-        );
-
-        if (!result)
-        {
-            throw Exception("Uncertainty calculation failed: " +
-                          String(FSA_GetLastError()));
-        }
-
-        return uncertainties;
     }
 
     int GetNumNuclides() const { return FNumNuclides; }
