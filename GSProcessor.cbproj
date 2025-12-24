@@ -144,12 +144,11 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <LinkPackageStatics>rtl.lib;vcl.lib;Tee.lib;vclimg.lib</LinkPackageStatics>
         <VerInfo_Locale>1091</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=Gamma spektrlarni tahlil qilish;FileVersion=3.8.0.0;InternalName=$(MSBuildProjectName);LegalCopyright=Yadro Fizikasi Laboratoriyasi, Samarqand Davlat Universiteti;LegalTrademarks=;OriginalFilename=$(MSBuildProjectName).exe;ProgramID=;ProductName=$(MSBuildProjectName);ProductVersion=3.8.0.0;Comments=</VerInfo_Keys>
-        <VerInfo_MajorVer>3</VerInfo_MajorVer>
+        <VerInfo_Keys>CompanyName=;FileDescription=Gamma spektrlarni tahlil qilish;FileVersion=4.0.0.0;InternalName=$(MSBuildProjectName);LegalCopyright=Yadro Fizikasi Laboratoriyasi, Samarqand Davlat Universiteti;LegalTrademarks=;OriginalFilename=$(MSBuildProjectName).exe;ProgramID=;ProductName=$(MSBuildProjectName);ProductVersion=4.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_MajorVer>4</VerInfo_MajorVer>
         <FinalOutputDir>.\bin</FinalOutputDir>
         <IntermediateOutputDir>.\GSPTemp</IntermediateOutputDir>
         <PostBuildEvent><![CDATA[cmd.exe C:\Data\Projects\GSProcessor\bin\CopyFiles.bat]]></PostBuildEvent>
-        <VerInfo_MinorVer>8</VerInfo_MinorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -163,6 +162,12 @@
         <LinkPackageStatics>rtl.lib;vcl.lib;Tee.lib;vclimg.lib</LinkPackageStatics>
     </PropertyGroup>
     <ItemGroup>
+        <CppCompile Include="AnalysisFormU.cpp">
+            <Form>AnalysisForm</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>AnalysisFormU.h</DependentOn>
+            <BuildOrder>2</BuildOrder>
+        </CppCompile>
         <CppCompile Include="AxisMinMaxFormU.cpp">
             <Form>AxisMinMaxForm</Form>
             <FormType>dfm</FormType>
@@ -197,7 +202,7 @@
             <Form>MainForm</Form>
             <FormType>dfm</FormType>
             <DependentOn>MainFormU.h</DependentOn>
-            <BuildOrder>2</BuildOrder>
+            <BuildOrder>11</BuildOrder>
         </CppCompile>
         <CppCompile Include="SettingsFormU.cpp">
             <Form>SettingsForm</Form>
@@ -214,11 +219,20 @@
         <None Include="Spectrum.hpp">
             <BuildOrder>8</BuildOrder>
         </None>
-        <FormResources Include="MainFormU.dfm"/>
+        <CppCompile Include="SpectrumFrameU.cpp">
+            <Form>SpectrumFrame</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+            <DependentOn>SpectrumFrameU.h</DependentOn>
+            <BuildOrder>12</BuildOrder>
+        </CppCompile>
         <FormResources Include="SettingsFormU.dfm"/>
+        <FormResources Include="MainFormU.dfm"/>
+        <FormResources Include="SpectrumFrameU.dfm"/>
         <FormResources Include="ShiftingFormU.dfm"/>
         <FormResources Include="BatchProcessingResultsFormU.dfm"/>
         <FormResources Include="AxisMinMaxFormU.dfm"/>
+        <FormResources Include="AnalysisFormU.dfm"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

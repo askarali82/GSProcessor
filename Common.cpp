@@ -7,6 +7,8 @@
 #include <System.StrUtils.hpp>
 
 //---------------------------------------------------------------------------
+const String APP_NAME = L"GSProcessor";
+//---------------------------------------------------------------------------
 void Utils::Log(const AnsiString &Func, const AnsiString &Line, AnsiString Msg)
 {
     if (Msg == "")
@@ -65,15 +67,12 @@ void Utils::LogException(const Exception &E, const AnsiString &Func, const AnsiS
 String Utils::RoundFloatValue(const double Value, const int D, const bool DeleteZeroes)
 {
     String Result;
-    if (std::abs(Value) < 0.000001)
+    if (std::abs(Value) < 1e-12)
     {
-        Result = Sysutils::FloatToStrF(Value, ffExponent, 15, D);
+        return L"0";
     }
-    else
-    {
-        Result = Sysutils::FloatToStrF(Value, ffFixed, 15, D);
-    }
-    if (Value != 0.0 && DeleteZeroes)
+    Result = Sysutils::FloatToStrF(Value, ffFixed, 15, D);
+    if (DeleteZeroes)
     {
         bool ZeroFound = Result[Result.Length()] == L'0';
         while (ZeroFound)
@@ -184,5 +183,22 @@ std::vector<String> Utils::CreateStringVectorFromDelimitedStr(
         Result.push_back(StrList->Strings[i]);
     }
     return Result;
+}
+//---------------------------------------------------------------------------
+int Utils::FindChannelByEnergy(const double En, TLineSeries *Spc)
+{
+    int Nearest = -1;
+    double MinDiff = 1e99;
+
+    for (int i = 0; i < Spc->Count(); i++)
+    {
+        const double Diff = fabs(Spc->XValue[i] - En);
+        if (Diff < MinDiff)
+        {
+            MinDiff = Diff;
+            Nearest = i;
+        }
+    }
+    return Nearest;
 }
 

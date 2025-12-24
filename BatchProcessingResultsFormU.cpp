@@ -6,7 +6,7 @@
 #include "Common.h"
 #include <memory>
 #include "UxTheme.h"
-#include "MainFormU.h"
+#include "AnalysisFormU.h"
 #include <Vcl.ComCtrls.hpp>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -320,7 +320,7 @@ void __fastcall TBatchProcessingResultsForm::MoveToMainWindowActionExecute(TObje
     const size_t i = ResultsList->Selected->Index;
     if (i < ResultsVector.size())
     {
-        MainForm->OpenFromBatchResult(
+        AnalysisForm->OpenFromBatchResult(
             ResultsVector[i].FileName,
             ResultsVector[i].ThC,
             ResultsVector[i].RaC,

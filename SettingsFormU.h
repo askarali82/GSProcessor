@@ -170,7 +170,7 @@ __published:
           TPoint &MousePos, bool &Handled);
 
 private:
-    std::unique_ptr<TMemIniFile> IniFile;
+    TMemIniFile *IniFile;
     std::unique_ptr<TControlCanvas> ScrollBoxCanvas;
     System::Classes::TWndMethod OldScrollBoxProc;
 
@@ -191,7 +191,7 @@ private:
     void __fastcall NewScrollBoxProc(Winapi::Messages::TMessage &Message);
 
 public:
-    __fastcall TSettingsForm(TComponent* Owner);
+    __fastcall TSettingsForm(TComponent* Owner, TMemIniFile *AIniFile);
 
     bool EnergyRangesValid() const
     {

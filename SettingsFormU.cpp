@@ -11,9 +11,9 @@
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 //---------------------------------------------------------------------------
-__fastcall TSettingsForm::TSettingsForm(TComponent* Owner):
+__fastcall TSettingsForm::TSettingsForm(TComponent* Owner, TMemIniFile *AIniFile):
     TForm(Owner),
-    IniFile(new TMemIniFile(L".\\Settings.ini", TEncoding::Unicode)),
+    IniFile(AIniFile),
     ScrollBoxCanvas(new TControlCanvas())
 {
     ScrollBoxCanvas->Control = ScrollBox;

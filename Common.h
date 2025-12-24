@@ -5,6 +5,7 @@
 #include <SyncObjs.hpp>
 #include <DateUtils.hpp>
 #include <StrUtils.hpp>
+#include <VCLTee.Series.hpp>
 #include <memory>
 #include <atomic>
 #include <cmath>
@@ -15,6 +16,8 @@
 #define LOG(Msg)                Utils::Log(__FUNC__, __LINE__, Msg)
 #define LOGEXCEPTION(E)         Utils::LogException(E, __FUNC__, __LINE__)
 //---------------------------------------------------------------------------
+
+extern const String APP_NAME;
 
 // Language ID
 // 0 => Uzbek
@@ -94,6 +97,8 @@ public:
 
     static std::vector<String> CreateStringVectorFromDelimitedStr(
         const String &Str, const wchar_t Delimiter, const bool NonEmpty = true, const wchar_t QuoteChar = L'\0');
+
+    static int FindChannelByEnergy(const double En, TLineSeries *Spc);
 };
 //---------------------------------------------------------------------------
 #endif

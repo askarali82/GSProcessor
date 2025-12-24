@@ -7,7 +7,7 @@
 #include "Common.h"
 
 #ifndef SEPARATEAPP
-#include "MainFormU.h"
+#include "AnalysisFormU.h"
 #endif
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -698,7 +698,7 @@ void TShiftingForm::Load(
 void __fastcall TShiftingForm::SaveSpectrum2Click(TObject *Sender)
 {
 #ifndef SEPARATEAPP
-    MainForm->SetSampleSpectrum(ShiftedSample2, SmpChan1Edit->Text, SmpChan2Edit->Text);
+    AnalysisForm->SetSampleSpectrum(ShiftedSample2, SmpChan1Edit->Text, SmpChan2Edit->Text);
     Close();
 #endif
 }
