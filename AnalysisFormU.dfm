@@ -3789,7 +3789,7 @@ object AnalysisForm: TAnalysisForm
     end
   end
   object OpenDialog: TOpenDialog
-    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing, ofForceShowHidden]
+    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Left = 95
     Top = 449
   end

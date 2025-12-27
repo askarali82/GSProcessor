@@ -12,6 +12,7 @@
 #include <System.hpp>
 #include <System.Math.hpp>
 #include <System.IniFiles.hpp>
+#include <System.AnsiStrings.hpp>
 
 // Language ID
 // 0 => Uzbek
@@ -48,16 +49,18 @@ private:
     static String ShiftingEnergyValuesError;
     static String ShiftingChannelsCountError;
 
-    String ReadString(const String &Section, const String &Ident, const String &DefaultValue = L"") const;
-    void WriteString(const String &Section, const String &Ident, const String &Value);
+    void ParseRawData();
+    String ReadRawData(const String &Section, const String &Ident, const String &DefaultValue = L"") const;
     bool InvertMatrix3x3(const double Matrix[3][3], double Inverse[3][3]) const;
 
 public:
     enum TCalibrationType {Linear, Quadratic};
+    enum TFileType {asw, gsp};
 
 
     // ******************* Data members *******************
     mutable String ErrorMessage;
+    TFileType FileType = gsp;
 
     // Sample
     double Duration = 0;
@@ -145,6 +148,12 @@ public:
 
     bool LoadFromFile(const String &FileName, const bool ShowExceptionMsg = true);
 
+    void ClearRawDataSection(const String &Section);
+
+    void WriteRawData(const String &Section, const String &Ident, const String &Value);
+
+    bool SaveToFile(const String &FileName) const;
+
     double CalculateCountByEnergyRange(const double Start, const double End) const;
 
     double CalculateCountByChannelRange(const size_t Start, const size_t End) const;
@@ -217,6 +226,7 @@ String TSpectrum::ShiftingChannelsCountError;
 TSpectrum::TSpectrum(const TSpectrum &Other)
 {
     ErrorMessage = Other.ErrorMessage;
+    FileType = Other.FileType;
     Duration = Other.Duration;
     DurationReal = Other.DurationReal;
     Weight = Other.Weight;
@@ -274,6 +284,7 @@ TSpectrum & TSpectrum::operator = (const TSpectrum &Other)
         return *this;
     }
     ErrorMessage = Other.ErrorMessage;
+    FileType = Other.FileType;
     Duration = Other.Duration;
     DurationReal = Other.DurationReal;
     Weight = Other.Weight;
@@ -325,6 +336,53 @@ TSpectrum & TSpectrum::operator = (const TSpectrum &Other)
     return *this;
 }
 //---------------------------------------------------------------------------
+void TSpectrum::ParseRawData()
+{
+    AnsiString TextPart;
+    for (int i = 0; i < StringPart->Count; i++)
+    {
+        const AnsiString Line = StringPart->Strings[i].Trim();
+        TextPart += (Line + "\r\n");
+        if (Line.Pos("[BEGIN]") > 0)
+        {
+            FileType = asw;
+            break;
+        }
+    }
+
+    if (FileType == asw)
+    {
+        StringPart->Text = TextPart;
+        char *Buffer = reinterpret_cast<char *>(BinaryPart->Memory);
+        const char *P = Ansistrings::SearchBuf(Buffer, BinaryPart->Size, 0, 0, "[BEGIN]");
+        const int *SpcAddr = nullptr;
+        auto SpcSize = BinaryPart->Size;
+        if (P != nullptr)
+        {
+            P += 7;
+            while (P < (Buffer + BinaryPart->Size))
+            {
+                if (*P == '\n')
+                {
+                    SpcAddr = reinterpret_cast<const int *>(P + 1);
+                    SpcSize -= (P + 1 - Buffer);
+                    break;
+                }
+                P++;
+            }
+        }
+        TSpectrum::CheckError(SpcAddr != nullptr, L"Histogram data not found.");
+        BinaryPart->Position = 0;
+        BinaryPart->WriteBuffer(SpcAddr, SpcSize);
+        BinaryPart->Position = 0;
+        BinaryPart->SetSize(SpcSize);
+    }
+    else
+    {
+        BinaryPart.reset();
+    }
+}
+//---------------------------------------------------------------------------
 bool TSpectrum::LoadFromFile(const String &FileName, const bool ShowExceptionMsg)
 {
     try
@@ -336,34 +394,35 @@ bool TSpectrum::LoadFromFile(const String &FileName, const bool ShowExceptionMsg
         {
             BinaryPart = std::make_unique<TMemoryStream>();
         }
-        BinaryPart->LoadFromFile(FileName);
-        BinaryPart->Position = 0;
         if (!StringPart)
         {
             StringPart = std::make_unique<TStringList>();
         }
+        BinaryPart->LoadFromFile(FileName);
+        BinaryPart->Position = 0;
+        StringPart->LoadFromStream(BinaryPart.get());
         StringPart->CaseSensitive = false;
-        StringPart->Text = reinterpret_cast<char *>(BinaryPart->Memory);
+        ParseRawData();
 
-        Duration = wcstod(ReadString(L"Exposition", L"Live", L"0").c_str(), nullptr);
+        Duration = wcstod(ReadRawData(L"Exposition", L"Live", L"0").c_str(), nullptr);
         CheckError(Duration > 0, MeasurementDurationError);
 
-        DurationReal = wcstod(ReadString(L"Exposition", L"Real", L"0").c_str(), nullptr);
+        DurationReal = wcstod(ReadRawData(L"Exposition", L"Real", L"0").c_str(), nullptr);
         if (DurationReal <= 0)
         {
             DurationReal = Duration;
         }
 
-        Weight = wcstod(ReadString(L"Sample", L"Weight", L"0").c_str(), nullptr);
+        Weight = wcstod(ReadRawData(L"Sample", L"Weight", L"0").c_str(), nullptr);
         CheckError(Weight > 0, SampleMassError);
 
-        Volume = wcstod(ReadString(L"Sample", L"Volume", L"0").c_str(), nullptr);
+        Volume = wcstod(ReadRawData(L"Sample", L"Volume", L"0").c_str(), nullptr);
         CheckError(Volume > 0, SampleVolumeError);
 
-        WeightUnit = ReadString(L"Sample", L"Unit_weight", L"");
+        WeightUnit = ReadRawData(L"Sample", L"Unit_weight", L"");
         CheckError(SameText(WeightUnit, L"g") || SameText(WeightUnit, L"kg"), SampleMassUnitError);
 
-        VolumeUnit = ReadString(L"Sample", L"Unit_volume", L"");
+        VolumeUnit = ReadRawData(L"Sample", L"Unit_volume", L"");
         CheckError(
             SameText(VolumeUnit, L"l") || SameText(VolumeUnit, L"ml") || SameText(VolumeUnit, L"m^3"),
             SampleVolumeUnitError);
@@ -380,19 +439,19 @@ bool TSpectrum::LoadFromFile(const String &FileName, const bool ShowExceptionMsg
         DensityInGramPerLitre = SameText(WeightUnit, L"kg") ? ((Weight * 1000) / Volume) : (Weight / Volume);
         CheckError(DensityInGramPerLitre > 0, SampleDensityError);
 
-        ChannelCount = ReadString(L"Channel_count", L"N", L"0").ToIntDef(0);
+        ChannelCount = ReadRawData(L"Channel_count", L"N", L"0").ToIntDef(0);
         CheckError(ChannelCount == 1024 || ChannelCount == 4096, ChannelCountError);
 
-        Channel1 = wcstod(ReadString(L"Energy_calibration", L"Channel1", L"0").c_str(), nullptr) - 1;
-        Channel2 = wcstod(ReadString(L"Energy_calibration", L"Channel2", L"0").c_str(), nullptr) - 1;
-        Channel3 = wcstod(ReadString(L"Energy_calibration", L"Channel3", L"0").c_str(), nullptr) - 1;
-        Channel4 = wcstod(ReadString(L"Energy_calibration", L"Channel4", L"0").c_str(), nullptr) - 1;
-        Channel5 = wcstod(ReadString(L"Energy_calibration", L"Channel5", L"0").c_str(), nullptr) - 1;
-        Energy1 = wcstod(ReadString(L"Energy_calibration", L"Energy1", L"0").c_str(), nullptr);
-        Energy2 = wcstod(ReadString(L"Energy_calibration", L"Energy2", L"0").c_str(), nullptr);
-        Energy3 = wcstod(ReadString(L"Energy_calibration", L"Energy3", L"0").c_str(), nullptr);
-        Energy4 = wcstod(ReadString(L"Energy_calibration", L"Energy4", L"0").c_str(), nullptr);
-        Energy5 = wcstod(ReadString(L"Energy_calibration", L"Energy5", L"0").c_str(), nullptr);
+        Channel1 = wcstod(ReadRawData(L"Energy_calibration", L"Channel1", L"0").c_str(), nullptr) - 1;
+        Channel2 = wcstod(ReadRawData(L"Energy_calibration", L"Channel2", L"0").c_str(), nullptr) - 1;
+        Channel3 = wcstod(ReadRawData(L"Energy_calibration", L"Channel3", L"0").c_str(), nullptr) - 1;
+        Channel4 = wcstod(ReadRawData(L"Energy_calibration", L"Channel4", L"0").c_str(), nullptr) - 1;
+        Channel5 = wcstod(ReadRawData(L"Energy_calibration", L"Channel5", L"0").c_str(), nullptr) - 1;
+        Energy1 = wcstod(ReadRawData(L"Energy_calibration", L"Energy1", L"0").c_str(), nullptr);
+        Energy2 = wcstod(ReadRawData(L"Energy_calibration", L"Energy2", L"0").c_str(), nullptr);
+        Energy3 = wcstod(ReadRawData(L"Energy_calibration", L"Energy3", L"0").c_str(), nullptr);
+        Energy4 = wcstod(ReadRawData(L"Energy_calibration", L"Energy4", L"0").c_str(), nullptr);
+        Energy5 = wcstod(ReadRawData(L"Energy_calibration", L"Energy5", L"0").c_str(), nullptr);
         CheckError(Channel1 > 0 && Channel2 > 0 && Energy1 > 0 && Energy2 > 0, EnergyCalibrationError);
         CalibrationPoints = 2;
         if (Channel3 > 0 && Energy3 > 0)
@@ -413,48 +472,16 @@ bool TSpectrum::LoadFromFile(const String &FileName, const bool ShowExceptionMsg
         {
             CalibrationType = Quadratic;
         }
-        BkgFileName = ReadString(L"Filenames", L"Bkg", L"");
+        BkgFileName = ReadRawData(L"Filenames", L"Bkg", L"");
 
-        int SectionIndex = StringPart->IndexOf(L"[BEGIN]");
-        if (SectionIndex > -1)
+        int SectionIndex;
+        if (FileType == asw)
         {
-            static const AnsiString BEGIN_CRLF = "[BEGIN]\r\n";
-            static const AnsiString BEGIN_LF   = "[BEGIN]\n";
-            static const AnsiString BEGIN_CR   = "[BEGIN]\r";
-            const char *Pos = (const char*)BinaryPart->Memory;
-            BinaryPart->Position = 0;
-            while ((Pos - (const char*)BinaryPart->Memory) < BinaryPart->Size)
+            Counts.resize(ChannelCount);
+            int *IntCounts = reinterpret_cast<int *>(BinaryPart->Memory);
+            for (int i = 0; i < ChannelCount; i++)
             {
-                bool Found = false;
-                if (BEGIN_CRLF == AnsiString(Pos, BEGIN_CRLF.Length()))
-                {
-                    BinaryPart->Position += BEGIN_CRLF.Length();
-                    Found = true;
-                }
-                else if (BEGIN_LF == AnsiString(Pos, BEGIN_LF.Length()))
-                {
-                    BinaryPart->Position += BEGIN_LF.Length();
-                    Found = true;
-                }
-                else if (BEGIN_CR == AnsiString(Pos, BEGIN_CR.Length()))
-                {
-                    BinaryPart->Position += BEGIN_CR.Length();
-                    Found = true;
-                }
-                if (Found)
-                {
-                    Counts.resize(ChannelCount);
-                    std::vector<int> IntCounts(ChannelCount, 0);
-                    char *Buffer = reinterpret_cast<char *>(IntCounts.data());
-                    BinaryPart->Read(Buffer, IntCounts.size() * sizeof(int));
-                    for (size_t i = 0; i < IntCounts.size(); i++)
-                    {
-                        Counts[i] = IntCounts[i];
-                    }
-                    break;
-                }
-                Pos++;
-                BinaryPart->Position++;
+                Counts[i] = IntCounts[i];
             }
         }
         else if ((SectionIndex = StringPart->IndexOf(L"[SPECTRUM]")) > -1)
@@ -499,6 +526,30 @@ bool TSpectrum::LoadFromFile(const String &FileName, const bool ShowExceptionMsg
             const String &Msg = ErrorHeader + ErrorMessage;
             Application->MessageBox(Msg.c_str(), ErrorBoxTitle.c_str(), MB_OK | MB_ICONERROR);
         }
+    }
+    return false;
+}
+//---------------------------------------------------------------------------
+bool TSpectrum::SaveToFile(const String &FileName) const
+{
+    try
+    {
+        if (FileType == asw)
+        {
+            std::unique_ptr<TFileStream> File(new TFileStream(FileName, fmCreate));
+            const AnsiString Str = StringPart->Text;
+            File->WriteBuffer(Str.data(), Str.Length() * Str.ElementSize());
+            File->WriteBuffer(BinaryPart->Memory, BinaryPart->Size);
+        }
+        else if (FileType == gsp)
+        {
+            StringPart->SaveToFile(FileName);
+        }
+        return true;
+    }
+    catch (const Exception &E)
+    {
+        ErrorMessage = E.Message;
     }
     return false;
 }
@@ -611,10 +662,10 @@ bool TSpectrum::WriteCountsToTextFile(
             if (IncludeEnergies)
             {
                 const String &En = Sysutils::FloatToStrF(Energies[i], ffFixed, 15, 2);
-                Line = Line == L"" ? En : (Line + L"    " + En);
+                Line = Line == L"" ? En : (Line + L"\t" + En);
             }
             const String &Count = String(Math::Ceil(Counts[i]));
-            Line = Line == L"" ? Count : (Line + L"    " + Count);
+            Line = Line == L"" ? Count : (Line + L"\t" + Count);
             List->Add(Line);
         }
         List->SaveToFile(FileName);
@@ -1219,7 +1270,7 @@ void TSpectrum::SetLanguage()
     }
 }
 //---------------------------------------------------------------------------
-String TSpectrum::ReadString(
+String TSpectrum::ReadRawData(
     const String &Section, const String &Ident, const String &DefaultValue) const
 {
     const int SectionIndex = StringPart->IndexOf(L"[" + Section + L"]");
@@ -1229,37 +1280,75 @@ String TSpectrum::ReadString(
         for (int i = SectionIndex + 1; i < StringPart->Count; i++)
         {
             const auto &Line = StringPart->Strings[i];
-            if (!Line.IsEmpty() && Line[1] == L'[')
+            if (!Line.IsEmpty())
             {
-                break;
-            }
-            if (StringPart->KeyNames[i].LowerCase() == IdentL)
-            {
-                const auto &Val = StringPart->ValueFromIndex[i].Trim();
-                return Val.IsEmpty() ? DefaultValue : Val;
+                if (Line[1] == L'[')
+                {
+                    break;
+                }
+                else if (StringPart->KeyNames[i].LowerCase() == IdentL)
+                {
+                    const auto &Val = StringPart->ValueFromIndex[i].Trim();
+                    return Val.IsEmpty() ? DefaultValue : Val;
+                }
             }
         }
     }
     return DefaultValue;
 }
 //---------------------------------------------------------------------------
-void TSpectrum::WriteString(const String &Section, const String &Ident, const String &Value)
+void TSpectrum::WriteRawData(const String &Section, const String &Ident, const String &Value)
 {
     const int SectionIndex = StringPart->IndexOf(L"[" + Section + L"]");
     if (SectionIndex > -1)
     {
         const auto &IdentL = Ident.LowerCase();
+        int I = -1;
         for (int i = SectionIndex + 1; i < StringPart->Count; i++)
         {
             const auto &Line = StringPart->Strings[i];
-            if (!Line.IsEmpty() && Line[1] == L'[')
+            if (!Line.IsEmpty())
             {
-                break;
+                if (Line[1] == L'[')
+                {
+                    I = StringPart->Strings[i - 1].IsEmpty() ? i - 1 : i;
+                    break;
+                }
+                else if (StringPart->KeyNames[i].LowerCase() == IdentL)
+                {
+                    StringPart->ValueFromIndex[i] = Value;
+                    return;
+                }
             }
-            if (StringPart->KeyNames[i].LowerCase() == IdentL)
+        }
+        if (I == -1)
+        {
+            StringPart->Append(Ident + StringPart->NameValueSeparator + Value);
+        }
+        else
+        {
+            StringPart->Insert(I, Ident + StringPart->NameValueSeparator + Value);
+        }
+    }
+}
+//---------------------------------------------------------------------------
+void TSpectrum::ClearRawDataSection(const String &Section)
+{
+    const int SectionIndex = StringPart->IndexOf(L"[" + Section + L"]");
+    if (SectionIndex > -1)
+    {
+        const int I = SectionIndex + 1;
+        while (I < StringPart->Count)
+        {
+            const auto &Line = StringPart->Strings[I];
+            if (Line.IsEmpty() || Line[1] != L'[')
             {
-                StringPart->ValueFromIndex[i] = Value;
-                return;
+                StringPart->Delete(I);
+            }
+            else if (Line[1] == L'[')
+            {
+                StringPart->Insert(I, L"");
+                break;
             }
         }
     }

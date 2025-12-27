@@ -95,6 +95,9 @@ private:
 public:
     __fastcall TSpectrumFrame(TComponent* Owner);
     void SetSpectrum(const TSpectrum &ASpectrum);
+    bool SaveSpectrumToFile(const String &FileName);
+    bool SaveSpectrumToTextFile(
+        const String &FileName, const bool IncludeChannels, const bool IncludeEnergies) const;
     bool CanBeSaved() const
     {
         return Spectrum.IsValid() && Modified;
@@ -103,7 +106,7 @@ public:
     {
         return Spectrum.IsValid();
     }
-    void SwitchToLinLogScale();
+    bool SwitchToLinLogScale();
 };
 //---------------------------------------------------------------------------
 #endif

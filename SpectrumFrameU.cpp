@@ -82,7 +82,6 @@ void TSpectrumFrame::SetSpectrum(const TSpectrum &ASpectrum)
         RawDataTable->Cells[1][I] = Utils::RoundFloatValue(Spectrum.Energies[i]);
         RawDataTable->Cells[2][I] = Utils::RoundFloatValue(Spectrum.Counts[i]);
     }
-    CalibrateButton->Enabled = true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TSpectrumFrame::SpcChartMouseMove(TObject *Sender, TShiftState Shift,
@@ -184,11 +183,11 @@ void __fastcall TSpectrumFrame::OnDataChange(TObject *Sender)
     }
 }
 //---------------------------------------------------------------------------
-void TSpectrumFrame::SwitchToLinLogScale()
+bool TSpectrumFrame::SwitchToLinLogScale()
 {
     if (SpectrumLine->Count() <= 0)
     {
-        return;
+        return true;
     }
     if (!SpcChart->LeftAxis->Logarithmic)
     {
@@ -199,6 +198,7 @@ void TSpectrumFrame::SwitchToLinLogScale()
     {
         SpcChart->LeftAxis->Increment = 100;
     }
+    return !SpcChart->LeftAxis->Logarithmic;
 }
 //---------------------------------------------------------------------------
 void __fastcall TSpectrumFrame::CalibrateButtonClick(TObject *Sender)
@@ -274,15 +274,11 @@ void __fastcall TSpectrumFrame::CalibrateButtonClick(TObject *Sender)
 void __fastcall TSpectrumFrame::OnFValueEditKeyPress(TObject *Sender, System::WideChar &Key)
 {
     TEdit *Edit = static_cast<TEdit*>(Sender);
-    if (Key == VK_BACK)
+    if (Key < 32 || Key == VK_BACK || (Key >= L'0' && Key <= L'9'))
     {
         return;
     }
-    if (Key >= L'0' && Key <= L'9')
-    {
-        return;
-    }
-    if (Key == L'.')
+    else if (Key == L'.')
     {
         if (Edit->Text.IsEmpty())
             Key = 0;
@@ -296,17 +292,13 @@ void __fastcall TSpectrumFrame::OnFValueEditKeyPress(TObject *Sender, System::Wi
 void TSpectrumFrame::OnEditBoxChange(TEdit *Edit)
 {
     UnicodeString &LastValidText = LastValidTexts[Edit];
-
     const UnicodeString &S = Edit->Text;
-
     if (S.IsEmpty())
     {
         LastValidText = S;
         return;
     }
-
     int DotCount = 0;
-
     for (int i = 1; i <= S.Length(); ++i)
     {
         wchar_t c = S[i];
@@ -322,12 +314,10 @@ void TSpectrumFrame::OnEditBoxChange(TEdit *Edit)
             goto Invalid;
         }
     }
-
     if (S[1] == L'.')
     {
         goto Invalid;
     }
-
     LastValidText = S;
     return;
 
@@ -335,3 +325,57 @@ void TSpectrumFrame::OnEditBoxChange(TEdit *Edit)
         Edit->Text = LastValidText;
         Edit->SelStart = Edit->Text.Length();
 }
+//---------------------------------------------------------------------------
+bool TSpectrumFrame::SaveSpectrumToFile(const String &FileName)
+{
+    try
+    {
+        Spectrum.WriteRawData(L"Sample", L"Weight", SampleMassEdit->Text);
+        Spectrum.WriteRawData(L"Sample", L"Unit_weight", SampleMassUnitBox->Text);
+        Spectrum.WriteRawData(L"Sample", L"Volume", SampleVolumeEdit->Text);
+        Spectrum.WriteRawData(L"Sample", L"Unit_volume", SampleVolumeUnitBox->Text);
+        TEdit *ChanEdits[] = {Channel1Edit, Channel2Edit, Channel3Edit, Channel4Edit, Channel5Edit};
+        TEdit *EnEdits[] = {Energy1Edit, Energy2Edit, Energy3Edit, Energy4Edit, Energy5Edit};
+        Spectrum.ClearRawDataSection(L"Energy_calibration");
+        const int N = PointsBox->Text.ToIntDef(2);
+        if (Spectrum.FileType == TSpectrum::asw)
+        {
+            Spectrum.WriteRawData(L"Energy_calibration", L"Point", N);
+        }
+        for (int i = 0; i < N; i++)
+        {
+            Spectrum.WriteRawData(L"Energy_calibration", L"Channel" + IntToStr(i + 1), ChanEdits[i]->Text);
+        }
+        for (int i = 0; i < N; i++)
+        {
+            Spectrum.WriteRawData(L"Energy_calibration", L"Energy" + IntToStr(i + 1), EnEdits[i]->Text);
+        }
+        if (Spectrum.SaveToFile(FileName))
+        {
+            Modified = false;
+            return true;
+        }
+        else
+        {
+            throw Exception(Spectrum.ErrorMessage);
+        }
+    }
+    catch (const Exception &E)
+    {
+        LOG(E.Message);
+        Application->MessageBox(E.Message.c_str(), L"Error", MB_OK | MB_ICONERROR);
+    }
+    return false;
+}
+//---------------------------------------------------------------------------
+bool TSpectrumFrame::SaveSpectrumToTextFile(
+    const String &FileName, const bool IncludeChannels, const bool IncludeEnergies) const
+{
+    if (!Spectrum.WriteCountsToTextFile(FileName, IncludeChannels, IncludeEnergies))
+    {
+        Application->MessageBox(Spectrum.ErrorMessage.c_str(), L"Error", MB_OK | MB_ICONERROR);
+        return false;
+    }
+    return true;
+}
+

@@ -33,16 +33,13 @@ __published:	// IDE-managed Components
     TMenuItem *File;
     TMenuItem *Analyze;
     TMenuItem *Help;
-    TAction *ReopenFileAction;
     TMenuItem *OpenMI;
     TMenuItem *ReopenMI;
     TMenuItem *N1;
-    TMenuItem *FileName1_MI;
     TMenuItem *Tools;
     TAction *SaveAction;
-    TAction *SaveAsCSVAction;
     TMenuItem *SaveMI;
-    TMenuItem *SaveAsCSVMI;
+    TMenuItem *SaveInTextFormatMI;
     TMenuItem *N2;
     TMenuItem *ExitMI;
     TOpenDialog *OpenDialog;
@@ -53,27 +50,35 @@ __published:	// IDE-managed Components
     TMenuItem *AboutProgramMI;
     TAction *LinLogAction;
     TMenuItem *est1;
+    TMenuItem *OnlyCountsMI;
+    TMenuItem *CountsInChannelsMI;
+    TMenuItem *CountsInEnergiesMI;
+    TSaveDialog *SaveDialog;
+    TMenuItem *Chiziqlimasshtab1;
     void __fastcall OpenFileActionExecute(TObject *Sender);
-    void __fastcall ReopenFileActionExecute(TObject *Sender);
     void __fastcall SaveActionExecute(TObject *Sender);
     void __fastcall SaveActionUpdate(TObject *Sender);
-    void __fastcall SaveAsCSVActionExecute(TObject *Sender);
     void __fastcall ExitMIClick(TObject *Sender);
     void __fastcall DecompositionMethodActionExecute(TObject *Sender);
-    void __fastcall SaveAsCSVActionUpdate(TObject *Sender);
     void __fastcall LinLogActionExecute(TObject *Sender);
     void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
     void __fastcall SettingsMIClick(TObject *Sender);
     void __fastcall AboutProgramMIClick(TObject *Sender);
+    void __fastcall OnSaveInTextFormatMIClick(TObject *Sender);
+    void __fastcall LinLogActionUpdate(TObject *Sender);
 
 private:
     String ErrorTitle;
+    String SpectrumFileName;
     TSpectrumFrame *SpectrumFrame;
     std::unique_ptr<TMemIniFile> IniFile;
+    std::unique_ptr<TStringList> RecentFiles;
 
     void __fastcall OnAppException(TObject* Sender, Exception* E);
     void ChangeUILanguage();
     String GetVersionString(const String &DefaultVal = L"") const;
+    bool OpenSpectrum(const String &FileName);
+    void __fastcall OpenRecentFile(TObject* Sender);
 
 public:
     __fastcall TMainForm(TComponent* Owner);

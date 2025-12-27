@@ -25,10 +25,8 @@ object MainForm: TMainForm
         Action = OpenFileAction
       end
       object ReopenMI: TMenuItem
-        Action = ReopenFileAction
-        object FileName1_MI: TMenuItem
-          Caption = 'fayl nomi'
-        end
+        Caption = 'Qaytadan ochish'
+        Visible = False
       end
       object N1: TMenuItem
         Caption = '-'
@@ -36,8 +34,21 @@ object MainForm: TMainForm
       object SaveMI: TMenuItem
         Action = SaveAction
       end
-      object SaveAsCSVMI: TMenuItem
-        Action = SaveAsCSVAction
+      object SaveInTextFormatMI: TMenuItem
+        Caption = '&Matnli formatida saqlash'
+        Enabled = False
+        object OnlyCountsMI: TMenuItem
+          Caption = 'Faqat impulslar soni'
+          OnClick = OnSaveInTextFormatMIClick
+        end
+        object CountsInChannelsMI: TMenuItem
+          Caption = 'Impulslar soni kanal masshtabida'
+          OnClick = OnSaveInTextFormatMIClick
+        end
+        object CountsInEnergiesMI: TMenuItem
+          Caption = 'Impulslar soni energiya masshtabida'
+          OnClick = OnSaveInTextFormatMIClick
+        end
       end
       object N2: TMenuItem
         Caption = '-'
@@ -59,8 +70,12 @@ object MainForm: TMainForm
         Caption = '&Sozlamalar'
         OnClick = SettingsMIClick
       end
+      object Chiziqlimasshtab1: TMenuItem
+        Action = LinLogAction
+      end
       object est1: TMenuItem
         Caption = 'Test'
+        Visible = False
       end
     end
     object Help: TMenuItem
@@ -82,34 +97,34 @@ object MainForm: TMainForm
       ShortCut = 16463
       OnExecute = OpenFileActionExecute
     end
-    object ReopenFileAction: TAction
-      Caption = 'Qaytadan ochish'
-      Visible = False
-      OnExecute = ReopenFileActionExecute
-    end
     object SaveAction: TAction
       Caption = '&Saqlash'
       ShortCut = 16467
       OnExecute = SaveActionExecute
       OnUpdate = SaveActionUpdate
     end
-    object SaveAsCSVAction: TAction
-      Caption = 'CS&V formatida saqlash'
-      OnExecute = SaveAsCSVActionExecute
-      OnUpdate = SaveAsCSVActionUpdate
-    end
     object DecompositionMethodAction: TAction
       Caption = 'Tarkibiy &qismlarga ajratish'
       OnExecute = DecompositionMethodActionExecute
     end
     object LinLogAction: TAction
+      Caption = 'Chiziqli masshtab'
+      Checked = True
       ShortCut = 16460
       OnExecute = LinLogActionExecute
+      OnUpdate = LinLogActionUpdate
     end
   end
   object OpenDialog: TOpenDialog
-    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing, ofForceShowHidden]
+    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Left = 231
     Top = 17
+  end
+  object SaveDialog: TSaveDialog
+    DefaultExt = 'txt'
+    Filter = 'Matnli fayllar|*.txt'
+    Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofEnableSizing]
+    Left = 320
+    Top = 16
   end
 end

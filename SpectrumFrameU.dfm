@@ -592,7 +592,6 @@ object SpectrumFrame: TSpectrumFrame
       ColorPaletteIndex = 13
       object SpectrumLine: TLineSeries
         SeriesColor = clBlue
-        Title = 'Spectrum1'
         Brush.BackColor = clDefault
         Dark3D = False
         Pointer.InflateMargins = True
@@ -630,8 +629,6 @@ object SpectrumFrame: TSpectrumFrame
         end>
       SizeGrip = False
       UseSystemFont = False
-      ExplicitTop = 78
-      ExplicitWidth = 451
     end
   end
 end

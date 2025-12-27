@@ -16,7 +16,8 @@ TMainForm *MainForm;
 //---------------------------------------------------------------------------
 __fastcall TMainForm::TMainForm(TComponent* Owner)
     : TForm(Owner),
-    IniFile(new TMemIniFile(L".\\Settings.ini", TEncoding::Unicode))
+    IniFile(new TMemIniFile(L".\\Settings.ini", TEncoding::Unicode)),
+    RecentFiles(new TStringList())
 {
     Application->Title = APP_NAME;
     Application->ModalPopupMode = pmAuto;
@@ -37,6 +38,33 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     Top = IniFile->ReadInteger(L"Others", Name + L"Top", Top);
     Width = IniFile->ReadInteger(L"Others", Name + L"Width", Width);
     Height = IniFile->ReadInteger(L"Others", Name + L"Height", Height);
+
+    RecentFiles->CaseSensitive = false;
+    IniFile->ReadSectionValues(L"RecentFiles", RecentFiles.get());
+    while (RecentFiles->Count > 10)
+    {
+        RecentFiles->Delete(0);
+    }
+    int NExistingFiles = 0;
+    for (int i = RecentFiles->Count - 1; i >= 0; i--)
+    {
+        const int P = RecentFiles->Strings[i].Pos(L"=");
+        if (P > 0)
+        {
+            const String &FileName =
+                RecentFiles->Strings[i].SubString(P + 1, RecentFiles->Strings[i].Length()).Trim();
+            RecentFiles->Strings[i] = FileName;
+            if (Sysutils::FileExists(FileName))
+            {
+                TMenuItem *MenuItem = new TMenuItem(ReopenMI);
+                MenuItem->OnClick = OpenRecentFile;
+                MenuItem->Caption = FileName;
+                ReopenMI->Add(MenuItem);
+                NExistingFiles++;
+            }
+        }
+    }
+    ReopenMI->Visible = NExistingFiles > 0;
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::OnAppException(TObject* Sender, Exception* E)
@@ -84,50 +112,65 @@ void TMainForm::ChangeUILanguage()
     }
 }
 //---------------------------------------------------------------------------
+bool TMainForm::OpenSpectrum(const String &FileName)
+{
+    TSpectrum Spc;
+    if (!Spc.LoadFromFile(FileName))
+    {
+        return false;
+    }
+    SpectrumFileName = FileName;
+    LOG(L"Opened spectrum \"" + FileName + L"\"");
+    LOG(L"Calibration Type: " + String(int(Spc.CalibrationType)) + L", Points: " + String(Spc.CalibrationPoints));
+    Caption = APP_NAME + L" - " + FileName;
+    SpectrumFrame->SetSpectrum(Spc);
+    SaveInTextFormatMI->Enabled = SpectrumFrame->ValidSpectrumExists();
+    return true;
+}
+//---------------------------------------------------------------------------
 void __fastcall TMainForm::OpenFileActionExecute(TObject *Sender)
 {
     OpenDialog->Filter = Utils::GetDialogBoxFilterForSpectraFiles(false);
     OpenDialog->Options = OpenDialog->Options >> ofAllowMultiSelect;
     OpenDialog->FileName = L"";
-    if (!OpenDialog->Execute(Handle))
+    if (!OpenDialog->Execute(Handle) || !OpenSpectrum(OpenDialog->FileName))
     {
         return;
     }
-    TSpectrum Spc;
-    if (!Spc.LoadFromFile(OpenDialog->FileName))
-    {
-        return;
-    }
-    LOG(L"Opened spectrum \"" + OpenDialog->FileName + L"\"");
-    LOG(L"Calibration Type: " + String(int(Spc.CalibrationType)) + L", Points: " + String(Spc.CalibrationPoints));
-    Caption = APP_NAME + L" - " + OpenDialog->FileName;
 
-    SpectrumFrame->SetSpectrum(Spc);
+    if (RecentFiles->IndexOf(OpenDialog->FileName) == -1)
+    {
+        RecentFiles->Add(OpenDialog->FileName);
+        if (RecentFiles->Count > 10)
+        {
+            RecentFiles->Delete(0);
+        }
+        TMenuItem *MenuItem = new TMenuItem(ReopenMI);
+        MenuItem->OnClick = OpenRecentFile;
+        MenuItem->Caption = OpenDialog->FileName;
+        ReopenMI->Insert(0, MenuItem);
+        if (ReopenMI->Count > 10)
+        {
+            ReopenMI->Items[ReopenMI->Count - 1]->Visible = false;
+        }
+        ReopenMI->Visible = true;
+    }
 }
 //---------------------------------------------------------------------------
-void __fastcall TMainForm::ReopenFileActionExecute(TObject *Sender)
+void __fastcall TMainForm::OpenRecentFile(TObject *Sender)
 {
-    //
+    TMenuItem *MenuItem = dynamic_cast<TMenuItem *>(Sender);
+    OpenSpectrum(Sysutils::StringReplace(MenuItem->Caption, "&", "", TReplaceFlags() << rfReplaceAll));
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SaveActionExecute(TObject *Sender)
 {
-    //
+    SpectrumFrame->SaveSpectrumToFile(SpectrumFileName);
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SaveActionUpdate(TObject *Sender)
 {
     SaveAction->Enabled = SpectrumFrame->CanBeSaved();
-}
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::SaveAsCSVActionExecute(TObject *Sender)
-{
-    //
-}
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::SaveAsCSVActionUpdate(TObject *Sender)
-{
-    SaveAsCSVAction->Enabled = SpectrumFrame->ValidSpectrumExists();
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::ExitMIClick(TObject *Sender)
@@ -151,16 +194,33 @@ void __fastcall TMainForm::DecompositionMethodActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::LinLogActionExecute(TObject *Sender)
 {
-    SpectrumFrame->SwitchToLinLogScale();
+    LinLogAction->Checked = SpectrumFrame->SwitchToLinLogScale();
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::LinLogActionUpdate(TObject *Sender)
+{
+    LinLogAction->Enabled = SpectrumFrame->SpectrumLine->Count() > 0;
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
 {
-    IniFile->WriteInteger(L"Others", Name + L"Left", Left);
-    IniFile->WriteInteger(L"Others", Name + L"Top", Top);
-    IniFile->WriteInteger(L"Others", Name + L"Width", Width);
-    IniFile->WriteInteger(L"Others", Name + L"Height", Height);
-    IniFile->UpdateFile();
+    try
+    {
+        IniFile->WriteInteger(L"Others", Name + L"Left", Left);
+        IniFile->WriteInteger(L"Others", Name + L"Top", Top);
+        IniFile->WriteInteger(L"Others", Name + L"Width", Width);
+        IniFile->WriteInteger(L"Others", Name + L"Height", Height);
+        IniFile->EraseSection(L"RecentFiles");
+        for (int i = 0; i < RecentFiles->Count; i++)
+        {
+            IniFile->WriteString(L"RecentFiles", i, RecentFiles->Strings[i]);
+        }
+        IniFile->UpdateFile();
+    }
+    catch (const Exception &E)
+    {
+        LOG(E.Message);
+    }
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SettingsMIClick(TObject *Sender)
@@ -233,6 +293,17 @@ void __fastcall TMainForm::AboutProgramMIClick(TObject *Sender)
         Developer + L"\r\n" +
         Icons;
     Application->MessageBox(Message.c_str(), AboutStr.c_str(), MB_OK | MB_ICONINFORMATION);
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::OnSaveInTextFormatMIClick(TObject *Sender)
+{
+    SaveDialog->FileName = SpectrumFileName + L".txt";
+    if (!SaveDialog->Execute(Handle))
+    {
+        return;
+    }
+    SpectrumFrame->SaveSpectrumToTextFile(
+        SaveDialog->FileName, Sender == CountsInChannelsMI, Sender == CountsInEnergiesMI);
 }
 //---------------------------------------------------------------------------
 
