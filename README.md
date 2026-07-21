@@ -28,10 +28,12 @@ The software works with spectrum files in the format specified by the files:
 
 These files serve as reference examples.
 
-## Settings Configuration
-
-The software relies on a 'Settings.ini' file to read details about reference and background samples' spectra, for areas of photo peaks, and photo peak efficiency for Be-7.
-
 ## Building
 
-This repository provides the source code for the Gamma Sectra Processor, written in Embarcadero C++ Builder 10.3 using the VCL library. You will need to compile the source code using C++ Builder 10.3 or a compatible compiler to build executable binary for Windows.
+This repository contains the source code for **GSProcessor**, developed primarily in **Embarcadero C++ Builder 10.3** using the **VCL** framework.
+
+The main application can be built using **Embarcadero C++ Builder 10.3** (or a later compatible version) to produce the Windows executable.
+
+The software also includes a **peak-searching module** implemented as a separate **DLL** using **Microsoft Visual Studio** and the **ROOT** framework. To build this module from source, you will need a compatible version of **Microsoft Visual Studio** with the **ROOT** libraries properly installed and configured.
+
+When building the complete project from source, compile both the main application and the peak-searching DLL, then place the generated DLL in the same directory as the GSProcessor executable.
