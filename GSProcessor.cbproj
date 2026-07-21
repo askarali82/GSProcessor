@@ -195,10 +195,6 @@ copy /Y "$(PROJECTDIR)\bin\nuclide.dat" "$(PROJECTDIR)\bin\Deploy\nuclide.dat"]]
         <CppCompile Include="GSProcessor.cpp">
             <BuildOrder>0</BuildOrder>
         </CppCompile>
-        <PCHCompile Include="GSProcessorPCH.h">
-            <BuildOrder>1</BuildOrder>
-            <PCH>true</PCH>
-        </PCHCompile>
         <CppCompile Include="MainFormU.cpp">
             <Form>MainForm</Form>
             <FormType>dfm</FormType>

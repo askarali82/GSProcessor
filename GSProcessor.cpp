@@ -5,8 +5,8 @@
 //---------------------------------------------------------------------------
 #include <Vcl.Styles.hpp>
 #include <Vcl.Themes.hpp>
-USEFORM("MainFormU.cpp", MainForm);
 USEFORM("SettingsFormU.cpp", SettingsForm);
+USEFORM("MainFormU.cpp", MainForm);
 USEFORM("SpectrumFrameU.cpp", SpectrumFrame); /* TFrame: File Type */
 USEFORM("ShiftingFormU.cpp", ShiftingForm);
 USEFORM("BatchProcessingResultsFormU.cpp", BatchProcessingResultsForm);
