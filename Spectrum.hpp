@@ -197,6 +197,23 @@ public:
     double GetEnergyValueByIndex(const size_t I) const;
 
     double GetCountValueByIndex(const size_t I) const;
+
+    double ChannelToEnergy(const double channel) const
+    {
+        return A + B * channel + C * channel * channel;
+    }
+
+    double SlopeAt(const double Channel) const
+    {
+        if (CalibrationType == Quadratic)
+        {
+            return B + 2.0 * C * Channel;
+        }
+        else
+        {
+            return B;
+        }
+    }
 };
 //---------------------------------------------------------------------------
 String TSpectrum::FileExistenceError;

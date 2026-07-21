@@ -11,6 +11,7 @@
 #include <Vcl.ExtCtrls.hpp>
 #include <Vcl.Imaging.pngimage.hpp>
 #include <System.IniFiles.hpp>
+#include <Vcl.Buttons.hpp>
 #include <memory>
 //---------------------------------------------------------------------------
 // Language ID
@@ -163,16 +164,42 @@ __published:
     TCheckBox *ShowResultsWithMDA;
     TLabeledEdit *Be7PhotopeakEffEdit;
     TLabeledEdit *Be7SystematicErrorEdit;
+    TSpeedButton *ShowBottomButton;
+    TLabeledEdit *Point1FWHMEdit;
+    TLabeledEdit *Point1EnergyEdit;
+    TLabeledEdit *Point2EnergyEdit;
+    TLabeledEdit *Point2FWHMEdit;
+    TLabel *DetectorNameLabel;
+    TComboBox *DetectorSelector;
+    TBitBtn *AddDetectorButton;
+    TBitBtn *DeleteDetectorButton;
+    TEdit *DetectorEditor;
+    TLabel *LanguageLabel;
+    TComboBox *LanguageBox;
     void __fastcall SaveButtonClick(TObject *Sender);
     void __fastcall BrowseButtonClick(TObject *Sender);
     void __fastcall FileNameChange(TObject *Sender);
     void __fastcall ScrollBoxMouseWheel(TObject *Sender, TShiftState Shift, int WheelDelta,
           TPoint &MousePos, bool &Handled);
+    void __fastcall FormResize(TObject *Sender);
+    void __fastcall FormShow(TObject *Sender);
+    void __fastcall ShowBottomButtonClick(TObject *Sender);
+    void __fastcall OnDetectorSelectorChange(TObject *Sender);
+    void __fastcall AddDetectorButtonClick(TObject *Sender);
+    void __fastcall DeleteDetectorButtonClick(TObject *Sender);
+    void __fastcall DetectorEditorKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+    void __fastcall DetectorEditorExit(TObject *Sender);
+    void __fastcall DetectorEditorEnter(TObject *Sender);
+
 
 private:
+    const String NEW_DETECTOR_NAME;
     TMemIniFile *IniFile;
     std::unique_ptr<TControlCanvas> ScrollBoxCanvas;
     System::Classes::TWndMethod OldScrollBoxProc;
+
+    void ReadDetectorNames();
+    int FindDetectorIndex(String Name) const;
 
     void LoadEnergyRanges();
     void LoadBe7Params();

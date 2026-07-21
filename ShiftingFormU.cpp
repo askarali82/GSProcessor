@@ -31,6 +31,7 @@ __fastcall TShiftingForm::TShiftingForm(TComponent* Owner)
 void __fastcall TShiftingForm::CreateParams(TCreateParams &Params)
 {
     TForm::CreateParams(Params);
+    Params.WndParent = 0;
     Params.Style |= WS_POPUP;
     Params.ExStyle |= WS_EX_APPWINDOW;
 }

@@ -11,6 +11,7 @@ object BatchProcessingResultsForm: TBatchProcessingResultsForm
   Font.Name = 'Microsoft Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  PopupMode = pmAuto
   Position = poScreenCenter
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
@@ -84,7 +85,7 @@ object BatchProcessingResultsForm: TBatchProcessingResultsForm
     Height = 38
     AutoSize = True
     ButtonHeight = 38
-    ButtonWidth = 171
+    ButtonWidth = 176
     Caption = 'ToolBar1'
     DoubleBuffered = True
     DrawingStyle = dsGradient
@@ -104,6 +105,7 @@ object BatchProcessingResultsForm: TBatchProcessingResultsForm
       Left = 151
       Top = 0
       Action = MoveToMainWindowAction
+      Caption = 'Tahlil oynasiga o'#8216'tkazish'
       Style = tbsTextButton
     end
   end

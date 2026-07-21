@@ -54,3 +54,9 @@ SiljishPCH.h
 /FSA/Release
 /FSA/.vs/FullSpectrumAnalysis
 /FSA/.vs
+/peaks/.vs
+/FSA
+/FSA
+/peaks/peaks/Release
+*.user
+/peaks/__history

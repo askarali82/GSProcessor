@@ -1,13 +1,55 @@
 #include <vcl.h>
-#pragma hdrstop
-
-#include "Common.h"
+#include  <System.IOUtils.hpp>
 #include "dir.h"
 #include <DateUtils.hpp>
 #include <System.StrUtils.hpp>
+#pragma hdrstop
+
+#include "Common.h"
 
 //---------------------------------------------------------------------------
 const String APP_NAME = L"GSProcessor";
+const String SETTINGS_FILE_NAME = L"Settings.ini";
+//---------------------------------------------------------------------------
+String Utils::GetAppFolder()
+{
+    static String Folder;
+    if (!Folder.IsEmpty())
+    {
+        return Folder;
+    }
+
+    const String &Result = Ioutils::TPath::GetHomePath() + L"\\" + APP_NAME + L"\\";
+    if (Sysutils::DirectoryExists(Result) || Sysutils::CreateDir(Result))
+    {
+        Folder = Result;
+        return Result;
+    }
+    else
+    {
+        throw Exception(L"Cannot create app folder.");
+    }
+}
+//---------------------------------------------------------------------------
+String Utils::GetAppLogsFolder()
+{
+    static String Folder;
+    if (!Folder.IsEmpty())
+    {
+        return Folder;
+    }
+
+    const String &Result = Utils::GetAppFolder() + L"Logs\\";
+    if (Sysutils::DirectoryExists(Result) || Sysutils::CreateDir(Result))
+    {
+        Folder = Result;
+        return Result;
+    }
+    else
+    {
+        throw Exception(L"Cannot create app logs folder.");
+    }
+}
 //---------------------------------------------------------------------------
 void Utils::Log(const AnsiString &Func, const AnsiString &Line, AnsiString Msg)
 {
@@ -17,15 +59,11 @@ void Utils::Log(const AnsiString &Func, const AnsiString &Line, AnsiString Msg)
     }
     try
     {
-        static const String OldDirName = GetEnvironmentVariable(L"APPDATA") + L"\\ProcessASW\\";
-        static String AppData = GetEnvironmentVariable(L"APPDATA") + L"\\" + Application->Title + L"\\";
-        MoveFileW(OldDirName.c_str(), AppData.c_str());
-        CreateDir(AppData);
         static String Name = ExtractFileName(GetModuleName(0));
         if (Name == ExtractFileName(GetModuleName(0)))
         {
             const String &TimePart = Now().FormatString(L"DD-MM-YYYY_HH-MM-SS");
-            Name = AppData + Name + L"-" + TimePart + L".log";
+            Name = GetAppLogsFolder() + Name + L"-" + TimePart + L".log";
         }
         static std::unique_ptr<TCriticalSection> Section(new TCriticalSection());
         TScopeLock Lock(Section.get());

@@ -18,6 +18,7 @@
 //---------------------------------------------------------------------------
 
 extern const String APP_NAME;
+extern const String SETTINGS_FILE_NAME;
 
 // Language ID
 // 0 => Uzbek
@@ -61,13 +62,18 @@ class Utils
 private:
 
 public:
+    static String GetAppFolder();
+
+    static String GetAppLogsFolder();
+
     static void Log(const AnsiString &Func, const AnsiString &Line, AnsiString Msg);
 
     static void LogException(const Exception &E, const AnsiString &Func, const AnsiString &Line);
 
     static String RoundFloatValue(const double Value, const int D = 2, const bool DeleteZeroes = true);
 
-    static void NormalizeStandardSources(const TSpectrum &Spc1, TSpectrum &Spc2, const double Energy1, const double Energy2);
+    static void NormalizeStandardSources(
+        const TSpectrum &Spc1, TSpectrum &Spc2, const double Energy1, const double Energy2);
 
     static inline double Sqr(const double F)
     {

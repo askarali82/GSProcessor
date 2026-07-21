@@ -15,7 +15,10 @@
 #include <Vcl.ComCtrls.hpp>
 #include <Vcl.Grids.hpp>
 #include "Spectrum.hpp"
+#include <Vcl.Menus.hpp>
 #include <unordered_map>
+#include "peaks/PhotopeakSearcher.h"
+#include "NuclideLibU.h"
 //---------------------------------------------------------------------------
 extern std::atomic<int> LangID;
 //---------------------------------------------------------------------------
@@ -26,14 +29,14 @@ __published:
     TLineSeries *SpectrumLine;
     TPageControl *PageControl;
     TSplitter *Splitter;
-    TTabSheet *InformationTab;
+    TTabSheet *ParametersTab;
     TEdit *LiveTimeEdit;
     TEdit *RealTimeEdit;
     TEdit *SampleMassEdit;
     TEdit *SampleVolumeEdit;
     TComboBox *SampleMassUnitBox;
     TComboBox *SampleVolumeUnitBox;
-    TGroupBox *GroupBox1;
+    TGroupBox *EnCalGroupBox;
     TEdit *Energy1Edit;
     TEdit *Channel1Edit;
     TEdit *Energy2Edit;
@@ -44,7 +47,7 @@ __published:
     TEdit *Channel3Edit;
     TEdit *Energy5Edit;
     TEdit *Channel5Edit;
-    TLabel *Label1;
+    TLabel *PointsLabel;
     TComboBox *PointsBox;
     TTabSheet *RawDataTab;
     TEdit *CPSEdit;
@@ -52,12 +55,12 @@ __published:
     TStringGrid *RawDataTable;
     TStatusBar *StatusBar;
     TPanel *SpectrumPanel;
-    TLabel *Label2;
-    TLabel *Label3;
-    TLabel *Label4;
-    TLabel *Label5;
-    TLabel *Label6;
-    TLabel *Label7;
+    TLabel *LiveTimeLabel;
+    TLabel *RealTimeLabel;
+    TLabel *TotalCountLabel;
+    TLabel *SampleVolumeLabel;
+    TLabel *SampleMassLabel;
+    TLabel *IntensityLabel;
     TLabel *Chan1Label;
     TLabel *Chan2Label;
     TLabel *Chan3Label;
@@ -75,6 +78,20 @@ __published:
     TLabel *Energy5Label;
     TPanel *Panel1;
     TButton *CalibrateButton;
+    TTabSheet *PeakInfoTab;
+    TPanel *Panel2;
+    TLabel *EnergyLabel;
+    TLabel *EnergyValueLabel;
+    TLabel *NucleusNameLabel;
+    TLabel *NucleusLabel;
+    TLabel *EmitterLabel;
+    TLabel *EmitterNameLabel;
+    TLabel *SeriesNameLabel;
+    TLabel *SeriesLabel;
+    TLabel *GammaYieldLabel;
+    TLabel *GammaYieldValueLabel;
+    TPopupMenu *TablePopupMenu;
+    TMenuItem *CopyMI;
     void __fastcall SpcChartMouseMove(TObject *Sender, TShiftState Shift, int X,
           int Y);
     void __fastcall SpcChartAfterDraw(TObject *Sender);
@@ -82,6 +99,17 @@ __published:
     void __fastcall OnDataChange(TObject *Sender);
     void __fastcall CalibrateButtonClick(TObject *Sender);
     void __fastcall OnFValueEditKeyPress(TObject *Sender, System::WideChar &Key);
+    void __fastcall RawDataTableMouseDown(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+    void __fastcall RawDataTableKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+    void __fastcall PageControlDrawTab(TCustomTabControl *Control, int TabIndex,
+          const TRect &Rect, bool Active);
+    void __fastcall PeakInfoTabShow(TObject *Sender);
+    void __fastcall CopyMIClick(TObject *Sender);
+    void __fastcall RawDataTableMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
+          int X, int Y);
+
+
 
 
 
@@ -89,8 +117,12 @@ private:
     TSpectrum Spectrum;
     bool Modified;
     std::unordered_map<TEdit*, String> LastValidTexts;
+    std::vector<PhotopeakInfo> Photopeaks;
 
+    void CopySelectedCells();
     void OnEditBoxChange(TEdit *Edit);
+    void ShowPeakDetails(const PhotopeakInfo &Peak);
+    void ClearPeakDetails();
 
 public:
     __fastcall TSpectrumFrame(TComponent* Owner);
@@ -107,6 +139,8 @@ public:
         return Spectrum.IsValid();
     }
     bool SwitchToLinLogScale();
+    bool FindPhotopeaks(const bool NeedsFound);
+    void ChangeUILanguage();
 };
 //---------------------------------------------------------------------------
 #endif

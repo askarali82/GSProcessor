@@ -22,6 +22,7 @@ __fastcall TBatchProcessingResultsForm::TBatchProcessingResultsForm(TComponent* 
 void __fastcall TBatchProcessingResultsForm::CreateParams(TCreateParams &Params)
 {
     TForm::CreateParams(Params);
+    Params.WndParent = 0;
     Params.Style |= WS_POPUP;
     Params.ExStyle |= WS_EX_APPWINDOW;
 }
@@ -320,6 +321,7 @@ void __fastcall TBatchProcessingResultsForm::MoveToMainWindowActionExecute(TObje
     const size_t i = ResultsList->Selected->Index;
     if (i < ResultsVector.size())
     {
+        AnalysisForm->Show();
         AnalysisForm->OpenFromBatchResult(
             ResultsVector[i].FileName,
             ResultsVector[i].ThC,
@@ -342,7 +344,7 @@ void TBatchProcessingResultsForm::ChangeUILanguage()
     {
         Caption = L"Ko‘p sonli spektrlar tahlili - Natijalar";
         SaveToCSVFIleAction->Caption = L"CSV faylga saqlash";
-        MoveToMainWindowAction->Caption = L"Asosiy oynaga o‘tkazish";
+        MoveToMainWindowAction->Caption = L"Tahlil oynasiga o‘tkazish";
         ResultsList->Column[1]->Caption = L"Fayl nomi";
         ResultsList->Column[2]->Caption = L"Th-232 - A, Bk/kg";
         ResultsList->Column[3]->Caption = L"Ra-226 - A, Bk/kg";
@@ -372,7 +374,7 @@ void TBatchProcessingResultsForm::ChangeUILanguage()
     {
         Caption = L"Batch processing - Results";
         SaveToCSVFIleAction->Caption = L"Save to CSV file";
-        MoveToMainWindowAction->Caption = L"Send to main window";
+        MoveToMainWindowAction->Caption = L"Send to analysis window";
         ResultsList->Column[1]->Caption = L"File name";
         ResultsList->Column[2]->Caption = L"Th-232 - A, Bq/kg";
         ResultsList->Column[3]->Caption = L"Ra-226 - A, Bq/kg";

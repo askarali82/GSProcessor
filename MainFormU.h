@@ -14,6 +14,10 @@
 #include "SpectrumFrameU.h"
 #include <Vcl.Dialogs.hpp>
 #include <System.IniFiles.hpp>
+#include <System.ImageList.hpp>
+#include <Vcl.ImgList.hpp>
+#include <Vcl.ToolWin.hpp>
+#include <Vcl.AppEvnts.hpp>
 //---------------------------------------------------------------------------
 // Language ID
 // 0 => Uzbek
@@ -29,7 +33,7 @@ class TMainForm : public TForm
 __published:	// IDE-managed Components
     TMainMenu *MainMenu;
     TActionList *ActionList;
-    TAction *OpenFileAction;
+    TAction *OpenAction;
     TMenuItem *File;
     TMenuItem *Analyze;
     TMenuItem *Help;
@@ -49,23 +53,45 @@ __published:	// IDE-managed Components
     TMenuItem *UserManualMI;
     TMenuItem *AboutProgramMI;
     TAction *LinLogAction;
-    TMenuItem *est1;
+    TMenuItem *PhotopeaksMI;
     TMenuItem *OnlyCountsMI;
     TMenuItem *CountsInChannelsMI;
     TMenuItem *CountsInEnergiesMI;
     TSaveDialog *SaveDialog;
-    TMenuItem *Chiziqlimasshtab1;
-    void __fastcall OpenFileActionExecute(TObject *Sender);
+    TMenuItem *LinLogScaleMI;
+    TImageList *ImageList;
+    TToolBar *ToolBar;
+    TToolButton *OpenButton;
+    TToolButton *SaveButton;
+    TToolButton *ScaleButton;
+    TToolButton *ToolButton1;
+    TToolButton *ToolButton2;
+    TToolButton *ToolButton3;
+    TAction *PhotopeaksAction;
+    TAction *BatchProcessing_FilesAction;
+    TMenuItem *BatchProcessingMI;
+    TAction *BatchProcessing_FolderAction;
+    TMenuItem *SelectFilesMI;
+    TMenuItem *SelectFolderMI;
+    TAction *SettingsAction;
+    TAction *HelpAction;
+    TAction *ExitAction;
+    void __fastcall OpenActionExecute(TObject *Sender);
     void __fastcall SaveActionExecute(TObject *Sender);
     void __fastcall SaveActionUpdate(TObject *Sender);
-    void __fastcall ExitMIClick(TObject *Sender);
     void __fastcall DecompositionMethodActionExecute(TObject *Sender);
     void __fastcall LinLogActionExecute(TObject *Sender);
     void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
-    void __fastcall SettingsMIClick(TObject *Sender);
     void __fastcall AboutProgramMIClick(TObject *Sender);
     void __fastcall OnSaveInTextFormatMIClick(TObject *Sender);
     void __fastcall LinLogActionUpdate(TObject *Sender);
+    void __fastcall PhotopeaksActionExecute(TObject *Sender);
+    void __fastcall PhotopeaksActionUpdate(TObject *Sender);
+    void __fastcall BatchProcessing_FilesActionExecute(TObject *Sender);
+    void __fastcall BatchProcessing_FolderActionExecute(TObject *Sender);
+    void __fastcall SettingsActionExecute(TObject *Sender);
+    void __fastcall ExitActionExecute(TObject *Sender);
+
 
 private:
     String ErrorTitle;
@@ -75,6 +101,7 @@ private:
     std::unique_ptr<TStringList> RecentFiles;
 
     void __fastcall OnAppException(TObject* Sender, Exception* E);
+    void CreateSettingsFile();
     void ChangeUILanguage();
     String GetVersionString(const String &DefaultVal = L"") const;
     bool OpenSpectrum(const String &FileName);

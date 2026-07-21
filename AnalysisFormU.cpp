@@ -13,14 +13,12 @@
 #include "ShiftingFormU.h"
 #include "Common.h"
 #include "BatchProcessingResultsFormU.h"
-#include "FSAWrapper.h"
 #include "AxisMinMaxFormU.h"
 #include "MainFormU.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
-#pragma comment(lib, "bin/fsa_omf.lib")
 
 TAnalysisForm *AnalysisForm;
 //---------------------------------------------------------------------------
@@ -48,10 +46,7 @@ __fastcall TAnalysisForm::TAnalysisForm(TComponent* Owner):
     CsDValEdit1->Text = CHAN_STEP;
     CsDValEdit2->Text = CHAN_STEP;
 
-    LanguageAction->Tag = MainForm->GetIniFile()->ReadString(L"UILanguage", L"LangID", L"0").ToIntDef(0);
-    LangID = LanguageAction->Tag;
     ChangeUILanguage();
-    TSpectrum::SetLanguage();
 
     HRESULT HResult;
     if ((HResult = CoInitializeEx(0, COINIT_APARTMENTTHREADED)) == S_OK || HResult == S_FALSE)
@@ -87,8 +82,6 @@ __fastcall TAnalysisForm::TAnalysisForm(TComponent* Owner):
 
     CsUpButton->Tag = reinterpret_cast<NativeInt>(CsSnSe2);
     CsDownButton->Tag = reinterpret_cast<NativeInt>(CsSnSe2);
-
-    SpectraLoadTimer->Enabled = true;
 }
 //---------------------------------------------------------------------------
 __fastcall TAnalysisForm::~TAnalysisForm()
@@ -100,7 +93,7 @@ void __fastcall TAnalysisForm::CreateParams(TCreateParams &Params)
     try
     {
         TForm::CreateParams(Params);
-        Params.WndParent = GetDesktopWindow();
+        Params.WndParent = 0;
         Params.Style |= WS_POPUP;
         Params.ExStyle |= WS_EX_APPWINDOW;
     }
@@ -377,7 +370,7 @@ void TAnalysisForm::InitStdSamples(TSettingsForm *Form)
     Energy2Edit->Text = Ths[VI].Energy2;
     CreateVirtualSpectra();
     CalculateCountsInStdSamples();
-    PopulateStandardSourcesInfo(Form);
+    PopulateStandardSourcesInfo();
 }
 //---------------------------------------------------------------------------
 void TAnalysisForm::SubtractBkgFromStandardSources(const int Idx)
@@ -399,9 +392,8 @@ void TAnalysisForm::SubtractBkgFromStandardSources(const int Idx)
     Css[Idx] = Spc;
 }
 //---------------------------------------------------------------------------
-void __fastcall TAnalysisForm::OnSpectraLoadTimer(TObject *Sender)
+bool TAnalysisForm::Initialize()
 {
-    SpectraLoadTimer->Enabled = false;
     std::unique_ptr<TSettingsForm> Form(new TSettingsForm(Application, MainForm->GetIniFile()));
     String ErrorMessage;
     if ((!Form->Density_1_SamplesValid() && !Form->Density_2_SamplesValid() && !Form->Density_3_SamplesValid()) ||
@@ -414,17 +406,18 @@ void __fastcall TAnalysisForm::OnSpectraLoadTimer(TObject *Sender)
         if (Form->ShowModal() != mrOk)
         {
             Close();
-            return;
+            return false;
         }
     }
     ShowResultsWithMDA = Form->ShowResultsWithMDA->Checked;
-    ShiftingForm->ChangeUILanguage();
-    if (BatchProcessingResultsForm != nullptr)
-    {
-        BatchProcessingResultsForm->ChangeUILanguage();
-    }
     InitStdSamples(Form.get());
     ChangeUILanguage();
+    return true;
+}
+//---------------------------------------------------------------------------
+void __fastcall TAnalysisForm::OnSpectrumOpeningTimer(TObject *Sender)
+{
+    SpectrumOpeningTimer->Enabled = false;
     if (Sysutils::FileExists(SampleFileNameFromMainForm))
     {
         if (OpenSampleSpectrum(SampleFileNameFromMainForm))
@@ -862,56 +855,6 @@ void TAnalysisForm::CalculateCountsInStdSamples()
     CsCount = CsSpc.CalculateCountByEnergyRange(CsEn1, CsEn2);
 }
 //---------------------------------------------------------------------------
-void TAnalysisForm::AnalyzeByFSA()
-{
-    try
-    {
-        const double ThActivityError =
-            System::Sqrt(Utils::Sqr(ThActivityErrors[0]) + Utils::Sqr(ThActivityErrors[1]) + Utils::Sqr(ThActivityErrors[2]));
-        const double RaActivityError =
-            System::Sqrt(Utils::Sqr(RaActivityErrors[0]) + Utils::Sqr(RaActivityErrors[1]) + Utils::Sqr(RaActivityErrors[2]));
-        const double KActivityError =
-            System::Sqrt(Utils::Sqr(KActivityErrors[0]) + Utils::Sqr(KActivityErrors[1]) + Utils::Sqr(KActivityErrors[2]));
-        const double CsActivityError =
-            System::Sqrt(Utils::Sqr(CsActivityErrors[0]) + Utils::Sqr(CsActivityErrors[1]) + Utils::Sqr(CsActivityErrors[2]));
-
-        const double MassCoeff =
-            SameText(SampleSpc.WeightUnit, L"kg") ? SampleSpc.Weight : SampleSpc.Weight * 0.001;
-
-        TFullSpectrumAnalysis Fsa(4);
-
-        TCalibration Cal = TCalibration::Linear(OrigThSpc.A, OrigThSpc.B);
-        Fsa.AddReferenceSpectrum(0, OrigThSpc.Counts, Cal, 1, OrigThSpc.Duration);
-
-        Cal = TCalibration::Linear(OrigRaSpc.A, OrigRaSpc.B);
-        Fsa.AddReferenceSpectrum(1, OrigRaSpc.Counts, Cal, 1, OrigRaSpc.Duration);
-
-        Cal = TCalibration::Linear(OrigKSpc.A, OrigKSpc.B);
-        Fsa.AddReferenceSpectrum(2, OrigKSpc.Counts, Cal, 1, OrigKSpc.Duration);
-
-        Cal = TCalibration::Linear(OrigCsSpc.A, OrigCsSpc.B);
-        Fsa.AddReferenceSpectrum(3, OrigCsSpc.Counts, Cal, 1, OrigCsSpc.Duration);
-
-        Cal = TCalibration::Linear(OrigBkgSpc.A, OrigBkgSpc.B);
-        Fsa.SetBackground(OrigBkgSpc.Counts, Cal);
-
-        Cal = TCalibration::Linear(OrigSampleSpc.A, OrigSampleSpc.B);//, 0/*, OrigSampleSpc.C*/);
-        const auto &Activities = Fsa.Analyze(OrigSampleSpc.Counts, Cal, OrigSampleSpc.Duration);
-
-        const String &Results =
-            L"Th-232:\t" + Utils::RoundFloatValue((Activities[0] * ThActivity) / MassCoeff) + L"\r\n" +
-            L"Ra-226:\t" + Utils::RoundFloatValue((Activities[1] * RaActivity) / MassCoeff) + L"\r\n" +
-            L"K-40:\t" + Utils::RoundFloatValue((Activities[2] * KActivity)  / MassCoeff) + L"\r\n" +
-            L"Cs-137:\t" + Utils::RoundFloatValue((Activities[3] * CsActivity) / MassCoeff);
-
-        Application->MessageBox(Results.c_str(), L"To‘liq Spektrli Tahlil", MB_OK | MB_ICONINFORMATION);
-    }
-    catch (const Exception &E)
-    {
-        Application->MessageBox(E.Message.c_str(), ErrorTitle.c_str(), MB_OK | MB_ICONERROR);
-    }
-}
-//---------------------------------------------------------------------------
 void TAnalysisForm::DecomposeSampleSpectrum(const bool OpeningNewSpectrum)
 {
     try
@@ -1187,7 +1130,7 @@ void TAnalysisForm::DecomposeSampleSpectrum(const bool OpeningNewSpectrum)
     }
 }
 //---------------------------------------------------------------------------
-void TAnalysisForm::PopulateStandardSourcesInfo(TSettingsForm *Settings)
+void TAnalysisForm::PopulateStandardSourcesInfo()
 {
     ThActivity =
         StrToFloatDef(ThSpc.ExtraStringData, 0) *
@@ -2325,7 +2268,7 @@ void __fastcall TAnalysisForm::SelectFilesActionExecute(TObject *Sender)
     OpenDialog->Filter = Utils::GetDialogBoxFilterForSpectraFiles();
     OpenDialog->Options = OpenDialog->Options << ofAllowMultiSelect;
     OpenDialog->FileName = L"";
-    if (OpenDialog->Execute(Handle))
+    if (OpenDialog->Execute(Visible ? Handle : MainForm->Handle))
     {
         if (BatchProcessingResultsForm != nullptr)
         {
@@ -2407,8 +2350,6 @@ void TAnalysisForm::ChangeUILanguage()
     {
         ErrorTitle = L"Xato";
         DirSelectionString = L"Manzil tanlash...";
-
-        LanguageAction->Caption = L"  UZ  ";
 
         OpenButton->Caption = L"Ochish";
         OpenSpectrumAction->Caption = L"Spektrni ochish";
@@ -2586,8 +2527,6 @@ void TAnalysisForm::ChangeUILanguage()
     {
         ErrorTitle = L"Error";
         DirSelectionString = L"Selecting directory...";
-
-        LanguageAction->Caption = L"  ENG  ";
 
         OpenButton->Caption = L"Open";
         OpenSpectrumAction->Caption = L"Open spectrum";
@@ -2768,6 +2707,12 @@ void TAnalysisForm::ChangeUILanguage()
 
     BrowseInfo.lpszTitle = DirSelectionString.c_str();
 
+    ShiftingForm->ChangeUILanguage();
+    if (BatchProcessingResultsForm != nullptr)
+    {
+        BatchProcessingResultsForm->ChangeUILanguage();
+    }
+
     /*ThLabel->Left = (ThInfoPanel->Width - ThLabel->Width) / 2;
     RaLabel->Left = (RaInfoPanel->Width - RaLabel->Width) / 2;
     KLabel->Left = (KInfoPanel->Width - KLabel->Width) / 2;
@@ -2779,28 +2724,6 @@ void TAnalysisForm::ChangeUILanguage()
     CsSmpLabel->Left = (CsInfoPanel->Width - CsSmpLabel->Width) / 2;
 
     SmpLabel->Left = (BeInfoPanel->Width - SmpLabel->Width) / 2;*/
-}
-//---------------------------------------------------------------------------
-void __fastcall TAnalysisForm::LanguageActionExecute(TObject *Sender)
-{
-    if (LanguageAction->Tag == 0)
-    {
-        LanguageAction->Tag = 1;
-    }
-    else if (LanguageAction->Tag == 1)
-    {
-        LanguageAction->Tag = 0;
-    }
-    LangID = LanguageAction->Tag;
-    ChangeUILanguage();
-    TSpectrum::SetLanguage();
-    ShiftingForm->ChangeUILanguage();
-    if (BatchProcessingResultsForm != nullptr)
-    {
-        BatchProcessingResultsForm->ChangeUILanguage();
-    }
-    MainForm->GetIniFile()->WriteInteger(L"UILanguage", L"LangID", LanguageAction->Tag);
-    MainForm->GetIniFile()->UpdateFile();
 }
 //---------------------------------------------------------------------------
 void __fastcall TAnalysisForm::ThCoeffCalcLabelClick(TObject *Sender)
@@ -3082,17 +3005,6 @@ void __fastcall TAnalysisForm::OnSampleDensityActionUpdate(TObject *Sender)
 void __fastcall TAnalysisForm::FinalSpcPopupMenuPopup(TObject *Sender)
 {
     SampleDensityMI->Enabled = SampleSpc.IsValid();
-    FSA_MI->Enabled = SampleDensityMI->Enabled;
-}
-//---------------------------------------------------------------------------
-void __fastcall TAnalysisForm::FSA_MIClick(TObject *Sender)
-{
-    CreateVirtualSpectra();
-    if (SampleSpc.IsValid() && BkgSpc.IsValid() && ThSpc.IsValid() &&
-        RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
-    {
-        AnalyzeByFSA();
-    }
 }
 //---------------------------------------------------------------------------
 void __fastcall TAnalysisForm::OnSpcPanelClick(TObject *Sender)
@@ -3351,6 +3263,11 @@ void __fastcall TAnalysisForm::FormClose(TObject *Sender, TCloseAction &Action)
 {
     Action = caFree;
     AnalysisForm = nullptr;
+}
+//---------------------------------------------------------------------------
+void __fastcall TAnalysisForm::FormShow(TObject *Sender)
+{
+    WindowState = wsMaximized;
 }
 //---------------------------------------------------------------------------
 

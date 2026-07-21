@@ -13,11 +13,11 @@ object AnalysisForm: TAnalysisForm
   KeyPreview = True
   OldCreateOrder = False
   Position = poScreenCenter
-  WindowState = wsMaximized
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
   OnResize = FormResize
+  OnShow = FormShow
   DesignSize = (
     1400
     749)
@@ -3718,18 +3718,10 @@ object AnalysisForm: TAnalysisForm
     DoubleBuffered = True
     ParentDoubleBuffered = False
     TabOrder = 13
-    object SpeedButton1: TSpeedButton
-      Left = 1350
-      Top = 0
-      Width = 50
-      Height = 40
-      Action = LanguageAction
-      Align = alRight
-    end
     object ToolBar: TToolBar
       Left = 0
       Top = 0
-      Width = 1350
+      Width = 1400
       Height = 40
       Align = alClient
       AutoSize = True
@@ -3743,6 +3735,7 @@ object AnalysisForm: TAnalysisForm
       ShowCaptions = True
       TabOrder = 0
       Wrapable = False
+      ExplicitWidth = 1350
       object OpenButton: TToolButton
         Left = 0
         Top = 0
@@ -3793,10 +3786,10 @@ object AnalysisForm: TAnalysisForm
     Left = 95
     Top = 449
   end
-  object SpectraLoadTimer: TTimer
+  object SpectrumOpeningTimer: TTimer
     Enabled = False
     Interval = 300
-    OnTimer = OnSpectraLoadTimer
+    OnTimer = OnSpectrumOpeningTimer
     Left = 112
     Top = 520
   end
@@ -4482,12 +4475,6 @@ object AnalysisForm: TAnalysisForm
       ShortCut = 24642
       OnExecute = SelectDirectoryActionExecute
     end
-    object LanguageAction: TAction
-      Caption = '  UZ  '
-      ShortCut = 16460
-      Visible = False
-      OnExecute = LanguageActionExecute
-    end
     object ChangeFinalSpcScaleAction: TAction
       Caption = 'Logarifmli masshtabda'
       ShortCut = 120
@@ -4546,13 +4533,6 @@ object AnalysisForm: TAnalysisForm
       object Zichliknikamaytir1: TMenuItem
         Action = DecreaseSampleDensityAction
       end
-    end
-    object N1: TMenuItem
-      Caption = '-'
-    end
-    object FSA_MI: TMenuItem
-      Caption = 'To'#8216'liq spektrli tahlil'
-      OnClick = FSA_MIClick
     end
   end
   object ShiftingRepeaterTimer: TTimer

@@ -117,7 +117,7 @@ __published:
     TEdit *SampleSquare;
     TLabel *SmpSquareLabel;
     TOpenDialog *OpenDialog;
-    TTimer *SpectraLoadTimer;
+    TTimer *SpectrumOpeningTimer;
     TStatusBar *StatusBar;
     TImageList *ImageList;
     TEdit *SmpChan1Edit;
@@ -208,8 +208,6 @@ __published:
     TToolButton *SaveSpectraButton;
     TToolButton *BatchProcessButton;
     TToolButton *ShiftingButton;
-    TAction *LanguageAction;
-    TSpeedButton *SpeedButton1;
     TSpeedButton *ThUpButton;
     TSpeedButton *ThDownButton;
     TSpeedButton *RaDownButton;
@@ -235,11 +233,9 @@ __published:
     TMenuItem *SampleDensityMI;
     TMenuItem *Zichlikniorttir1;
     TMenuItem *Zichliknikamaytir1;
-    TMenuItem *N1;
-    TMenuItem *FSA_MI;
     TTimer *ShiftingRepeaterTimer;
     void __fastcall FormResize(TObject *Sender);
-    void __fastcall OnSpectraLoadTimer(TObject *Sender);
+    void __fastcall OnSpectrumOpeningTimer(TObject *Sender);
     void __fastcall OnParamChange(TObject *Sender);
     void __fastcall OnChartMouseMove(TObject *Sender, TShiftState Shift, int X,
           int Y);
@@ -257,7 +253,6 @@ __published:
     void __fastcall SaveParametersActionExecute(TObject *Sender);
     void __fastcall SelectFilesActionExecute(TObject *Sender);
     void __fastcall SelectDirectoryActionExecute(TObject *Sender);
-    void __fastcall LanguageActionExecute(TObject *Sender);
     void __fastcall OpenButtonClick(TObject *Sender);
     void __fastcall SaveSpectraButtonClick(TObject *Sender);
     void __fastcall BatchProcessButtonClick(TObject *Sender);
@@ -285,7 +280,6 @@ __published:
     void __fastcall DecreaseSampleDensityActionExecute(TObject *Sender);
     void __fastcall OnSampleDensityActionUpdate(TObject *Sender);
     void __fastcall FinalSpcPopupMenuPopup(TObject *Sender);
-    void __fastcall FSA_MIClick(TObject *Sender);
     void __fastcall OnSpcPanelClick(TObject *Sender);
     void __fastcall OnSpcShiftEditEnter(TObject *Sender);
     void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
@@ -295,6 +289,7 @@ __published:
     void __fastcall FinalSpcChartClickAxis(TCustomChart *Sender, TChartAxis *Axis,
           TMouseButton Button, TShiftState Shift, int X, int Y);
     void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+    void __fastcall FormShow(TObject *Sender);
 
 
 private:
@@ -418,8 +413,7 @@ private:
     void DrawSpectrum(const TSpectrum &Spc, TLineSeries *LineSeries);
     bool OpenSampleSpectrum(const String &FileName);
     void DecomposeSampleSpectrum(const bool OpeningNewSpectrum = false);
-    void AnalyzeByFSA();
-    void PopulateStandardSourcesInfo(TSettingsForm *Settings);
+    void PopulateStandardSourcesInfo();
     void SetEnergyRanges(TSettingsForm *Settings);
     bool ValidSpectra(const int Idx) const;
     String GetVersionString(const String &DefaultVal = L"") const;
@@ -431,7 +425,6 @@ private:
     bool ShiftCs();
     int CalcCenterOfPeak(const TSpectrum &Spc, const double Energy) const;
     void SaveParametersFile(const String &FileName);
-    void ChangeUILanguage();
     TData GetData() const;
 
 protected:
@@ -440,6 +433,8 @@ protected:
 public:
     __fastcall TAnalysisForm(TComponent* Owner);
     __fastcall ~TAnalysisForm();
+    void ChangeUILanguage();
+    bool Initialize();
     void OpenFromBatchResult(
         const String &FileName,
         const String &ThC,
@@ -454,6 +449,7 @@ public:
     void PushFileNameToAnalyze(const String &FileName)
     {
         SampleFileNameFromMainForm = FileName;
+        SpectrumOpeningTimer->Enabled = true;
     }
 };
 //---------------------------------------------------------------------------

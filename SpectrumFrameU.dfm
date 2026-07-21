@@ -1,16 +1,16 @@
 object SpectrumFrame: TSpectrumFrame
   Left = 0
   Top = 0
-  Width = 1156
-  Height = 604
+  Width = 1150
+  Height = 607
   Align = alClient
   TabOrder = 0
   ExplicitWidth = 451
   ExplicitHeight = 305
   object Splitter: TSplitter
     Left = 0
-    Top = 396
-    Width = 1156
+    Top = 399
+    Width = 1150
     Height = 8
     Cursor = crVSplit
     Align = alBottom
@@ -59,22 +59,24 @@ object SpectrumFrame: TSpectrumFrame
   end
   object PageControl: TPageControl
     Left = 0
-    Top = 404
-    Width = 1156
+    Top = 407
+    Width = 1150
     Height = 200
-    ActivePage = InformationTab
+    ActivePage = ParametersTab
     Align = alBottom
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
     Font.Name = 'Tahoma'
     Font.Style = []
+    OwnerDraw = True
     ParentFont = False
     TabOrder = 0
+    OnDrawTab = PageControlDrawTab
     ExplicitTop = 105
     ExplicitWidth = 451
-    object InformationTab: TTabSheet
-      Caption = 'Ma'#8217'lumot'
+    object ParametersTab: TTabSheet
+      Caption = '  Parametrlar  '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -85,54 +87,60 @@ object SpectrumFrame: TSpectrumFrame
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 1148
+        Width = 1142
         Height = 171
         Align = alClient
         BevelOuter = bvNone
         ParentBackground = False
         TabOrder = 0
         ExplicitWidth = 443
-        object Label7: TLabel
+        object IntensityLabel: TLabel
           Left = 26
           Top = 84
           Width = 82
           Height = 13
+          Alignment = taRightJustify
           Caption = 'Intensivlik (CPS):'
         end
-        object Label3: TLabel
-          Left = 5
+        object RealTimeLabel: TLabel
+          Left = 12
           Top = 34
-          Width = 103
+          Width = 96
           Height = 13
-          Caption = 'O'#8216'lchash vaqti (Real):'
+          Alignment = taRightJustify
+          Caption = 'Haqiqiy vaqt (Real):'
         end
-        object Label4: TLabel
+        object TotalCountLabel: TLabel
           Left = 17
           Top = 59
           Width = 91
           Height = 13
+          Alignment = taRightJustify
           Caption = 'Jami impulslar soni:'
         end
-        object Label5: TLabel
+        object SampleVolumeLabel: TLabel
           Left = 238
           Top = 34
           Width = 71
           Height = 13
+          Alignment = taRightJustify
           Caption = 'Namuna hajmi:'
         end
-        object Label6: TLabel
+        object SampleMassLabel: TLabel
           Left = 226
           Top = 9
           Width = 83
           Height = 13
+          Alignment = taRightJustify
           Caption = 'Namuna massasi:'
         end
-        object Label2: TLabel
-          Left = 7
+        object LiveTimeLabel: TLabel
+          Left = 15
           Top = 9
-          Width = 101
+          Width = 93
           Height = 13
-          Caption = 'O'#8216'lchash vaqti (Live):'
+          Alignment = taRightJustify
+          Caption = 'Foydali vaqt (Live):'
         end
         object SampleMassUnitBox: TComboBox
           Left = 397
@@ -182,7 +190,7 @@ object SpectrumFrame: TSpectrumFrame
             'ml'
             'm^3')
         end
-        object GroupBox1: TGroupBox
+        object EnCalGroupBox: TGroupBox
           Left = 492
           Top = 6
           Width = 260
@@ -190,102 +198,112 @@ object SpectrumFrame: TSpectrumFrame
           Caption = ' Energiya bo'#8216'yicha kalibrovka '
           TabOrder = 4
           TabStop = True
-          object Label1: TLabel
-            Left = 8
+          object PointsLabel: TLabel
+            Left = 10
             Top = 22
             Width = 67
             Height = 13
             Caption = 'Nuqtalar soni:'
           end
           object Chan1Label: TLabel
-            Left = 8
+            Left = 5
             Top = 48
-            Width = 39
+            Width = 52
             Height = 13
-            Caption = 'Kanal 1:'
+            Alignment = taRightJustify
+            Caption = 'Channel 1:'
           end
           object Chan2Label: TLabel
-            Left = 8
+            Left = 18
             Top = 71
             Width = 39
             Height = 13
+            Alignment = taRightJustify
             Caption = 'Kanal 2:'
           end
           object Chan3Label: TLabel
-            Left = 8
+            Left = 18
             Top = 93
             Width = 39
             Height = 13
+            Alignment = taRightJustify
             Caption = 'Kanal 3:'
             Enabled = False
           end
           object Chan4Label: TLabel
-            Left = 8
+            Left = 18
             Top = 115
             Width = 39
             Height = 13
+            Alignment = taRightJustify
             Caption = 'Kanal 4:'
             Enabled = False
           end
           object Chan5Label: TLabel
-            Left = 8
+            Left = 18
             Top = 138
             Width = 39
             Height = 13
+            Alignment = taRightJustify
             Caption = 'Kanal 5:'
             Enabled = False
           end
           object Energy1Label: TLabel
-            Left = 132
+            Left = 143
             Top = 48
-            Width = 55
+            Width = 47
             Height = 13
-            Caption = 'Energiya 1:'
+            Alignment = taRightJustify
+            Caption = 'Energy 1:'
           end
           object Energy2Label: TLabel
-            Left = 132
+            Left = 135
             Top = 71
             Width = 55
             Height = 13
+            Alignment = taRightJustify
             Caption = 'Energiya 2:'
           end
           object Energy3Label: TLabel
-            Left = 132
+            Left = 135
             Top = 93
             Width = 55
             Height = 13
+            Alignment = taRightJustify
             Caption = 'Energiya 3:'
             Enabled = False
           end
           object Energy4Label: TLabel
-            Left = 132
+            Left = 135
             Top = 115
             Width = 55
             Height = 13
+            Alignment = taRightJustify
             Caption = 'Energiya 4:'
             Enabled = False
           end
           object Energy5Label: TLabel
-            Left = 132
+            Left = 135
             Top = 138
             Width = 55
             Height = 13
+            Alignment = taRightJustify
             Caption = 'Energiya 5:'
             Enabled = False
           end
           object Energy1Edit: TEdit
             Left = 193
             Top = 45
-            Width = 60
+            Width = 52
             Height = 21
             TabOrder = 2
             OnChange = OnDataChange
             OnKeyPress = OnFValueEditKeyPress
           end
           object Channel1Edit: TEdit
-            Left = 53
+            Left = 60
             Top = 45
-            Width = 60
+            Width = 52
             Height = 21
             TabOrder = 1
             OnChange = OnDataChange
@@ -294,16 +312,16 @@ object SpectrumFrame: TSpectrumFrame
           object Energy2Edit: TEdit
             Left = 193
             Top = 68
-            Width = 60
+            Width = 52
             Height = 21
             TabOrder = 4
             OnChange = OnDataChange
             OnKeyPress = OnFValueEditKeyPress
           end
           object Channel2Edit: TEdit
-            Left = 53
+            Left = 60
             Top = 68
-            Width = 60
+            Width = 52
             Height = 21
             TabOrder = 3
             OnChange = OnDataChange
@@ -312,7 +330,7 @@ object SpectrumFrame: TSpectrumFrame
           object Energy4Edit: TEdit
             Left = 193
             Top = 112
-            Width = 60
+            Width = 52
             Height = 21
             Enabled = False
             TabOrder = 8
@@ -320,9 +338,9 @@ object SpectrumFrame: TSpectrumFrame
             OnKeyPress = OnFValueEditKeyPress
           end
           object Channel4Edit: TEdit
-            Left = 53
+            Left = 60
             Top = 112
-            Width = 60
+            Width = 52
             Height = 21
             Enabled = False
             TabOrder = 7
@@ -332,7 +350,7 @@ object SpectrumFrame: TSpectrumFrame
           object Energy3Edit: TEdit
             Left = 193
             Top = 90
-            Width = 60
+            Width = 52
             Height = 21
             Enabled = False
             TabOrder = 6
@@ -340,9 +358,9 @@ object SpectrumFrame: TSpectrumFrame
             OnKeyPress = OnFValueEditKeyPress
           end
           object Channel3Edit: TEdit
-            Left = 53
+            Left = 60
             Top = 90
-            Width = 60
+            Width = 52
             Height = 21
             Enabled = False
             TabOrder = 5
@@ -352,7 +370,7 @@ object SpectrumFrame: TSpectrumFrame
           object Energy5Edit: TEdit
             Left = 193
             Top = 135
-            Width = 60
+            Width = 52
             Height = 21
             Enabled = False
             TabOrder = 10
@@ -360,9 +378,9 @@ object SpectrumFrame: TSpectrumFrame
             OnKeyPress = OnFValueEditKeyPress
           end
           object Channel5Edit: TEdit
-            Left = 53
+            Left = 60
             Top = 135
-            Width = 60
+            Width = 52
             Height = 21
             Enabled = False
             TabOrder = 9
@@ -370,7 +388,7 @@ object SpectrumFrame: TSpectrumFrame
             OnKeyPress = OnFValueEditKeyPress
           end
           object PointsBox: TComboBox
-            Left = 80
+            Left = 82
             Top = 19
             Width = 51
             Height = 21
@@ -474,7 +492,7 @@ object SpectrumFrame: TSpectrumFrame
       end
     end
     object RawDataTab: TTabSheet
-      Caption = 'Impulslar soni'
+      Caption = '  Spektr ma'#39'lumotlari  '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -482,27 +500,167 @@ object SpectrumFrame: TSpectrumFrame
       Font.Style = []
       ImageIndex = 1
       ParentFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object RawDataTable: TStringGrid
         Left = 0
         Top = 0
         Width = 321
         Height = 171
         Align = alLeft
+        Color = clBtnFace
         ColCount = 3
         DefaultColWidth = 90
         DefaultRowHeight = 22
+        DoubleBuffered = True
         FixedCols = 0
         RowCount = 1025
-        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goRangeSelect, goColSizing]
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goRangeSelect, goDrawFocusSelected, goColSizing]
+        ParentDoubleBuffered = False
         TabOrder = 0
+        OnKeyDown = RawDataTableKeyDown
+        OnMouseDown = RawDataTableMouseDown
+        OnMouseUp = RawDataTableMouseUp
+      end
+    end
+    object PeakInfoTab: TTabSheet
+      Caption = '  Fotocho'#8216'qqi  '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ImageIndex = 2
+      ParentFont = False
+      OnShow = PeakInfoTabShow
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
+      object Panel2: TPanel
+        Left = 0
+        Top = 0
+        Width = 1045
+        Height = 171
+        Align = alClient
+        BevelOuter = bvNone
+        ParentBackground = False
+        TabOrder = 0
+        object EnergyLabel: TLabel
+          Left = 87
+          Top = 6
+          Width = 50
+          Height = 14
+          Alignment = taRightJustify
+          Caption = 'Energiya:'
+        end
+        object EnergyValueLabel: TLabel
+          Left = 141
+          Top = 4
+          Width = 25
+          Height = 18
+          Caption = '0.0'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object NucleusNameLabel: TLabel
+          Left = 141
+          Top = 31
+          Width = 27
+          Height = 18
+          Caption = 'X-Y'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object NucleusLabel: TLabel
+          Left = 38
+          Top = 33
+          Width = 99
+          Height = 14
+          Alignment = taRightJustify
+          Caption = 'Bosh / Ona yadro:'
+        end
+        object EmitterLabel: TLabel
+          Left = 29
+          Top = 61
+          Width = 109
+          Height = 14
+          Alignment = taRightJustify
+          Caption = #947'-nurlanuvchi yadro:'
+        end
+        object EmitterNameLabel: TLabel
+          Left = 141
+          Top = 59
+          Width = 27
+          Height = 18
+          Caption = 'X-Y'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object SeriesNameLabel: TLabel
+          Left = 141
+          Top = 115
+          Width = 10
+          Height = 18
+          Caption = 'X'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object SeriesLabel: TLabel
+          Left = 46
+          Top = 117
+          Width = 91
+          Height = 14
+          Alignment = taRightJustify
+          Caption = 'Radioaktiv qator:'
+        end
+        object GammaYieldLabel: TLabel
+          Left = 12
+          Top = 89
+          Width = 126
+          Height = 14
+          Alignment = taRightJustify
+          Caption = #947'-nurlanish ehtimoliyati:'
+        end
+        object GammaYieldValueLabel: TLabel
+          Left = 141
+          Top = 87
+          Width = 25
+          Height = 18
+          Caption = '0.0'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
       end
     end
   end
   object SpectrumPanel: TPanel
     Left = 0
     Top = 0
-    Width = 1156
-    Height = 396
+    Width = 1150
+    Height = 399
     Align = alClient
     BevelOuter = bvNone
     Font.Charset = DEFAULT_CHARSET
@@ -519,8 +677,8 @@ object SpectrumFrame: TSpectrumFrame
       Tag = -1
       Left = 0
       Top = 0
-      Width = 1156
-      Height = 377
+      Width = 1150
+      Height = 380
       AllowPanning = pmNone
       Border.Visible = True
       BottomWall.Visible = False
@@ -538,6 +696,8 @@ object SpectrumFrame: TSpectrumFrame
       SubTitle.Visible = False
       Title.Font.Height = -12
       Title.Font.Style = [fsBold]
+      Title.Text.Strings = (
+        'TChart')
       Title.Visible = False
       BottomAxis.Axis.Width = 1
       BottomAxis.Increment = 100.000000000000000000
@@ -606,8 +766,8 @@ object SpectrumFrame: TSpectrumFrame
     end
     object StatusBar: TStatusBar
       Left = 0
-      Top = 377
-      Width = 1156
+      Top = 380
+      Width = 1150
       Height = 19
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -629,6 +789,17 @@ object SpectrumFrame: TSpectrumFrame
         end>
       SizeGrip = False
       UseSystemFont = False
+      ExplicitTop = 78
+      ExplicitWidth = 451
+    end
+  end
+  object TablePopupMenu: TPopupMenu
+    Left = 960
+    Top = 296
+    object CopyMI: TMenuItem
+      Caption = 'Nusxa olish'
+      ShortCut = 16451
+      OnClick = CopyMIClick
     end
   end
 end

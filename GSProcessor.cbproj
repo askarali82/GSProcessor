@@ -144,11 +144,15 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <LinkPackageStatics>rtl.lib;vcl.lib;Tee.lib;vclimg.lib</LinkPackageStatics>
         <VerInfo_Locale>1091</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=;FileDescription=Gamma spektrlarni tahlil qilish;FileVersion=4.0.0.0;InternalName=$(MSBuildProjectName);LegalCopyright=Yadro Fizikasi Laboratoriyasi, Samarqand Davlat Universiteti;LegalTrademarks=;OriginalFilename=$(MSBuildProjectName).exe;ProgramID=;ProductName=$(MSBuildProjectName);ProductVersion=4.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=Gamma spektrlarni tahlil qilish;FileVersion=4.1.0.0;InternalName=$(MSBuildProjectName);LegalCopyright=Samarqand Davlat Universiteti, Asqarali Azimov;LegalTrademarks=;OriginalFilename=$(MSBuildProjectName).exe;ProgramID=;ProductName=$(MSBuildProjectName);ProductVersion=4.1.0.0;Comments=</VerInfo_Keys>
         <VerInfo_MajorVer>4</VerInfo_MajorVer>
         <FinalOutputDir>.\bin</FinalOutputDir>
         <IntermediateOutputDir>.\GSPTemp</IntermediateOutputDir>
-        <PostBuildEvent><![CDATA[cmd.exe C:\Data\Projects\GSProcessor\bin\CopyFiles.bat]]></PostBuildEvent>
+        <PostBuildEvent><![CDATA[copy /Y "$(PROJECTDIR)\bin\GSProcessor.exe" "$(PROJECTDIR)\bin\Deploy\GSProcessor.exe"
+copy /Y "$(PROJECTDIR)\bin\peaks.dll" "$(PROJECTDIR)\bin\Deploy\peaks.dll"
+copy /Y "$(PROJECTDIR)\bin\nuclide.dat" "$(PROJECTDIR)\bin\Deploy\nuclide.dat"]]></PostBuildEvent>
+        <Icon_MainIcon>Images\Logo-36x36.ico</Icon_MainIcon>
+        <VerInfo_MinorVer>1</VerInfo_MinorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -188,9 +192,6 @@
             <DependentOn>Common.h</DependentOn>
             <BuildOrder>6</BuildOrder>
         </CppCompile>
-        <None Include="FSAWrapper.h">
-            <BuildOrder>9</BuildOrder>
-        </None>
         <CppCompile Include="GSProcessor.cpp">
             <BuildOrder>0</BuildOrder>
         </CppCompile>
@@ -203,6 +204,10 @@
             <FormType>dfm</FormType>
             <DependentOn>MainFormU.h</DependentOn>
             <BuildOrder>11</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="NuclideLibU.cpp">
+            <DependentOn>NuclideLibU.h</DependentOn>
+            <BuildOrder>13</BuildOrder>
         </CppCompile>
         <CppCompile Include="SettingsFormU.cpp">
             <Form>SettingsForm</Form>
@@ -828,7 +833,7 @@
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>cmd.exe C:\Data\Projects\GSProcessor\bin\CopyFiles.bat</PostBuildEvent>
+        <PostBuildEvent>copy /Y &quot;$(PROJECTDIR)\bin\GSProcessor.exe&quot; &quot;$(PROJECTDIR)\bin\Deploy\GSProcessor.exe&quot;&amp;&amp;copy /Y &quot;$(PROJECTDIR)\bin\peaks.dll&quot; &quot;$(PROJECTDIR)\bin\Deploy\peaks.dll&quot;&amp;&amp;copy /Y &quot;$(PROJECTDIR)\bin\nuclide.dat&quot; &quot;$(PROJECTDIR)\bin\Deploy\nuclide.dat&quot;</PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>

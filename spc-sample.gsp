@@ -1,6 +1,7 @@
 [Exposition]
 ;seconds
 Live=21593.037
+Real=21600
 
 [Sample]
 Weight=1290
