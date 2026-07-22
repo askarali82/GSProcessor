@@ -93,7 +93,7 @@ object SettingsForm: TSettingsForm
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = '&Saqlash'
-    TabOrder = 0
+    TabOrder = 1
     OnClick = SaveButtonClick
   end
   object CloseButton: TButton
@@ -105,7 +105,7 @@ object SettingsForm: TSettingsForm
     Cancel = True
     Caption = '&Yopish'
     ModalResult = 8
-    TabOrder = 1
+    TabOrder = 2
   end
   object ScrollBox: TScrollBox
     Left = 0
@@ -124,7 +124,8 @@ object SettingsForm: TSettingsForm
     BevelOuter = bvNone
     DoubleBuffered = True
     ParentDoubleBuffered = False
-    TabOrder = 2
+    TabOrder = 0
+    TabStop = True
     OnMouseWheel = ScrollBoxMouseWheel
     object ImageCorrect: TImage
       Left = 793
@@ -671,7 +672,7 @@ object SettingsForm: TSettingsForm
       Top = 832
       Width = 58
       Height = 21
-      TabOrder = 4
+      TabOrder = 92
       Text = '430'
     end
     object BeEnergy2Edit: TEdit
@@ -679,7 +680,7 @@ object SettingsForm: TSettingsForm
       Top = 832
       Width = 58
       Height = 21
-      TabOrder = 5
+      TabOrder = 93
       Text = '525'
     end
     object Bkg1Button: TButton
@@ -688,7 +689,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 6
+      TabOrder = 29
       OnClick = BrowseButtonClick
     end
     object Bkg1FileName: TEdit
@@ -696,7 +697,7 @@ object SettingsForm: TSettingsForm
       Top = 213
       Width = 284
       Height = 21
-      TabOrder = 7
+      TabOrder = 28
       OnChange = FileNameChange
     end
     object Bkg2Button: TButton
@@ -705,7 +706,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 8
+      TabOrder = 55
       OnClick = BrowseButtonClick
     end
     object Bkg2FileName: TEdit
@@ -713,7 +714,7 @@ object SettingsForm: TSettingsForm
       Top = 387
       Width = 284
       Height = 21
-      TabOrder = 9
+      TabOrder = 54
       OnChange = FileNameChange
     end
     object Bkg3Button: TButton
@@ -722,7 +723,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 10
+      TabOrder = 81
       OnClick = BrowseButtonClick
     end
     object Bkg3FileName: TEdit
@@ -730,7 +731,7 @@ object SettingsForm: TSettingsForm
       Top = 561
       Width = 284
       Height = 21
-      TabOrder = 11
+      TabOrder = 80
       OnChange = FileNameChange
     end
     object Cs1ActivityEdit: TEdit
@@ -738,7 +739,7 @@ object SettingsForm: TSettingsForm
       Top = 191
       Width = 58
       Height = 21
-      TabOrder = 12
+      TabOrder = 22
     end
     object Cs1Button: TButton
       Left = 843
@@ -746,7 +747,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 13
+      TabOrder = 27
       OnClick = BrowseButtonClick
     end
     object Cs1Date: TDateTimePicker
@@ -756,21 +757,21 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.380861782410647700
-      TabOrder = 14
+      TabOrder = 24
     end
     object Cs1ErrorEdit: TEdit
       Left = 197
       Top = 191
       Width = 34
       Height = 21
-      TabOrder = 15
+      TabOrder = 23
     end
     object Cs1FileName: TEdit
       Left = 557
       Top = 189
       Width = 284
       Height = 21
-      TabOrder = 16
+      TabOrder = 26
       OnChange = FileNameChange
     end
     object Cs1MesDate: TDateTimePicker
@@ -780,14 +781,14 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 17
+      TabOrder = 25
     end
     object Cs2ActivityEdit: TEdit
       Left = 135
       Top = 365
       Width = 58
       Height = 21
-      TabOrder = 18
+      TabOrder = 48
     end
     object Cs2Button: TButton
       Left = 843
@@ -795,7 +796,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 19
+      TabOrder = 53
       OnClick = BrowseButtonClick
     end
     object Cs2Date: TDateTimePicker
@@ -805,21 +806,21 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418708159719244600
-      TabOrder = 20
+      TabOrder = 50
     end
     object Cs2ErrorEdit: TEdit
       Left = 197
       Top = 365
       Width = 34
       Height = 21
-      TabOrder = 21
+      TabOrder = 49
     end
     object Cs2FileName: TEdit
       Left = 557
       Top = 363
       Width = 284
       Height = 21
-      TabOrder = 22
+      TabOrder = 52
       OnChange = FileNameChange
     end
     object Cs2MesDate: TDateTimePicker
@@ -829,14 +830,14 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 23
+      TabOrder = 51
     end
     object Cs3ActivityEdit: TEdit
       Left = 135
       Top = 539
       Width = 58
       Height = 21
-      TabOrder = 24
+      TabOrder = 74
     end
     object Cs3Button: TButton
       Left = 843
@@ -844,7 +845,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 25
+      TabOrder = 79
       OnClick = BrowseButtonClick
     end
     object Cs3Date: TDateTimePicker
@@ -854,21 +855,21 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418708784724003600
-      TabOrder = 26
+      TabOrder = 76
     end
     object Cs3ErrorEdit: TEdit
       Left = 197
       Top = 539
       Width = 34
       Height = 21
-      TabOrder = 27
+      TabOrder = 75
     end
     object Cs3FileName: TEdit
       Left = 557
       Top = 537
       Width = 284
       Height = 21
-      TabOrder = 28
+      TabOrder = 78
       OnChange = FileNameChange
     end
     object Cs3MesDate: TDateTimePicker
@@ -878,14 +879,14 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 29
+      TabOrder = 77
     end
     object CsEnergy1Edit: TEdit
       Left = 135
       Top = 808
       Width = 58
       Height = 21
-      TabOrder = 30
+      TabOrder = 90
       Text = '612'
     end
     object CsEnergy2Edit: TEdit
@@ -893,7 +894,7 @@ object SettingsForm: TSettingsForm
       Top = 784
       Width = 58
       Height = 21
-      TabOrder = 31
+      TabOrder = 89
       Text = '709'
     end
     object K1ActivityEdit: TEdit
@@ -901,7 +902,7 @@ object SettingsForm: TSettingsForm
       Top = 167
       Width = 58
       Height = 21
-      TabOrder = 32
+      TabOrder = 16
     end
     object K1Button: TButton
       Left = 843
@@ -909,7 +910,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 33
+      TabOrder = 21
       OnClick = BrowseButtonClick
     end
     object K1Date: TDateTimePicker
@@ -919,21 +920,21 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.380587037034274500
-      TabOrder = 34
+      TabOrder = 18
     end
     object K1ErrorEdit: TEdit
       Left = 197
       Top = 167
       Width = 34
       Height = 21
-      TabOrder = 35
+      TabOrder = 17
     end
     object K1FileName: TEdit
       Left = 557
       Top = 165
       Width = 284
       Height = 21
-      TabOrder = 36
+      TabOrder = 20
       OnChange = FileNameChange
     end
     object K1MesDate: TDateTimePicker
@@ -943,14 +944,14 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 37
+      TabOrder = 19
     end
     object K2ActivityEdit: TEdit
       Left = 135
       Top = 341
       Width = 58
       Height = 21
-      TabOrder = 38
+      TabOrder = 42
     end
     object K2Button: TButton
       Left = 843
@@ -958,7 +959,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 39
+      TabOrder = 47
       OnClick = BrowseButtonClick
     end
     object K2Date: TDateTimePicker
@@ -968,21 +969,21 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418708240744308600
-      TabOrder = 40
+      TabOrder = 44
     end
     object K2ErrorEdit: TEdit
       Left = 197
       Top = 341
       Width = 34
       Height = 21
-      TabOrder = 41
+      TabOrder = 43
     end
     object K2FileName: TEdit
       Left = 557
       Top = 339
       Width = 284
       Height = 21
-      TabOrder = 42
+      TabOrder = 46
       OnChange = FileNameChange
     end
     object K2MesDate: TDateTimePicker
@@ -992,14 +993,14 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 43
+      TabOrder = 45
     end
     object K3ActivityEdit: TEdit
       Left = 135
       Top = 515
       Width = 58
       Height = 21
-      TabOrder = 44
+      TabOrder = 68
     end
     object K3Button: TButton
       Left = 843
@@ -1007,7 +1008,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 45
+      TabOrder = 73
       OnClick = BrowseButtonClick
     end
     object K3Date: TDateTimePicker
@@ -1017,21 +1018,21 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418708680554118500
-      TabOrder = 46
+      TabOrder = 70
     end
     object K3ErrorEdit: TEdit
       Left = 197
       Top = 515
       Width = 34
       Height = 21
-      TabOrder = 47
+      TabOrder = 69
     end
     object K3FileName: TEdit
       Left = 557
       Top = 513
       Width = 284
       Height = 21
-      TabOrder = 48
+      TabOrder = 72
       OnChange = FileNameChange
     end
     object K3MesDate: TDateTimePicker
@@ -1041,14 +1042,14 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 49
+      TabOrder = 71
     end
     object KEnergy1Edit: TEdit
       Left = 135
       Top = 784
       Width = 58
       Height = 21
-      TabOrder = 50
+      TabOrder = 88
       Text = '1385'
     end
     object KEnergy2Edit: TEdit
@@ -1056,7 +1057,7 @@ object SettingsForm: TSettingsForm
       Top = 808
       Width = 58
       Height = 21
-      TabOrder = 51
+      TabOrder = 91
       Text = '1540'
     end
     object Ra1ActivityEdit: TEdit
@@ -1064,7 +1065,7 @@ object SettingsForm: TSettingsForm
       Top = 143
       Width = 58
       Height = 21
-      TabOrder = 52
+      TabOrder = 10
     end
     object Ra1Button: TButton
       Left = 843
@@ -1072,7 +1073,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 53
+      TabOrder = 15
       OnClick = BrowseButtonClick
     end
     object Ra1Date: TDateTimePicker
@@ -1082,21 +1083,21 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.380290173612593200
-      TabOrder = 54
+      TabOrder = 12
     end
     object Ra1ErrorEdit: TEdit
       Left = 197
       Top = 143
       Width = 34
       Height = 21
-      TabOrder = 55
+      TabOrder = 11
     end
     object Ra1FileName: TEdit
       Left = 557
       Top = 141
       Width = 284
       Height = 21
-      TabOrder = 56
+      TabOrder = 14
       OnChange = FileNameChange
     end
     object Ra1MesDate: TDateTimePicker
@@ -1106,14 +1107,14 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 57
+      TabOrder = 13
     end
     object Ra2ActivityEdit: TEdit
       Left = 135
       Top = 317
       Width = 58
       Height = 21
-      TabOrder = 58
+      TabOrder = 36
     end
     object Ra2Button: TButton
       Left = 843
@@ -1121,7 +1122,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 59
+      TabOrder = 41
       OnClick = BrowseButtonClick
     end
     object Ra2Date: TDateTimePicker
@@ -1131,21 +1132,21 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418708333330869200
-      TabOrder = 60
+      TabOrder = 38
     end
     object Ra2ErrorEdit: TEdit
       Left = 197
       Top = 317
       Width = 34
       Height = 21
-      TabOrder = 61
+      TabOrder = 37
     end
     object Ra2FileName: TEdit
       Left = 557
       Top = 315
       Width = 284
       Height = 21
-      TabOrder = 62
+      TabOrder = 40
       OnChange = FileNameChange
     end
     object Ra2MesDate: TDateTimePicker
@@ -1155,14 +1156,14 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 63
+      TabOrder = 39
     end
     object Ra3ActivityEdit: TEdit
       Left = 135
       Top = 491
       Width = 58
       Height = 21
-      TabOrder = 64
+      TabOrder = 62
     end
     object Ra3Button: TButton
       Left = 843
@@ -1170,7 +1171,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 65
+      TabOrder = 67
       OnClick = BrowseButtonClick
     end
     object Ra3Date: TDateTimePicker
@@ -1180,21 +1181,21 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418708599536330400
-      TabOrder = 66
+      TabOrder = 64
     end
     object Ra3ErrorEdit: TEdit
       Left = 197
       Top = 491
       Width = 34
       Height = 21
-      TabOrder = 67
+      TabOrder = 63
     end
     object Ra3FileName: TEdit
       Left = 557
       Top = 489
       Width = 284
       Height = 21
-      TabOrder = 68
+      TabOrder = 66
       OnChange = FileNameChange
     end
     object Ra3MesDate: TDateTimePicker
@@ -1204,14 +1205,14 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 69
+      TabOrder = 65
     end
     object RaEnergy1Edit: TEdit
       Left = 135
       Top = 760
       Width = 58
       Height = 21
-      TabOrder = 70
+      TabOrder = 86
       Text = '1677'
     end
     object RaEnergy2Edit: TEdit
@@ -1219,7 +1220,7 @@ object SettingsForm: TSettingsForm
       Top = 760
       Width = 58
       Height = 21
-      TabOrder = 71
+      TabOrder = 87
       Text = '1846'
     end
     object Th1ActivityEdit: TEdit
@@ -1227,7 +1228,7 @@ object SettingsForm: TSettingsForm
       Top = 119
       Width = 58
       Height = 21
-      TabOrder = 72
+      TabOrder = 4
     end
     object Th1Button: TButton
       Left = 843
@@ -1235,7 +1236,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 73
+      TabOrder = 9
       OnClick = BrowseButtonClick
     end
     object Th1Date: TDateTimePicker
@@ -1245,21 +1246,21 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 74
+      TabOrder = 6
     end
     object Th1ErrorEdit: TEdit
       Left = 197
       Top = 119
       Width = 34
       Height = 21
-      TabOrder = 75
+      TabOrder = 5
     end
     object Th1FileName: TEdit
       Left = 557
       Top = 117
       Width = 284
       Height = 21
-      TabOrder = 76
+      TabOrder = 8
       OnChange = FileNameChange
     end
     object Th1MesDate: TDateTimePicker
@@ -1269,14 +1270,14 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 77
+      TabOrder = 7
     end
     object Th2ActivityEdit: TEdit
       Left = 135
       Top = 293
       Width = 58
       Height = 21
-      TabOrder = 78
+      TabOrder = 30
     end
     object Th2Button: TButton
       Left = 843
@@ -1284,7 +1285,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 79
+      TabOrder = 35
       OnClick = BrowseButtonClick
     end
     object Th2Date: TDateTimePicker
@@ -1294,21 +1295,21 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418708414348657200
-      TabOrder = 80
+      TabOrder = 32
     end
     object Th2ErrorEdit: TEdit
       Left = 197
       Top = 293
       Width = 34
       Height = 21
-      TabOrder = 81
+      TabOrder = 31
     end
     object Th2FileName: TEdit
       Left = 557
       Top = 291
       Width = 284
       Height = 21
-      TabOrder = 82
+      TabOrder = 34
       OnChange = FileNameChange
     end
     object Th2MesDate: TDateTimePicker
@@ -1318,14 +1319,14 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 83
+      TabOrder = 33
     end
     object Th3ActivityEdit: TEdit
       Left = 135
       Top = 467
       Width = 58
       Height = 21
-      TabOrder = 84
+      TabOrder = 56
     end
     object Th3Button: TButton
       Left = 843
@@ -1333,7 +1334,7 @@ object SettingsForm: TSettingsForm
       Width = 26
       Height = 25
       Caption = '...'
-      TabOrder = 85
+      TabOrder = 61
       OnClick = BrowseButtonClick
     end
     object Th3Date: TDateTimePicker
@@ -1343,21 +1344,21 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418708518518542400
-      TabOrder = 86
+      TabOrder = 58
     end
     object Th3ErrorEdit: TEdit
       Left = 197
       Top = 467
       Width = 34
       Height = 21
-      TabOrder = 87
+      TabOrder = 57
     end
     object Th3FileName: TEdit
       Left = 557
       Top = 465
       Width = 284
       Height = 21
-      TabOrder = 88
+      TabOrder = 60
       OnChange = FileNameChange
     end
     object Th3MesDate: TDateTimePicker
@@ -1367,14 +1368,14 @@ object SettingsForm: TSettingsForm
       Height = 21
       Date = 45742.000000000000000000
       Time = 0.418707719909434700
-      TabOrder = 89
+      TabOrder = 59
     end
     object ThEnergy1Edit: TEdit
       Left = 135
       Top = 736
       Width = 58
       Height = 21
-      TabOrder = 90
+      TabOrder = 84
       Text = '2500'
     end
     object ThEnergy2Edit: TEdit
@@ -1382,7 +1383,7 @@ object SettingsForm: TSettingsForm
       Top = 736
       Width = 58
       Height = 21
-      TabOrder = 91
+      TabOrder = 85
       Text = '2720'
     end
     object ShowResultsWithMDA: TCheckBox
@@ -1393,7 +1394,7 @@ object SettingsForm: TSettingsForm
       Caption = 'Natijalarni <AMA ko'#8216'rinishida yoz'
       Checked = True
       State = cbChecked
-      TabOrder = 92
+      TabOrder = 95
     end
     object Be7PhotopeakEffEdit: TLabeledEdit
       Left = 225
@@ -1408,7 +1409,7 @@ object SettingsForm: TSettingsForm
       LabelSpacing = 5
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 93
+      TabOrder = 82
       TextHint = 'Mas: 4.1; 3.5; 3'
     end
     object Be7SystematicErrorEdit: TLabeledEdit
@@ -1423,7 +1424,7 @@ object SettingsForm: TSettingsForm
       LabelSpacing = 29
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 94
+      TabOrder = 83
     end
     object Point1FWHMEdit: TLabeledEdit
       Left = 174
@@ -1437,7 +1438,7 @@ object SettingsForm: TSettingsForm
       LabelSpacing = 23
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 96
+      TabOrder = 97
     end
     object Point1EnergyEdit: TLabeledEdit
       Left = 174
@@ -1451,7 +1452,7 @@ object SettingsForm: TSettingsForm
       LabelSpacing = 5
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 95
+      TabOrder = 96
     end
     object Point2EnergyEdit: TLabeledEdit
       Left = 174
@@ -1465,7 +1466,7 @@ object SettingsForm: TSettingsForm
       LabelSpacing = 5
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 97
+      TabOrder = 98
     end
     object Point2FWHMEdit: TLabeledEdit
       Left = 174
@@ -1479,7 +1480,7 @@ object SettingsForm: TSettingsForm
       LabelSpacing = 23
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 98
+      TabOrder = 99
     end
     object DetectorSelector: TComboBox
       Left = 153
@@ -1538,7 +1539,7 @@ object SettingsForm: TSettingsForm
       Height = 21
       Style = csDropDownList
       ItemIndex = 0
-      TabOrder = 99
+      TabOrder = 94
       Text = 'O'#8216'zbekcha (Uzbek)'
       Items.Strings = (
         'O'#8216'zbekcha (Uzbek)'
