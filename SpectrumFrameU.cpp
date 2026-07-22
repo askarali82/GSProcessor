@@ -741,7 +741,7 @@ void TSpectrumFrame::ChangeUILanguage()
     }
     else if (__LangID == 1)
     {
-        SpcChart->LeftAxis->Title->Caption = L"Counts per Channel:";
+        SpcChart->LeftAxis->Title->Caption = L"Counts per channel";
         SpcChart->BottomAxis->Title->Caption = L"Energy, keV";
 
         ParametersTab->Caption = L"  Parameters  ";

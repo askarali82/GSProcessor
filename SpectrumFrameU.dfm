@@ -1,16 +1,14 @@
 object SpectrumFrame: TSpectrumFrame
   Left = 0
   Top = 0
-  Width = 1150
-  Height = 607
+  Width = 451
+  Height = 305
   Align = alClient
   TabOrder = 0
-  ExplicitWidth = 451
-  ExplicitHeight = 305
   object Splitter: TSplitter
     Left = 0
-    Top = 399
-    Width = 1150
+    Top = 97
+    Width = 451
     Height = 8
     Cursor = crVSplit
     Align = alBottom
@@ -59,8 +57,8 @@ object SpectrumFrame: TSpectrumFrame
   end
   object PageControl: TPageControl
     Left = 0
-    Top = 407
-    Width = 1150
+    Top = 105
+    Width = 451
     Height = 200
     ActivePage = ParametersTab
     Align = alBottom
@@ -73,8 +71,6 @@ object SpectrumFrame: TSpectrumFrame
     ParentFont = False
     TabOrder = 0
     OnDrawTab = PageControlDrawTab
-    ExplicitTop = 105
-    ExplicitWidth = 451
     object ParametersTab: TTabSheet
       Caption = '  Parametrlar  '
       Font.Charset = DEFAULT_CHARSET
@@ -83,17 +79,18 @@ object SpectrumFrame: TSpectrumFrame
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      ExplicitWidth = 443
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitHeight = 0
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 1142
+        Width = 443
         Height = 171
         Align = alClient
         BevelOuter = bvNone
         ParentBackground = False
         TabOrder = 0
-        ExplicitWidth = 443
         object IntensityLabel: TLabel
           Left = 26
           Top = 84
@@ -659,8 +656,8 @@ object SpectrumFrame: TSpectrumFrame
   object SpectrumPanel: TPanel
     Left = 0
     Top = 0
-    Width = 1150
-    Height = 399
+    Width = 451
+    Height = 97
     Align = alClient
     BevelOuter = bvNone
     Font.Charset = DEFAULT_CHARSET
@@ -671,8 +668,6 @@ object SpectrumFrame: TSpectrumFrame
     ParentFont = False
     ShowCaption = False
     TabOrder = 1
-    ExplicitWidth = 451
-    ExplicitHeight = 97
     object SpcChart: TChart
       Tag = -1
       Left = 0
