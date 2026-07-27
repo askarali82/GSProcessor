@@ -34,6 +34,15 @@ This repository contains the source code for **GSProcessor**, developed primaril
 
 The main application can be built using **Embarcadero C++ Builder 10.3** (or a later compatible version) to produce the Windows executable.
 
-The software also includes a **peak-searching module** implemented as a separate **DLL** using **Microsoft Visual Studio** and the **ROOT** framework. To build this module from source, you will need a compatible version of **Microsoft Visual Studio** with the **ROOT** libraries properly installed and configured.
+The software also includes a **peak-searching module** implemented as a separate **DLL** using **Microsoft Visual Studio** and the **ROOT** framework (version 6.32.08.0). To build this module from source, you will need a compatible version of **Microsoft Visual Studio** with the **ROOT** libraries properly installed and configured.
 
 When building the complete project from source, compile both the main application and the peak-searching DLL, then place the generated DLL in the same directory as the GSProcessor executable.
+
+## Third-Party Licenses
+
+This software redistributes precompiled binaries from the **ROOT** framework (version 6.32.08.0), developed by CERN, licensed under the **GNU Lesser General Public License v2.1 (LGPL-2.1)**.
+
+- ROOT source and license: https://github.com/root-project/root
+- Full LGPL v2.1 text: https://github.com/root-project/root/blob/master/LGPL2_1.txt
+
+Note: ROOT's precompiled binary distributions may include some components under licenses other than LGPL; see the ROOT repository for details.
