@@ -136,7 +136,7 @@ void TMainForm::CreateSettingsFile()
                 L"MaxEnergyError=0.2\r\n\r\n"
 
                 L"[UILanguage]\r\n"
-                L"LangID=0\r\n\r\n"
+                L"LangID=1\r\n\r\n"
 
                 L"[Others]\r\n"
                 L"ShowResultsWithMDA=1\r\n";
