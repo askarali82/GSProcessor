@@ -1,9 +1,8 @@
 #define ProductName     "GSProcessor"
 #define MainExeName     "GSProcessor.exe"
-#define ProjectDir      "C:\Data\Projects\GSProcessor"
 
 [Setup]
-SourceDir                = "{#ProjectDir}\bin\Deploy"
+SourceDir                = "{#SourcePath}\bin\Deploy"
 AppName                  = {#ProductName}
 AppVersion               = "4.1.0"      
 VersionInfoVersion       = "4.1.0.0"
@@ -15,9 +14,9 @@ DisableProgramGroupPage  = yes
 UninstallDisplayName     = "{#ProductName}"
 UninstallDisplayIcon     = "{app}\{#MainExeName}"
 VersionInfoDescription   = Gamma spectrum analysis
-SetupIconFile            = "{#ProjectDir}\Images\Logo-36x36.ico"
+SetupIconFile            = "{#SourcePath}\Images\Logo-36x36.ico"
 OutputBaseFilename       = "{#ProductName}Setup"
-WizardSmallImageFile     = "{#ProjectDir}\Images\Logo-48x48.bmp"
+WizardSmallImageFile     = "{#SourcePath}\Images\Logo-48x48.bmp"
 
 [Files]
 Source: "*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
