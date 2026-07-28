@@ -13,7 +13,7 @@
 //---------------------------------------------------------------------------
 __fastcall TSettingsForm::TSettingsForm(TComponent* Owner, TMemIniFile *AIniFile):
     TForm(Owner),
-    NEW_DETECTOR_NAME(L"YangiDetektor"),
+    DefaultDetectorName(L"YangiDetektor"),
     IniFile(AIniFile),
     ScrollBoxCanvas(new TControlCanvas())
 {
@@ -55,6 +55,10 @@ __fastcall TSettingsForm::TSettingsForm(TComponent* Owner, TMemIniFile *AIniFile
         LangID = 0;
     }
     ::LangID = LangID;
+    if (LangID == 1)
+    {
+        DefaultDetectorName = L"NewDetector";
+    }
     LanguageBox->ItemIndex = LangID;
     ShowResultsWithMDA->Checked =
         IniFile->ReadBool(L"Others", ShowResultsWithMDA->Name, ShowResultsWithMDA->Checked);
@@ -900,7 +904,7 @@ void __fastcall TSettingsForm::AddDetectorButtonClick(TObject *Sender)
         return;
     }
     DetectorEditor->Visible = true;
-    DetectorEditor->Text = NEW_DETECTOR_NAME;
+    DetectorEditor->Text = DefaultDetectorName;
     CloseButton->Cancel = false;
 
     Th1ActivityEdit->Text = L"";
@@ -1062,7 +1066,7 @@ void __fastcall TSettingsForm::DetectorEditorExit(TObject *Sender)
     DeleteDetectorButton->Enabled = true;
 
     const String &NewName = DetectorEditor->Text.Trim();
-    if (NewName.IsEmpty() || NewName == NEW_DETECTOR_NAME)
+    if (NewName.IsEmpty() || NewName == DefaultDetectorName)
     {
         return;
     }

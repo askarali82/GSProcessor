@@ -193,7 +193,7 @@ __published:
 
 
 private:
-    const String NEW_DETECTOR_NAME;
+    String DefaultDetectorName;
     TMemIniFile *IniFile;
     std::unique_ptr<TControlCanvas> ScrollBoxCanvas;
     System::Classes::TWndMethod OldScrollBoxProc;
