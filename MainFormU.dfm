@@ -178,6 +178,7 @@ object MainForm: TMainForm
     object DecompositionMethodAction: TAction
       Caption = 'Tarkibiy &qismlarga ajratish'
       OnExecute = DecompositionMethodActionExecute
+      OnUpdate = DecompositionMethodActionUpdate
     end
     object LinLogAction: TAction
       Caption = '&Chiziqli masshtab'

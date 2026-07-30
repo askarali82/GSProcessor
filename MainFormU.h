@@ -91,6 +91,7 @@ __published:	// IDE-managed Components
     void __fastcall BatchProcessing_FolderActionExecute(TObject *Sender);
     void __fastcall SettingsActionExecute(TObject *Sender);
     void __fastcall ExitActionExecute(TObject *Sender);
+    void __fastcall DecompositionMethodActionUpdate(TObject *Sender);
 
 
 private:

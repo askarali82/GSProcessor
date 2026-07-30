@@ -57,7 +57,7 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
         RecentFiles->Delete(0);
     }
     int NExistingFiles = 0;
-    for (int i = RecentFiles->Count - 1; i >= 0; i--)
+    for (int i = 0; i < RecentFiles->Count; i++)
     {
         const int P = RecentFiles->Strings[i].Pos(L"=");
         if (P > 0)
@@ -255,10 +255,10 @@ void __fastcall TMainForm::OpenActionExecute(TObject *Sender)
 
     if (RecentFiles->IndexOf(OpenDialog->FileName) == -1)
     {
-        RecentFiles->Add(OpenDialog->FileName);
+        RecentFiles->Insert(0, OpenDialog->FileName);
         if (RecentFiles->Count > 10)
         {
-            RecentFiles->Delete(0);
+            RecentFiles->Delete(RecentFiles->Count - 1);
         }
         TMenuItem *MenuItem = new TMenuItem(ReopenMI);
         MenuItem->OnClick = OpenRecentFile;
@@ -275,10 +275,33 @@ void __fastcall TMainForm::OpenActionExecute(TObject *Sender)
 void __fastcall TMainForm::OpenRecentFile(TObject *Sender)
 {
     TMenuItem *MenuItem = dynamic_cast<TMenuItem *>(Sender);
-    OpenSpectrum(Sysutils::StringReplace(MenuItem->Caption, "&", "", TReplaceFlags() << rfReplaceAll));
+    const String &FileName =
+        Sysutils::StringReplace(MenuItem->Caption, "&", "", TReplaceFlags() << rfReplaceAll);
+    OpenSpectrum(FileName);
     if (PhotopeaksAction->Checked)
     {
         PhotopeaksAction->Execute();
+    }
+
+    int I = ReopenMI->IndexOf(MenuItem);
+    if (I > 0)
+    {
+        delete MenuItem;
+        MenuItem = new TMenuItem(ReopenMI);
+        MenuItem->OnClick = OpenRecentFile;
+        MenuItem->Caption = FileName;
+        ReopenMI->Insert(0, MenuItem);
+        if (ReopenMI->Count > 10)
+        {
+            ReopenMI->Items[ReopenMI->Count - 1]->Visible = false;
+        }
+    }
+
+    I = RecentFiles->IndexOf(FileName);
+    if (I > 0)
+    {
+        RecentFiles->Delete(I);
+        RecentFiles->Insert(0, FileName);
     }
 }
 //---------------------------------------------------------------------------
@@ -364,13 +387,13 @@ void __fastcall TMainForm::AboutProgramMIClick(TObject *Sender)
     String Icons = L"Piktogrammalar: https://icons8.com";
     String AboutStr = L"Dastur haqida";
     String Copyright = L"Samarqand Davlat Universiteti, Asqarali Azimov";
-    String Developer = L"Dasturchi: Asqarali Azimov";
+    String Developer = L"Dasturchilar: Asqarali Azimov, Akmal Safarov";
     if (LangID == 1)
     {
         Icons = L"Icons: https://icons8.com";
         AboutStr = L"About";
         Copyright = L"Samarkand State University, Askarali Azimov";
-        Developer = L"Developer: Askarali Azimov";
+        Developer = L"Developers: Askarali Azimov, Akmal Safarov";
     }
 
     String Version = GetVersionString();
@@ -433,6 +456,11 @@ void __fastcall TMainForm::DecompositionMethodActionExecute(TObject *Sender)
     }
     AnalysisForm->Show();
     AnalysisForm->BringToFront();
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::DecompositionMethodActionUpdate(TObject *Sender)
+{
+     DecompositionMethodAction->Enabled = SpectrumFrame->ValidSpectrumExists();
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::BatchProcessing_FilesActionExecute(TObject *Sender)
