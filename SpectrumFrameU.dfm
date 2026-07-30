@@ -1,16 +1,16 @@
 object SpectrumFrame: TSpectrumFrame
   Left = 0
   Top = 0
-  Width = 1142
-  Height = 576
+  Width = 1014
+  Height = 519
   Align = alClient
   TabOrder = 0
   ExplicitWidth = 451
   ExplicitHeight = 305
   object Splitter: TSplitter
     Left = 0
-    Top = 368
-    Width = 1142
+    Top = 311
+    Width = 1014
     Height = 8
     Cursor = crVSplit
     Align = alBottom
@@ -20,7 +20,6 @@ object SpectrumFrame: TSpectrumFrame
     ParentColor = False
     ResizeStyle = rsUpdate
     ExplicitTop = 420
-    ExplicitWidth = 1014
   end
   object Label13: TLabel
     Left = 33
@@ -59,8 +58,8 @@ object SpectrumFrame: TSpectrumFrame
   end
   object PageControl: TPageControl
     Left = 0
-    Top = 376
-    Width = 1142
+    Top = 319
+    Width = 1014
     Height = 200
     ActivePage = ParametersTab
     Align = alBottom
@@ -87,7 +86,7 @@ object SpectrumFrame: TSpectrumFrame
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 1134
+        Width = 1006
         Height = 171
         Align = alClient
         BevelOuter = bvNone
@@ -500,6 +499,10 @@ object SpectrumFrame: TSpectrumFrame
       Font.Style = []
       ImageIndex = 1
       ParentFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object RawDataTable: TStringGrid
         Left = 0
         Top = 0
@@ -531,6 +534,10 @@ object SpectrumFrame: TSpectrumFrame
       ImageIndex = 2
       ParentFont = False
       OnShow = PeakInfoTabShow
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object ContentPanel: TPanel
         Left = 0
         Top = 0
@@ -651,8 +658,8 @@ object SpectrumFrame: TSpectrumFrame
   object SpectrumPanel: TPanel
     Left = 0
     Top = 0
-    Width = 1142
-    Height = 368
+    Width = 1014
+    Height = 311
     Align = alClient
     BevelOuter = bvNone
     Font.Charset = DEFAULT_CHARSET
@@ -669,8 +676,8 @@ object SpectrumFrame: TSpectrumFrame
       Tag = -1
       Left = 0
       Top = 0
-      Width = 1142
-      Height = 349
+      Width = 1014
+      Height = 292
       AllowPanning = pmNone
       Border.Visible = True
       BottomWall.Visible = False
@@ -758,8 +765,8 @@ object SpectrumFrame: TSpectrumFrame
     end
     object StatusBar: TStatusBar
       Left = 0
-      Top = 349
-      Width = 1142
+      Top = 292
+      Width = 1014
       Height = 19
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -781,6 +788,8 @@ object SpectrumFrame: TSpectrumFrame
         end>
       SizeGrip = False
       UseSystemFont = False
+      ExplicitTop = 78
+      ExplicitWidth = 451
     end
   end
   object TablePopupMenu: TPopupMenu

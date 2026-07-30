@@ -432,6 +432,19 @@ bool TSpectrumFrame::SaveSpectrumToFile(const String &FileName)
 {
     try
     {
+        const auto &Ext = Sysutils::ExtractFileExt(FileName).LowerCase();
+        if (Ext == L".gsp")
+        {
+            Spectrum.FileType = TSpectrum::TFileType::gsp;
+        }
+        else if (Ext == L".asw")
+        {
+            Spectrum.FileType = TSpectrum::TFileType::asw;
+        }
+        else
+        {
+            throw Exception(L"Filetype is unknown.");
+        }
         Spectrum.WriteRawData(L"Sample", L"Weight", SampleMassEdit->Text);
         Spectrum.WriteRawData(L"Sample", L"Unit_weight", SampleMassUnitBox->Text);
         Spectrum.WriteRawData(L"Sample", L"Volume", SampleVolumeEdit->Text);

@@ -87,7 +87,7 @@ object MainForm: TMainForm
         Action = OpenAction
       end
       object ReopenMI: TMenuItem
-        Caption = 'Qaytadan ochish'
+        Caption = '&Qaytadan ochish'
         Visible = False
       end
       object N1: TMenuItem
@@ -95,6 +95,9 @@ object MainForm: TMainForm
       end
       object SaveMI: TMenuItem
         Action = SaveAction
+      end
+      object SaveAsMI: TMenuItem
+        Action = SaveAsAction
       end
       object SaveInTextFormatMI: TMenuItem
         Caption = '&Matnli formatda saqlash'
@@ -216,6 +219,12 @@ object MainForm: TMainForm
       ShortCut = 32856
       OnExecute = ExitActionExecute
     end
+    object SaveAsAction: TAction
+      Caption = '&Boshqa nomda/formatda saqlash'
+      ShortCut = 24659
+      OnExecute = SaveAsActionExecute
+      OnUpdate = SaveAsActionUpdate
+    end
   end
   object OpenDialog: TOpenDialog
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
@@ -226,7 +235,8 @@ object MainForm: TMainForm
     DefaultExt = 'txt'
     Filter = 'Matnli fayllar|*.txt'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofEnableSizing]
-    Left = 280
+    OnTypeChange = SaveDialogTypeChange
+    Left = 312
     Top = 96
   end
   object ImageList: TImageList

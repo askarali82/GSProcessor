@@ -54,7 +54,7 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     IniFile->ReadSectionValues(L"RecentFiles", RecentFiles.get());
     while (RecentFiles->Count > 10)
     {
-        RecentFiles->Delete(0);
+        RecentFiles->Delete(RecentFiles->Count - 1);
     }
     int NExistingFiles = 0;
     for (int i = 0; i < RecentFiles->Count; i++)
@@ -163,6 +163,7 @@ void TMainForm::ChangeUILanguage()
         OpenAction->Caption = L"&Ochish";
         ReopenMI->Caption = L"&Qaytadan ochish";
         SaveAction->Caption = L"&Saqlash";
+        SaveAsAction->Caption = L"&Boshqa nomda/formatda saqlash";
         SaveInTextFormatMI->Caption = L"&Matnli formatda saqlash";
         OnlyCountsMI->Caption = L"Faqat impulslar soni";
         CountsInChannelsMI->Caption = L"Impulslar soni kanal masshtabida";
@@ -192,7 +193,8 @@ void TMainForm::ChangeUILanguage()
         OpenAction->Caption = L"&Open";
         ReopenMI->Caption = L"&Reopen";
         SaveAction->Caption = L"&Save";
-        SaveInTextFormatMI->Caption = L"&Save in plain text file";
+        SaveAsAction->Caption = L"Save &As...";
+        SaveInTextFormatMI->Caption = L"Save in &plain text file";
         OnlyCountsMI->Caption = L"Only counts";
         CountsInChannelsMI->Caption = L"Counts in channel scale";
         CountsInEnergiesMI->Caption = L"Counts in energy scale";
@@ -219,6 +221,27 @@ void TMainForm::ChangeUILanguage()
     if (AnalysisForm != nullptr)
     {
         AnalysisForm->ChangeUILanguage();
+    }
+}
+//---------------------------------------------------------------------------
+void TMainForm::AddFileNameToRecentList(const String &FileName)
+{
+    if (RecentFiles->IndexOf(FileName) == -1)
+    {
+        RecentFiles->Insert(0, FileName);
+        if (RecentFiles->Count > 10)
+        {
+            RecentFiles->Delete(RecentFiles->Count - 1);
+        }
+        TMenuItem *MenuItem = new TMenuItem(ReopenMI);
+        MenuItem->OnClick = OpenRecentFile;
+        MenuItem->Caption = FileName;
+        ReopenMI->Insert(0, MenuItem);
+        if (ReopenMI->Count > 10)
+        {
+            delete ReopenMI->Items[ReopenMI->Count - 1];
+        }
+        ReopenMI->Visible = true;
     }
 }
 //---------------------------------------------------------------------------
@@ -253,23 +276,7 @@ void __fastcall TMainForm::OpenActionExecute(TObject *Sender)
         PhotopeaksAction->Execute();
     }
 
-    if (RecentFiles->IndexOf(OpenDialog->FileName) == -1)
-    {
-        RecentFiles->Insert(0, OpenDialog->FileName);
-        if (RecentFiles->Count > 10)
-        {
-            RecentFiles->Delete(RecentFiles->Count - 1);
-        }
-        TMenuItem *MenuItem = new TMenuItem(ReopenMI);
-        MenuItem->OnClick = OpenRecentFile;
-        MenuItem->Caption = OpenDialog->FileName;
-        ReopenMI->Insert(0, MenuItem);
-        if (ReopenMI->Count > 10)
-        {
-            ReopenMI->Items[ReopenMI->Count - 1]->Visible = false;
-        }
-        ReopenMI->Visible = true;
-    }
+    AddFileNameToRecentList(OpenDialog->FileName);
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::OpenRecentFile(TObject *Sender)
@@ -291,10 +298,6 @@ void __fastcall TMainForm::OpenRecentFile(TObject *Sender)
         MenuItem->OnClick = OpenRecentFile;
         MenuItem->Caption = FileName;
         ReopenMI->Insert(0, MenuItem);
-        if (ReopenMI->Count > 10)
-        {
-            ReopenMI->Items[ReopenMI->Count - 1]->Visible = false;
-        }
     }
 
     I = RecentFiles->IndexOf(FileName);
@@ -307,12 +310,87 @@ void __fastcall TMainForm::OpenRecentFile(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SaveActionExecute(TObject *Sender)
 {
-    SpectrumFrame->SaveSpectrumToFile(SpectrumFileName);
+    const int NPoints = SpectrumFrame->PointsBox->Text.ToIntDef(2);
+    if (NPoints == 2)
+    {
+        SpectrumFrame->SaveSpectrumToFile(SpectrumFileName);
+    }
+    else if (NPoints > 2)
+    {
+        SaveDialog->Filter = L"GSP fayllar (*.gsp)|*.gsp";
+        SaveDialog->DefaultExt = L"gsp";
+        SaveDialog->FileName = Sysutils::ChangeFileExt(SpectrumFileName, L"") + L".gsp";
+        if (!SaveDialog->Execute(Handle))
+        {
+            return;
+        }
+        if (SpectrumFrame->SaveSpectrumToFile(SaveDialog->FileName))
+        {
+            SpectrumFileName = SaveDialog->FileName;
+            Caption = APP_NAME + L" - " + SpectrumFileName;
+            AddFileNameToRecentList(SpectrumFileName);
+        }
+    }
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SaveActionUpdate(TObject *Sender)
 {
     SaveAction->Enabled = SpectrumFrame->CanBeSaved();
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::SaveAsActionExecute(TObject *Sender)
+{
+    SaveDialog->Filter = L"GSP fayllar (*.gsp)|*.gsp";
+    if (SpectrumFrame->PointsBox->Text.ToIntDef(2) == 2)
+    {
+        SaveDialog->Filter = SaveDialog->Filter + L"|ASW fayllar (*.asw)|*.asw";
+        SaveDialog->FilterIndex = 1;
+    }
+    SaveDialog->DefaultExt = L"gsp";
+    SaveDialog->FileName = L"";
+    if (!SaveDialog->Execute(Handle))
+    {
+        return;
+    }
+    if (SpectrumFrame->SaveSpectrumToFile(SaveDialog->FileName))
+    {
+        SpectrumFileName = SaveDialog->FileName;
+        Caption = APP_NAME + L" - " + SpectrumFileName;
+        AddFileNameToRecentList(SpectrumFileName);
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::SaveAsActionUpdate(TObject *Sender)
+{
+    SaveAsAction->Enabled = SpectrumFrame->CanBeSaved() || SpectrumFrame->ValidSpectrumExists();
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::SaveDialogTypeChange(TObject *Sender)
+{
+    if (SaveDialog->Filter.LowerCase().Pos(L"*.txt") == 0)
+    {
+        if (SaveDialog->FilterIndex == 1)
+        {
+            SaveDialog->DefaultExt = L"gsp";
+        }
+        else if (SaveDialog->FilterIndex == 2)
+        {
+            SaveDialog->DefaultExt = L"asw";
+        }
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::OnSaveInTextFormatMIClick(TObject *Sender)
+{
+    SaveDialog->Filter = L"Matnli fayllar|*.txt";
+    SaveDialog->DefaultExt = L"txt";
+    SaveDialog->FileName = SpectrumFileName + L".txt";
+    if (!SaveDialog->Execute(Handle))
+    {
+        return;
+    }
+    SpectrumFrame->SaveSpectrumToTextFile(
+        SaveDialog->FileName, Sender == CountsInChannelsMI, Sender == CountsInEnergiesMI);
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::LinLogActionExecute(TObject *Sender)
@@ -407,17 +485,6 @@ void __fastcall TMainForm::AboutProgramMIClick(TObject *Sender)
         Developer + L"\r\n" +
         Icons;
     Application->MessageBox(Message.c_str(), AboutStr.c_str(), MB_OK | MB_ICONINFORMATION);
-}
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::OnSaveInTextFormatMIClick(TObject *Sender)
-{
-    SaveDialog->FileName = SpectrumFileName + L".txt";
-    if (!SaveDialog->Execute(Handle))
-    {
-        return;
-    }
-    SpectrumFrame->SaveSpectrumToTextFile(
-        SaveDialog->FileName, Sender == CountsInChannelsMI, Sender == CountsInEnergiesMI);
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::PhotopeaksActionExecute(TObject *Sender)

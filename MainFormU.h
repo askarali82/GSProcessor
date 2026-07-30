@@ -76,6 +76,8 @@ __published:	// IDE-managed Components
     TAction *SettingsAction;
     TAction *HelpAction;
     TAction *ExitAction;
+    TMenuItem *SaveAsMI;
+    TAction *SaveAsAction;
     void __fastcall OpenActionExecute(TObject *Sender);
     void __fastcall SaveActionExecute(TObject *Sender);
     void __fastcall SaveActionUpdate(TObject *Sender);
@@ -92,6 +94,9 @@ __published:	// IDE-managed Components
     void __fastcall SettingsActionExecute(TObject *Sender);
     void __fastcall ExitActionExecute(TObject *Sender);
     void __fastcall DecompositionMethodActionUpdate(TObject *Sender);
+    void __fastcall SaveAsActionExecute(TObject *Sender);
+    void __fastcall SaveAsActionUpdate(TObject *Sender);
+    void __fastcall SaveDialogTypeChange(TObject *Sender);
 
 
 private:
@@ -107,6 +112,7 @@ private:
     String GetVersionString(const String &DefaultVal = L"") const;
     bool OpenSpectrum(const String &FileName);
     void __fastcall OpenRecentFile(TObject* Sender);
+    void AddFileNameToRecentList(const String &FileName);
 
 public:
     __fastcall TMainForm(TComponent* Owner);
