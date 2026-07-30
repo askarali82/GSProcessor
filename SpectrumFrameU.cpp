@@ -547,7 +547,7 @@ void __fastcall TSpectrumFrame::RawDataTableKeyDown(TObject *Sender, WORD &Key, 
     }
 }
 //---------------------------------------------------------------------------
-bool TSpectrumFrame::FindPhotopeaks(const bool NeedsFound)
+bool TSpectrumFrame::FindPhotopeaks(const bool NeedsFound, const bool OpenningTab)
 {
     if (!NeedsFound)
     {
@@ -631,7 +631,10 @@ bool TSpectrumFrame::FindPhotopeaks(const bool NeedsFound)
     SpcChart->Repaint();
     if (!Photopeaks.empty())
     {
-        PageControl->ActivePage = PeakInfoTab;
+        if (!OpenningTab)
+        {
+            PageControl->ActivePage = PeakInfoTab;
+        }
         ClearPeakDetails();
     }
     return !Photopeaks.empty();
@@ -682,6 +685,13 @@ void __fastcall TSpectrumFrame::PageControlDrawTab(TCustomTabControl *Control, i
 void __fastcall TSpectrumFrame::PeakInfoTabShow(TObject *Sender)
 {
     ClearPeakDetails();
+    if (SpectrumLine->Count() > 0 && !MainForm->PhotopeaksAction->Checked)
+    {
+        if (FindPhotopeaks(true, true))
+        {
+            MainForm->PhotopeaksAction->Checked = true;
+        }
+    }
 }
 //---------------------------------------------------------------------------
 void __fastcall TSpectrumFrame::CopyMIClick(TObject *Sender)
@@ -738,6 +748,7 @@ void TSpectrumFrame::ChangeUILanguage()
         EmitterLabel->Caption = L"γ-nurlanuvchi yadro:";
         GammaYieldLabel->Caption = L"γ-nurlanish ehtimoliyati:";
         SeriesLabel->Caption = L"Radioaktiv qator:";
+        CopyMI->Caption = L"Nusxa olish";
     }
     else if (__LangID == 1)
     {
@@ -779,6 +790,7 @@ void TSpectrumFrame::ChangeUILanguage()
         EmitterLabel->Caption = L"γ-emitting nucleus:";
         GammaYieldLabel->Caption = L"γ-emission yield:";
         SeriesLabel->Caption = L"Radioactive series:";
+        CopyMI->Caption = L"Copy";
     }
 
     PointsBox->Left = PointsLabel->Left + PointsLabel->Width + 5;

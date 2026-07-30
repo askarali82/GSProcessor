@@ -1,14 +1,16 @@
 object SpectrumFrame: TSpectrumFrame
   Left = 0
   Top = 0
-  Width = 451
-  Height = 305
+  Width = 1142
+  Height = 576
   Align = alClient
   TabOrder = 0
+  ExplicitWidth = 451
+  ExplicitHeight = 305
   object Splitter: TSplitter
     Left = 0
-    Top = 97
-    Width = 451
+    Top = 368
+    Width = 1142
     Height = 8
     Cursor = crVSplit
     Align = alBottom
@@ -57,8 +59,8 @@ object SpectrumFrame: TSpectrumFrame
   end
   object PageControl: TPageControl
     Left = 0
-    Top = 105
-    Width = 451
+    Top = 376
+    Width = 1142
     Height = 200
     ActivePage = ParametersTab
     Align = alBottom
@@ -71,6 +73,8 @@ object SpectrumFrame: TSpectrumFrame
     ParentFont = False
     TabOrder = 0
     OnDrawTab = PageControlDrawTab
+    ExplicitTop = 105
+    ExplicitWidth = 451
     object ParametersTab: TTabSheet
       Caption = '  Parametrlar  '
       Font.Charset = DEFAULT_CHARSET
@@ -79,18 +83,17 @@ object SpectrumFrame: TSpectrumFrame
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitHeight = 0
+      ExplicitWidth = 443
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 443
+        Width = 1134
         Height = 171
         Align = alClient
         BevelOuter = bvNone
         ParentBackground = False
         TabOrder = 0
+        ExplicitWidth = 443
         object IntensityLabel: TLabel
           Left = 26
           Top = 84
@@ -497,10 +500,6 @@ object SpectrumFrame: TSpectrumFrame
       Font.Style = []
       ImageIndex = 1
       ParentFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RawDataTable: TStringGrid
         Left = 0
         Top = 0
@@ -532,14 +531,10 @@ object SpectrumFrame: TSpectrumFrame
       ImageIndex = 2
       ParentFont = False
       OnShow = PeakInfoTabShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
-      object Panel2: TPanel
+      object ContentPanel: TPanel
         Left = 0
         Top = 0
-        Width = 1045
+        Width = 1134
         Height = 171
         Align = alClient
         BevelOuter = bvNone
@@ -656,8 +651,8 @@ object SpectrumFrame: TSpectrumFrame
   object SpectrumPanel: TPanel
     Left = 0
     Top = 0
-    Width = 451
-    Height = 97
+    Width = 1142
+    Height = 368
     Align = alClient
     BevelOuter = bvNone
     Font.Charset = DEFAULT_CHARSET
@@ -668,12 +663,14 @@ object SpectrumFrame: TSpectrumFrame
     ParentFont = False
     ShowCaption = False
     TabOrder = 1
+    ExplicitWidth = 451
+    ExplicitHeight = 97
     object SpcChart: TChart
       Tag = -1
       Left = 0
       Top = 0
-      Width = 1150
-      Height = 380
+      Width = 1142
+      Height = 349
       AllowPanning = pmNone
       Border.Visible = True
       BottomWall.Visible = False
@@ -761,8 +758,8 @@ object SpectrumFrame: TSpectrumFrame
     end
     object StatusBar: TStatusBar
       Left = 0
-      Top = 380
-      Width = 1150
+      Top = 349
+      Width = 1142
       Height = 19
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -784,8 +781,6 @@ object SpectrumFrame: TSpectrumFrame
         end>
       SizeGrip = False
       UseSystemFont = False
-      ExplicitTop = 78
-      ExplicitWidth = 451
     end
   end
   object TablePopupMenu: TPopupMenu

@@ -79,7 +79,7 @@ __published:
     TPanel *Panel1;
     TButton *CalibrateButton;
     TTabSheet *PeakInfoTab;
-    TPanel *Panel2;
+    TPanel *ContentPanel;
     TLabel *EnergyLabel;
     TLabel *EnergyValueLabel;
     TLabel *NucleusNameLabel;
@@ -139,7 +139,7 @@ public:
         return Spectrum.IsValid();
     }
     bool SwitchToLinLogScale();
-    bool FindPhotopeaks(const bool NeedsFound);
+    bool FindPhotopeaks(const bool NeedsFound, const bool OpenningTab = false);
     void ChangeUILanguage();
 };
 //---------------------------------------------------------------------------
