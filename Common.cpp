@@ -126,27 +126,6 @@ String Utils::RoundFloatValue(const double Value, const int D, const bool Delete
     return Result;
 }
 //---------------------------------------------------------------------------
-void Utils::NormalizeStandardSources(
-    const TSpectrum &Spc1, TSpectrum &Spc2, const double Energy1, const double Energy2)
-{
-    String Spectrum1Error = L"NormalizeStandardSources(): 1 - spektrda xatolik bor.";
-    String Spectrum2Error = L"NormalizeStandardSources(): 2 - spektrda xatolik bor.";
-    if (LangID == 1)
-    {
-        Spectrum1Error = L"NormalizeStandardSources(): There is an error in spectrum 1.";
-        Spectrum2Error = L"NormalizeStandardSources(): There is an error in spectrum 2.";
-    }
-    CheckError(!Spc1.IsValid(), Spectrum1Error);
-    CheckError(!Spc2.IsValid(), Spectrum2Error);
-    Spc2 = Spc2.Multiply(Spc1.Duration / Spc2.Duration);
-    Spc2.Duration = Spc1.Duration;
-    const double S1 = Spc1.CalculateCountByEnergyRange(Energy1, Energy2);
-    const double S2 = Spc2.CalculateCountByEnergyRange(Energy1, Energy2);
-    Spc2 = Spc2.Multiply(S1 / S2);
-    Spc2.ExtraFloatData = Spc1.ExtraFloatData;
-    Spc2.ExtraStringData = Spc1.ExtraStringData;
-}
-//---------------------------------------------------------------------------
 String Utils::GetDialogBoxFilterForSpectraFiles(const bool IncludeParFiles)
 {
     String ParStr1;

@@ -186,6 +186,15 @@ public:
         const double En2,
         TSpectrum &ResultSpc) const;
 
+    bool Shift2(
+        const double SrcCh1,
+        const double SrcCh2,
+        const double SmpCh1,
+        const double SmpCh2,
+        const double En1,
+        const double En2,
+        TSpectrum &ResultSpc) const;
+
     TSpectrum Smooth(size_t m) const;
 
     TSpectrum Smooth() const;
@@ -214,6 +223,8 @@ public:
             return B;
         }
     }
+
+    TSpectrum & NormalizeToSpectrum(const TSpectrum &Spc, const double Energy1, const double Energy2);
 };
 //---------------------------------------------------------------------------
 String TSpectrum::FileExistenceError;
@@ -580,9 +591,9 @@ bool TSpectrum::IsValid() const
         CheckError(Volume > 0);
         CheckError(SameText(WeightUnit, L"g") || SameText(WeightUnit, L"kg"));
         CheckError(SameText(VolumeUnit, L"l") || SameText(VolumeUnit, L"ml") || SameText(VolumeUnit, L"m^3"));
-        CheckError(Channel1 > 0 && Channel2 > 0 && Energy1 > 0 && Energy2 > 0);
+        CheckError(Channel1 >= 0 && Channel2 > 0 && Energy1 >= 0 && Energy2 > 0);
         CheckError(CalibrationType == Linear || CalibrationType == Quadratic);
-        CheckError(ChannelCount == 1024 || ChannelCount == 4096);
+        CheckError(ChannelCount >= 512);
         CheckError(Counts.size() == ChannelCount && Energies.size() == ChannelCount);
     }
     catch (Exception &)
@@ -860,30 +871,115 @@ bool TSpectrum::Shift(const double SrcCh1, const double SrcCh2, const double Smp
         const double SrcA = En1 - SrcB * SrcCh1;
         const double SmpA = En1 - SmpB * SmpCh1;
 
+        const int LastChannel = static_cast<int>(Counts.size()) - 1;
+
         for (size_t i = 0; i < Counts.size(); i++)
         {
-            ResultSpc.Counts[i] = 0;
             const double SrcCal = SrcA + SrcB * i;
-            int X = Math::Ceil((SrcCal - SmpA) / SmpB);
+            double X = (SrcCal - SmpA) / SmpB;
+
             if (X < 0)
             {
                 X = 0;
             }
-            else if (X >= Counts.size())
+            else if (X > (LastChannel - 1))
             {
-                X = Counts.size() - 2;
+                X = LastChannel - 1;
             }
-            int I = 0;
-            while (I < 1000)
+
+            const int X0 = static_cast<int>(X);
+            const double d = X - X0;
+
+            ResultSpc.Counts[i] = Counts[X0] + d * (Counts[X0 + 1] - Counts[X0]);
+        }
+        ResultSpc.Channel1 = SrcCh1;
+        ResultSpc.Channel2 = SrcCh2;
+        ResultSpc.Channel3 = 0;
+        ResultSpc.Channel4 = 0;
+        ResultSpc.Channel5 = 0;
+        ResultSpc.Energy1 = En1;
+        ResultSpc.Energy2 = En2;
+        ResultSpc.Energy3 = 0;
+        ResultSpc.Energy4 = 0;
+        ResultSpc.Energy5 = 0;
+        ResultSpc.A = SrcA;
+        ResultSpc.B = SrcB;
+        ResultSpc.C = 0;
+        ResultSpc.CalibrationType = Linear;
+        int X = 0;
+        for (auto &E : ResultSpc.Energies)
+        {
+            E = ResultSpc.A + ResultSpc.B * (X++);
+        }
+        Result = true;
+    }
+    catch (const Exception &E)
+    {
+        ErrorMessage = E.Message;
+    }
+    return Result;
+}
+//---------------------------------------------------------------------------
+bool TSpectrum::Shift2(const double SrcCh1, const double SrcCh2, const double SmpCh1,
+    const double SmpCh2, const double En1, const double En2, TSpectrum &ResultSpc) const
+{
+    bool Result = false;
+    ErrorMessage = L"";
+    try
+    {
+        CheckError(SrcCh1 > 0 && SrcCh2 > SrcCh1, ShiftingRefSampleChannelNumbersError);
+        CheckError(SmpCh1 > 0 && SmpCh2 > SmpCh1, ShiftingSampleChannelNumbersError);
+        CheckError(En1 > 0 && En2 > En1, ShiftingEnergyValuesError);
+        CheckError(Counts.size() == 1024 || Counts.size() == 4096, ShiftingChannelsCountError);
+        ResultSpc = *this;
+        const double SrcB = (En2 - En1) / (SrcCh2 - SrcCh1);
+        const double SmpB = (En2 - En1) / (SmpCh2 - SmpCh1);
+        const double SrcA = En1 - SrcB * SrcCh1;
+        const double SmpA = En1 - SmpB * SmpCh1;
+
+        const int ChannelCountLocal = static_cast<int>(Counts.size());
+        ResultSpc.Counts.assign(ChannelCountLocal, 0.0);
+
+        for (int i = 0; i < ChannelCountLocal; i++)
+        {
+            const double TargetELow = SrcA + SrcB * i;
+            const double TargetEHigh = SrcA + SrcB * (i + 1);
+
+            const double SourceChLow = (TargetELow - SmpA) / SmpB;
+            const double SourceChHigh = (TargetEHigh - SmpA) / SmpB;
+
+            double ChLow = std::min(SourceChLow, SourceChHigh);
+            double ChHigh = std::max(SourceChLow, SourceChHigh);
+
+            if (ChHigh <= 0.0 || ChLow >= ChannelCountLocal)
             {
-                const double d = double(I) / 1000.0;
-                const int En = Math::Ceil(1000 * (SmpA + SmpB * (X + d)));
-                ResultSpc.Counts[i] = Counts[X] + Math::Ceil(d * (Counts[X + 1] - Counts[X]));
-                if (En > Math::Ceil(1000 * SrcCal))
+                continue;
+            }
+
+            if (ChLow < 0.0)
+            {
+                ChLow = 0.0;
+            }
+            if (ChHigh > ChannelCountLocal)
+            {
+                ChHigh = ChannelCountLocal;
+            }
+
+            const int StartChannel = static_cast<int>(ChLow);
+            const int EndChannel = static_cast<int>(ChHigh);
+
+            for (int j = StartChannel; j <= EndChannel && j < ChannelCountLocal; j++)
+            {
+                const double OverlapLow = std::max(ChLow, static_cast<double>(j));
+                const double OverlapHigh = std::min(ChHigh, static_cast<double>(j + 1));
+                const double Overlap = OverlapHigh - OverlapLow;
+
+                if (Overlap <= 0.0)
                 {
-                    break;
+                    continue;
                 }
-                I++;
+
+                ResultSpc.Counts[i] += Overlap * Counts[j];
             }
         }
         ResultSpc.Channel1 = SrcCh1;
@@ -1398,6 +1494,28 @@ bool TSpectrum::InvertMatrix3x3(const double Matrix[3][3], double Inverse[3][3])
     Inverse[2][2] = (Matrix[0][0] * Matrix[1][1] - Matrix[0][1] * Matrix[1][0]) * InvDet;
 
     return true;
+}
+//---------------------------------------------------------------------------
+TSpectrum & TSpectrum::NormalizeToSpectrum(
+    const TSpectrum &Spc, const double Energy1, const double Energy2)
+{
+    String Spectrum1Error = L"NormalizeToSpectrum(): 1 - spektrda xatolik bor.";
+    String Spectrum2Error = L"NormalizeToSpectrum(): 2 - spektrda xatolik bor.";
+    if (LangID == 1)
+    {
+        Spectrum1Error = L"NormalizeToSpectrum(): There is an error in spectrum 1.";
+        Spectrum2Error = L"NormalizeToSpectrum(): There is an error in spectrum 2.";
+    }
+    CheckError(IsValid(), Spectrum1Error);
+    CheckError(Spc.IsValid(), Spectrum2Error);
+    *this = Multiply(Spc.Duration / Duration);
+    Duration = Spc.Duration;
+    const double S1 = Spc.CalculateCountByEnergyRange(Energy1, Energy2);
+    const double S2 = CalculateCountByEnergyRange(Energy1, Energy2);
+    *this = Multiply(S1 / S2);
+    ExtraFloatData = Spc.ExtraFloatData;
+    ExtraStringData = Spc.ExtraStringData;
+    return *this;
 }
 
 #endif

@@ -72,9 +72,6 @@ public:
 
     static String RoundFloatValue(const double Value, const int D = 2, const bool DeleteZeroes = true);
 
-    static void NormalizeStandardSources(
-        const TSpectrum &Spc1, TSpectrum &Spc2, const double Energy1, const double Energy2);
-
     static inline double Sqr(const double F)
     {
         return F * F;

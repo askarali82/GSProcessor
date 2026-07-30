@@ -24,6 +24,7 @@
 #include "BatchProcessingThreadU.h"
 #include <System.Actions.hpp>
 #include <Vcl.ActnList.hpp>
+#include "SpectrumEnergyRebinnerU.h"
 //---------------------------------------------------------------------------
 class TSettingsForm;
 
@@ -234,6 +235,7 @@ __published:
     TMenuItem *Zichlikniorttir1;
     TMenuItem *Zichliknikamaytir1;
     TTimer *ShiftingRepeaterTimer;
+    TToolButton *RebinningButton;
     void __fastcall FormResize(TObject *Sender);
     void __fastcall OnSpectrumOpeningTimer(TObject *Sender);
     void __fastcall OnParamChange(TObject *Sender);
@@ -290,6 +292,7 @@ __published:
           TMouseButton Button, TShiftState Shift, int X, int Y);
     void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
     void __fastcall FormShow(TObject *Sender);
+    void __fastcall RebinningButtonClick(TObject *Sender);
 
 
 private:
@@ -376,6 +379,7 @@ private:
     double CsC = 0;
 
     // Miscl.
+    TSpectrumEnergyRebinner Rebinner;
     double DensityInGramPerLitre = 0;
     wchar_t DispName[MAX_PATH];
     BROWSEINFOW BrowseInfo;
@@ -387,7 +391,6 @@ private:
     int SelectEndX = 0;
     std::unique_ptr<TBatchProcessingThread> BatchProcessingThread;
 
-    // Strings
     String ErrorTitle;
     String DirSelectionString;
 
@@ -399,10 +402,13 @@ private:
 
     bool ShowResultsWithMDA;
     bool ShiftingKeysPressed;
+    bool IsRebinningEnabled;
     TPanel *SelectedSpcPanel;
     int FinalSpcChartLeftAxisMinimum;
 
+    // Functions
     void InitStdSamples(TSettingsForm *Form);
+    void RebinSpectra(const int Idx);
     void SubtractBkgFromStandardSources(const int Idx);
 
     void CreateVirtualSpectra();
@@ -426,6 +432,7 @@ private:
     int CalcCenterOfPeak(const TSpectrum &Spc, const double Energy) const;
     void SaveParametersFile(const String &FileName);
     TData GetData() const;
+    void EnableDisableShiftingUIControls(const bool IsEnabled);
 
 protected:
     void __fastcall CreateParams(TCreateParams &Params);

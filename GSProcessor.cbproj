@@ -220,6 +220,10 @@ copy /Y "$(PROJECTDIR)\bin\nuclide.dat" "$(PROJECTDIR)\bin\Deploy\nuclide.dat"]]
         <None Include="Spectrum.hpp">
             <BuildOrder>8</BuildOrder>
         </None>
+        <CppCompile Include="SpectrumEnergyRebinnerU.cpp">
+            <DependentOn>SpectrumEnergyRebinnerU.h</DependentOn>
+            <BuildOrder>12</BuildOrder>
+        </CppCompile>
         <CppCompile Include="SpectrumFrameU.cpp">
             <Form>SpectrumFrame</Form>
             <FormType>dfm</FormType>

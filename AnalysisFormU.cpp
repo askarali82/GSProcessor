@@ -15,6 +15,7 @@
 #include "BatchProcessingResultsFormU.h"
 #include "AxisMinMaxFormU.h"
 #include "MainFormU.h"
+#include "SpectrumEnergyRebinnerU.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -26,6 +27,7 @@ __fastcall TAnalysisForm::TAnalysisForm(TComponent* Owner):
     TForm(Owner),
     ShowResultsWithMDA(true),
     ShiftingKeysPressed(false),
+    IsRebinningEnabled(false),
     SelectedSpcPanel(nullptr),
     FinalSpcChartLeftAxisMinimum(-100)
 {
@@ -45,6 +47,9 @@ __fastcall TAnalysisForm::TAnalysisForm(TComponent* Owner):
     KDValEdit2->Text = CHAN_STEP;
     CsDValEdit1->Text = CHAN_STEP;
     CsDValEdit2->Text = CHAN_STEP;
+
+    const auto &EnergyGridEdges = TSpectrumEnergyRebinner::BuildGridFromSpectra();
+    Rebinner.SetEnergyGridEdges(EnergyGridEdges);
 
     ChangeUILanguage();
 
@@ -164,7 +169,6 @@ void __fastcall TAnalysisForm::FormResize(TObject *Sender)
     CsPanel->Width = SW;
     CsPanel->Top = KPanel->Top + KPanel->Height + 1;
     CsPanel->Left = ClientWidth - CsPanel->Width;
-    Application->ProcessMessages();
 }
 //---------------------------------------------------------------------------
 void TAnalysisForm::DrawSpectrum(const TSpectrum &Spc, TLineSeries *LineSeries)
@@ -254,6 +258,8 @@ void TAnalysisForm::InitStdSamples(TSettingsForm *Form)
             Dateutils::DaysBetween(Form->Cs1MesDate->Date, Form->Cs1Date->Date) / DAYS_IN_YEAR;
         CsActivityErrors[0] = Sysutils::StrToFloatDef(Form->Cs1ErrorEdit->Text, 0) / 100.0;
 
+        RebinSpectra(0);
+
         SubtractBkgFromStandardSources(0);
     }
 
@@ -283,6 +289,8 @@ void TAnalysisForm::InitStdSamples(TSettingsForm *Form)
         Css[1].ExtraFloatData =
             Dateutils::DaysBetween(Form->Cs2MesDate->Date, Form->Cs2Date->Date) / DAYS_IN_YEAR;
         CsActivityErrors[1] = Sysutils::StrToFloatDef(Form->Cs2ErrorEdit->Text, 0) / 100.0;
+
+        RebinSpectra(1);
 
         SubtractBkgFromStandardSources(1);
     }
@@ -314,6 +322,8 @@ void TAnalysisForm::InitStdSamples(TSettingsForm *Form)
             Dateutils::DaysBetween(Form->Cs3MesDate->Date, Form->Cs3Date->Date) / DAYS_IN_YEAR;
         CsActivityErrors[2] = Sysutils::StrToFloatDef(Form->Cs3ErrorEdit->Text, 0) / 100.0;
 
+        RebinSpectra(2);
+
         SubtractBkgFromStandardSources(2);
     }
 
@@ -321,38 +331,38 @@ void TAnalysisForm::InitStdSamples(TSettingsForm *Form)
     if (ValidSpectra(0) && ValidSpectra(1) && ValidSpectra(2))
     {
         VI = 1;
-        Utils::NormalizeStandardSources(Ths[1], Ths[0], ThEn1, ThEn2);
-        Utils::NormalizeStandardSources(Ths[1], Ths[2], ThEn1, ThEn2);
-        Utils::NormalizeStandardSources(Ras[1], Ras[0], RaEn1, RaEn2);
-        Utils::NormalizeStandardSources(Ras[1], Ras[2], RaEn1, RaEn2);
-        Utils::NormalizeStandardSources(Ks[1], Ks[0], KEn1, KEn2);
-        Utils::NormalizeStandardSources(Ks[1], Ks[2], KEn1, KEn2);
-        Utils::NormalizeStandardSources(Css[1], Css[0], CsEn1, CsEn2);
-        Utils::NormalizeStandardSources(Css[1], Css[2], CsEn1, CsEn2);
+        Ths[0].NormalizeToSpectrum(Ths[1], ThEn1, ThEn2);
+        Ths[2].NormalizeToSpectrum(Ths[1], ThEn1, ThEn2);
+        Ras[0].NormalizeToSpectrum(Ras[1], RaEn1, RaEn2);
+        Ras[2].NormalizeToSpectrum(Ras[1], RaEn1, RaEn2);
+        Ks[0].NormalizeToSpectrum(Ks[1], KEn1, KEn2);
+        Ks[2].NormalizeToSpectrum(Ks[1], KEn1, KEn2);
+        Css[0].NormalizeToSpectrum(Css[1], CsEn1, CsEn2);
+        Css[2].NormalizeToSpectrum(Css[1], CsEn1, CsEn2);
     }
     else if (ValidSpectra(0) && ValidSpectra(1))
     {
         VI = 1;
-        Utils::NormalizeStandardSources(Ths[1], Ths[0], ThEn1, ThEn2);
-        Utils::NormalizeStandardSources(Ras[1], Ras[0], RaEn1, RaEn2);
-        Utils::NormalizeStandardSources(Ks[1], Ks[0], KEn1, KEn2);
-        Utils::NormalizeStandardSources(Css[1], Css[0], CsEn1, CsEn2);
+        Ths[0].NormalizeToSpectrum(Ths[1], ThEn1, ThEn2);
+        Ras[0].NormalizeToSpectrum(Ras[1], RaEn1, RaEn2);
+        Ks[0].NormalizeToSpectrum(Ks[1], KEn1, KEn2);
+        Css[0].NormalizeToSpectrum(Css[1], CsEn1, CsEn2);
     }
     else if (ValidSpectra(0) && ValidSpectra(2))
     {
         VI = 2;
-        Utils::NormalizeStandardSources(Ths[2], Ths[0], ThEn1, ThEn2);
-        Utils::NormalizeStandardSources(Ras[2], Ras[0], RaEn1, RaEn2);
-        Utils::NormalizeStandardSources(Ks[2], Ks[0], KEn1, KEn2);
-        Utils::NormalizeStandardSources(Css[2], Css[0], CsEn1, CsEn2);
+        Ths[0].NormalizeToSpectrum(Ths[2], ThEn1, ThEn2);
+        Ras[0].NormalizeToSpectrum(Ras[2], RaEn1, RaEn2);
+        Ks[0].NormalizeToSpectrum(Ks[2], KEn1, KEn2);
+        Css[0].NormalizeToSpectrum(Css[2], CsEn1, CsEn2);
     }
     else if (ValidSpectra(1) && ValidSpectra(2))
     {
         VI = 1;
-        Utils::NormalizeStandardSources(Ths[1], Ths[2], ThEn1, ThEn2);
-        Utils::NormalizeStandardSources(Ras[1], Ras[2], RaEn1, RaEn2);
-        Utils::NormalizeStandardSources(Ks[1], Ks[2], KEn1, KEn2);
-        Utils::NormalizeStandardSources(Css[1], Css[2], CsEn1, CsEn2);
+        Ths[2].NormalizeToSpectrum(Ths[1], ThEn1, ThEn2);
+        Ras[2].NormalizeToSpectrum(Ras[1], RaEn1, RaEn2);
+        Ks[2].NormalizeToSpectrum(Ks[1], KEn1, KEn2);
+        Css[2].NormalizeToSpectrum(Css[1], CsEn1, CsEn2);
     }
     else if (ValidSpectra(0))
     {
@@ -371,6 +381,19 @@ void TAnalysisForm::InitStdSamples(TSettingsForm *Form)
     CreateVirtualSpectra();
     CalculateCountsInStdSamples();
     PopulateStandardSourcesInfo();
+}
+//---------------------------------------------------------------------------
+void TAnalysisForm::RebinSpectra(const int Idx)
+{
+    if (IsRebinningEnabled)
+    {
+        std::vector<double> TmpVariance;
+        Bkgs[Idx] = Rebinner.RebinToGrid(Bkgs[Idx], TmpVariance);
+        Ths[Idx] = Rebinner.RebinToGrid(Ths[Idx], TmpVariance);
+        Ras[Idx] = Rebinner.RebinToGrid(Ras[Idx], TmpVariance);
+        Ks[Idx] = Rebinner.RebinToGrid(Ks[Idx], TmpVariance);
+        Css[Idx] = Rebinner.RebinToGrid(Css[Idx], TmpVariance);
+    }
 }
 //---------------------------------------------------------------------------
 void TAnalysisForm::SubtractBkgFromStandardSources(const int Idx)
@@ -433,8 +456,11 @@ void __fastcall TAnalysisForm::OnSpectrumOpeningTimer(TObject *Sender)
             {
                 DecomposeSampleSpectrum(true);
             }
+            else
+            {
+                LOG(L"ERROR! Sample and/or one of virtual spectra are not valid.");
+            }
         }
-        SampleFileNameFromMainForm = L"";
     }
 }
 //---------------------------------------------------------------------------
@@ -1386,6 +1412,12 @@ void __fastcall TAnalysisForm::ShiftingButtonClick(TObject *Sender)
 //---------------------------------------------------------------------------
 bool TAnalysisForm::ShiftSrc()
 {
+    if (IsRebinningEnabled)
+    {
+        SampleSpc = OrigSampleSpc;
+        return true;
+    }
+
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
@@ -1414,6 +1446,12 @@ bool TAnalysisForm::ShiftSrc()
 //---------------------------------------------------------------------------
 bool TAnalysisForm::ShiftBkg()
 {
+    if (IsRebinningEnabled)
+    {
+        BkgSpc = OrigBkgSpc;
+        return true;
+    }
+
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
@@ -1442,6 +1480,12 @@ bool TAnalysisForm::ShiftBkg()
 //---------------------------------------------------------------------------
 bool TAnalysisForm::ShiftTh()
 {
+    if (IsRebinningEnabled)
+    {
+        ThSpc = OrigThSpc;
+        return true;
+    }
+
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
@@ -1470,6 +1514,12 @@ bool TAnalysisForm::ShiftTh()
 //---------------------------------------------------------------------------
 bool TAnalysisForm::ShiftRa()
 {
+    if (IsRebinningEnabled)
+    {
+        RaSpc = OrigRaSpc;
+        return true;
+    }
+
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
@@ -1498,6 +1548,12 @@ bool TAnalysisForm::ShiftRa()
 //---------------------------------------------------------------------------
 bool TAnalysisForm::ShiftK()
 {
+    if (IsRebinningEnabled)
+    {
+        KSpc = OrigKSpc;
+        return true;
+    }
+
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
@@ -1526,6 +1582,12 @@ bool TAnalysisForm::ShiftK()
 //---------------------------------------------------------------------------
 bool TAnalysisForm::ShiftCs()
 {
+    if (IsRebinningEnabled)
+    {
+        CsSpc = OrigCsSpc;
+        return true;
+    }
+
     bool Result = false;
     const double En1 = Sysutils::StrToFloatDef(Energy1Edit->Text, 0);
     const double En2 = Sysutils::StrToFloatDef(Energy2Edit->Text, 0);
@@ -1898,6 +1960,13 @@ bool TAnalysisForm::OpenSampleSpectrum(const String &FileName)
     LOG(L"Opened spectrum \"" + FileName + L"\"");
     LOG(L"Calibration Type: " + String(int(Spc.CalibrationType)) + L", Points: " + String(Spc.CalibrationPoints));
     SampleSpc = Spc;
+
+    if (IsRebinningEnabled)
+    {
+        std::vector<double> TmpVariance;
+        SampleSpc = Rebinner.RebinToGrid(SampleSpc, TmpVariance);
+    }
+
     OrigSampleSpc = SampleSpc;
     SampleFileName = FileName;
     DensityInGramPerLitre = SampleSpc.DensityInGramPerLitre;
@@ -1952,6 +2021,10 @@ void __fastcall TAnalysisForm::OpenSpectrumActionExecute(TObject *Sender)
             RaSpc.IsValid() && KSpc.IsValid() && CsSpc.IsValid())
         {
             DecomposeSampleSpectrum(true);
+        }
+        else
+        {
+            LOG(L"ERROR! Sample and/or one of virtual spectra are not valid.");
         }
     }
 }
@@ -2364,6 +2437,7 @@ void TAnalysisForm::ChangeUILanguage()
         SelectDirectoryAction->Caption = L"Manzilni tanlash";
 
         ShiftingButton->Caption = L"Spektrni siljitish";
+        RebinningButton->Caption = L"Qayta guruhlash (Rebinning)";
 
         ThMDALabel->Caption = L"AMA (Bk/kg):";
         RaMDALabel->Caption = ThMDALabel->Caption;
@@ -2541,6 +2615,7 @@ void TAnalysisForm::ChangeUILanguage()
         SelectDirectoryAction->Caption = L"Select directory";
 
         ShiftingButton->Caption = L"Spectrum shifting";
+        RebinningButton->Caption = L"Rebinning to common energy grid";
 
         ThMDALabel->Caption = L"MDA (Bq/kg):";
         RaMDALabel->Caption = ThMDALabel->Caption;
@@ -3270,4 +3345,71 @@ void __fastcall TAnalysisForm::FormShow(TObject *Sender)
     WindowState = wsMaximized;
 }
 //---------------------------------------------------------------------------
+void __fastcall TAnalysisForm::RebinningButtonClick(TObject *Sender)
+{
+    std::unique_ptr<TSettingsForm> Form(new TSettingsForm(Application, MainForm->GetIniFile()));
+    String ErrorMessage;
+    if ((!Form->Density_1_SamplesValid() && !Form->Density_2_SamplesValid() && !Form->Density_3_SamplesValid()) ||
+        !Form->VolumesAreValid(ErrorMessage))
+    {
+        RebinningButton->Down = false;
+        return;
+    }
+    IsRebinningEnabled = RebinningButton->Down;
+    SampleSpc = BkgSpc = ThSpc = RaSpc = KSpc = CsSpc = TSpectrum();
+    InitStdSamples(Form.get());
+    OnSpectrumOpeningTimer(nullptr);
+    EnableDisableShiftingUIControls(!IsRebinningEnabled);
+}
+//---------------------------------------------------------------------------
+void TAnalysisForm::EnableDisableShiftingUIControls(const bool IsEnabled)
+{
+    ShiftingButton->Enabled = IsEnabled;
+    for (int i = 0; i < SamplePanel->ControlCount; i++)
+    {
+        if (SamplePanel->Controls[i]->ClassName() != L"TChart")
+        {
+            SamplePanel->Controls[i]->Enabled = IsEnabled;
+        }
+    }
 
+    for (int i = 0; i < BkgPanel->ControlCount; i++)
+    {
+        if (BkgPanel->Controls[i]->ClassName() != L"TChart")
+        {
+            BkgPanel->Controls[i]->Enabled = IsEnabled;
+        }
+    }
+
+    for (int i = 0; i < ThPanel->ControlCount; i++)
+    {
+        if (ThPanel->Controls[i]->ClassName() != L"TChart")
+        {
+            ThPanel->Controls[i]->Enabled = IsEnabled;
+        }
+    }
+
+    for (int i = 0; i < RaPanel->ControlCount; i++)
+    {
+        if (RaPanel->Controls[i]->ClassName() != L"TChart")
+        {
+            RaPanel->Controls[i]->Enabled = IsEnabled;
+        }
+    }
+
+    for (int i = 0; i < KPanel->ControlCount; i++)
+    {
+        if (KPanel->Controls[i]->ClassName() != L"TChart")
+        {
+            KPanel->Controls[i]->Enabled = IsEnabled;
+        }
+    }
+
+    for (int i = 0; i < CsPanel->ControlCount; i++)
+    {
+        if (CsPanel->Controls[i]->ClassName() != L"TChart")
+        {
+            CsPanel->Controls[i]->Enabled = IsEnabled;
+        }
+    }
+}

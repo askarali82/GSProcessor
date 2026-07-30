@@ -157,8 +157,6 @@ bool TBatchProcessingThread::CreateVirtualSpectraFrom3Set(const double DensityIn
         }
         throw Exception(ErrorMsg);
     }
-    //Utils::NormalizeStandardSources(BaseData.Ths[1], const_cast<TSpectrum &>(BaseData.Ths[0]), BaseData.ThEn1, BaseData.ThEn2);
-    //Utils::NormalizeStandardSources(BaseData.Ths[1], const_cast<TSpectrum &>(BaseData.Ths[2]), BaseData.ThEn1, BaseData.ThEn2);
     if (DensityInGramPerLitre <= BaseData.Ths[1].DensityInGramPerLitre)
     {
         const double X = ((BaseData.Ths[1].DensityInGramPerLitre - DensityInGramPerLitre) /
@@ -193,8 +191,6 @@ bool TBatchProcessingThread::CreateVirtualSpectraFrom3Set(const double DensityIn
         }
         throw Exception(ErrorMsg);
     }
-    //Utils::NormalizeStandardSources(BaseData.Ras[1], const_cast<TSpectrum &>(BaseData.Ras[0]), BaseData.RaEn1, BaseData.RaEn2);
-    //Utils::NormalizeStandardSources(BaseData.Ras[1], const_cast<TSpectrum &>(BaseData.Ras[2]), BaseData.RaEn1, BaseData.RaEn2);
     if (DensityInGramPerLitre <= BaseData.Ras[1].DensityInGramPerLitre)
     {
         const double X = ((BaseData.Ras[1].DensityInGramPerLitre - DensityInGramPerLitre) /
@@ -229,8 +225,6 @@ bool TBatchProcessingThread::CreateVirtualSpectraFrom3Set(const double DensityIn
         }
         throw Exception(ErrorMsg);
     }
-    //Utils::NormalizeStandardSources(BaseData.Ks[1], const_cast<TSpectrum &>(BaseData.Ks[0]), BaseData.KEn1, BaseData.KEn2);
-    //Utils::NormalizeStandardSources(BaseData.Ks[1], const_cast<TSpectrum &>(BaseData.Ks[2]), BaseData.KEn1, BaseData.KEn2);
     if (DensityInGramPerLitre <= BaseData.Ks[1].DensityInGramPerLitre)
     {
         const double X = ((BaseData.Ks[1].DensityInGramPerLitre - DensityInGramPerLitre) /
@@ -265,8 +259,6 @@ bool TBatchProcessingThread::CreateVirtualSpectraFrom3Set(const double DensityIn
         }
         throw Exception(ErrorMsg);
     }
-    //Utils::NormalizeStandardSources(BaseData.Css[1], const_cast<TSpectrum &>(BaseData.Css[0]), BaseData.CsEn1, BaseData.CsEn2);
-    //Utils::NormalizeStandardSources(BaseData.Css[1], const_cast<TSpectrum &>(BaseData.Css[2]), BaseData.CsEn1, BaseData.CsEn2);
     if (DensityInGramPerLitre <= BaseData.Css[1].DensityInGramPerLitre)
     {
         const double X = ((BaseData.Css[1].DensityInGramPerLitre - DensityInGramPerLitre) /
