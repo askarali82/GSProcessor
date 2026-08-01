@@ -14,6 +14,7 @@ object MainForm: TMainForm
   OldCreateOrder = False
   Position = poDesigned
   OnClose = FormClose
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object ToolBar: TToolBar
@@ -559,5 +560,12 @@ object MainForm: TMainForm
       F0007FE0003FFFFFFF000000F000FFFFFFFFFFFFFF000000FFFFFFFFFFFFFFFF
       FF000000FFFFFFFFFFFFFFFFFF00000000000000000000000000000000000000
       000000000000}
+  end
+  object ParameterFileOpeningTimer: TTimer
+    Enabled = False
+    Interval = 300
+    OnTimer = OnParameterFileOpeningTimer
+    Left = 440
+    Top = 104
   end
 end

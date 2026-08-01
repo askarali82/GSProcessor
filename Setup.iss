@@ -2,6 +2,7 @@
 #define MainExeName     "GSProcessor.exe"
 
 [Setup]
+PrivilegesRequired       = admin
 SourceDir                = "{#SourcePath}\bin\Deploy"
 AppName                  = {#ProductName}
 AppVersion               = "4.1.0"      
@@ -33,16 +34,40 @@ Name: desktop; Description: "Create shortcut on Desktop";
 ConfirmUninstall=Are you sure you want to completely remove %1 and all of its components? \
 Please, CLOSE %1 first if it is running.
 
+[Registry]
+Root: HKLM; Subkey: "Software\Classes\.gsp"; ValueType: string; ValueName: ""; ValueData: "GSProcessor.SpectrumFile"; \
+    Flags: uninsdeletevalue
+
+Root: HKLM; Subkey: "Software\Classes\GSProcessor.SpectrumFile"; ValueType: string; ValueName: ""; ValueData: "GSProcessor Spectrum File"; \
+    Flags: uninsdeletekey
+
+Root: HKLM; Subkey: "Software\Classes\GSProcessor.SpectrumFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\GSProcessor.exe,0"; \
+    Flags: uninsdeletevalue
+
+Root: HKLM; Subkey: "Software\Classes\GSProcessor.SpectrumFile\shell\open\command"; ValueType: string; ValueName: ""; \
+    ValueData: """{app}\GSProcessor.exe"" ""%1"""; Flags: uninsdeletevalue
+
 [Code]
 const
   SYS_ENV_KEY = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
   WM_SETTINGCHANGE = $001A;
   SMTO_ABORTIFHUNG = $0002;
+  SHCNE_ASSOCCHANGED = $08000000;
+  SHCNF_IDLIST = $0000;
 
 function SendMessageTimeout(hWnd: LongInt; Msg: LongInt; wParam: LongInt;
   lParam: string; fuFlags: LongInt; uTimeout: LongInt; var lpdwResult: Cardinal): LongInt;
   external 'SendMessageTimeoutW@user32.dll stdcall';
 
+procedure SHChangeNotify(wEventId: LongInt; uFlags: LongInt; dwItem1: LongInt; dwItem2: LongInt);
+  external 'SHChangeNotify@shell32.dll stdcall';
+
+//--------------------------------------------------------------------------------------------------------------
+procedure RefreshShellIcons();
+begin
+  SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, 0, 0);
+end;
+//--------------------------------------------------------------------------------------------------------------
 procedure AddToPath(const Dir: String);
 var
   Path: String;
@@ -63,7 +88,7 @@ begin
 
   SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 'Environment', SMTO_ABORTIFHUNG, 5000, ResultCode);
 end;
-
+//--------------------------------------------------------------------------------------------------------------
 procedure RemoveFromPath(Dir: string);
 var
   Path: string;
@@ -87,19 +112,22 @@ begin
     SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 'Environment', SMTO_ABORTIFHUNG, 5000, ResultCode);
   end;
 end;
-
+//--------------------------------------------------------------------------------------------------------------
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
     AddToPath(ExpandConstant('{app}\root\bin'));
+    RefreshShellIcons();
   end;
 end;
-
+//--------------------------------------------------------------------------------------------------------------
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
   if CurUninstallStep = usPostUninstall then
   begin
     RemoveFromPath(ExpandConstant('{app}\root\bin'));
+    RefreshShellIcons();
   end;
 end;
+//--------------------------------------------------------------------------------------------------------------

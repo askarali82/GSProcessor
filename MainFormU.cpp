@@ -613,4 +613,22 @@ void __fastcall TMainForm::CloseActionUpdate(TObject *Sender)
     CloseAction->Enabled = SpectrumFrame->ValidSpectrumExists();
 }
 //---------------------------------------------------------------------------
+void __fastcall TMainForm::FormShow(TObject *Sender)
+{
+    if (System::ParamCount() > 0)
+    {
+        ParameterFileOpeningTimer->Enabled = true;
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::OnParameterFileOpeningTimer(TObject *Sender)
+{
+    ParameterFileOpeningTimer->Enabled = false;
+    const String &FileName = System::ParamStr(1);
+    if (OpenSpectrum(FileName))
+    {
+        AddFileNameToRecentList(FileName);
+    }
+}
+//---------------------------------------------------------------------------
 

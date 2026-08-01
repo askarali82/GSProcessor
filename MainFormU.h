@@ -17,6 +17,7 @@
 #include <Vcl.ImgList.hpp>
 #include <Vcl.ToolWin.hpp>
 #include <Vcl.AppEvnts.hpp>
+#include <Vcl.ExtCtrls.hpp>
 //---------------------------------------------------------------------------
 // Language ID
 // 0 => Uzbek
@@ -80,6 +81,7 @@ __published:	// IDE-managed Components
     TAction *CloseAction;
     TMenuItem *CloseMI;
     TMenuItem *N3;
+    TTimer *ParameterFileOpeningTimer;
     void __fastcall OpenActionExecute(TObject *Sender);
     void __fastcall SaveActionExecute(TObject *Sender);
     void __fastcall SaveActionUpdate(TObject *Sender);
@@ -100,6 +102,8 @@ __published:	// IDE-managed Components
     void __fastcall SaveDialogTypeChange(TObject *Sender);
     void __fastcall CloseActionExecute(TObject *Sender);
     void __fastcall CloseActionUpdate(TObject *Sender);
+    void __fastcall FormShow(TObject *Sender);
+    void __fastcall OnParameterFileOpeningTimer(TObject *Sender);
 
 
 private:
