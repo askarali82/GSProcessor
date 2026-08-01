@@ -1431,7 +1431,7 @@ bool TAnalysisForm::ShiftSrc()
         OrigSampleSpc.IsValid())
     {
         TSpectrum ShiftedSample;
-        if (OrigSampleSpc.Shift(SrcCh1, SrcCh2, SmpCh1, SmpCh2, En1, En2, ShiftedSample))
+        if (OrigSampleSpc.Shift2(SrcCh1, SrcCh2, SmpCh1, SmpCh2, En1, En2, ShiftedSample))
         {
             SampleSpc = ShiftedSample;
             Result = true;
@@ -1465,7 +1465,7 @@ bool TAnalysisForm::ShiftBkg()
         OrigBkgSpc.IsValid())
     {
         TSpectrum ShiftedSample;
-        if (OrigBkgSpc.Shift(SrcCh1, SrcCh2, BkgCh1, BkgCh2, En1, En2, ShiftedSample))
+        if (OrigBkgSpc.Shift2(SrcCh1, SrcCh2, BkgCh1, BkgCh2, En1, En2, ShiftedSample))
         {
             BkgSpc = ShiftedSample;
             Result = true;
@@ -1499,7 +1499,7 @@ bool TAnalysisForm::ShiftTh()
         OrigThSpc.IsValid())
     {
         TSpectrum ShiftedSample;
-        if (OrigThSpc.Shift(SrcCh1, SrcCh2, ThCh1, ThCh2, En1, En2, ShiftedSample))
+        if (OrigThSpc.Shift2(SrcCh1, SrcCh2, ThCh1, ThCh2, En1, En2, ShiftedSample))
         {
             ThSpc = ShiftedSample;
             Result = true;
@@ -1533,7 +1533,7 @@ bool TAnalysisForm::ShiftRa()
         OrigRaSpc.IsValid())
     {
         TSpectrum ShiftedSample;
-        if (OrigRaSpc.Shift(SrcCh1, SrcCh2, RaCh1, RaCh2, En1, En2, ShiftedSample))
+        if (OrigRaSpc.Shift2(SrcCh1, SrcCh2, RaCh1, RaCh2, En1, En2, ShiftedSample))
         {
             RaSpc = ShiftedSample;
             Result = true;
@@ -1567,7 +1567,7 @@ bool TAnalysisForm::ShiftK()
         OrigKSpc.IsValid())
     {
         TSpectrum ShiftedSample;
-        if (OrigKSpc.Shift(SrcCh1, SrcCh2, KCh1, KCh2, En1, En2, ShiftedSample))
+        if (OrigKSpc.Shift2(SrcCh1, SrcCh2, KCh1, KCh2, En1, En2, ShiftedSample))
         {
             KSpc = ShiftedSample;
             Result = true;
@@ -1601,7 +1601,7 @@ bool TAnalysisForm::ShiftCs()
         OrigCsSpc.IsValid())
     {
         TSpectrum ShiftedSample;
-        if (OrigCsSpc.Shift(SrcCh1, SrcCh2, CsCh1, CsCh2, En1, En2, ShiftedSample))
+        if (OrigCsSpc.Shift2(SrcCh1, SrcCh2, CsCh1, CsCh2, En1, En2, ShiftedSample))
         {
             CsSpc = ShiftedSample;
             Result = true;
@@ -1735,6 +1735,7 @@ void __fastcall TAnalysisForm::OnCh1LeftShiftBtnClick(TObject *Sender)
     {
         return;
     }
+
     if (!DValEdit1->Focused())
     {
         DValEdit1->SetFocus();

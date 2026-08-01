@@ -231,10 +231,10 @@ copy /Y "$(PROJECTDIR)\bin\nuclide.dat" "$(PROJECTDIR)\bin\Deploy\nuclide.dat"]]
             <DependentOn>SpectrumFrameU.h</DependentOn>
             <BuildOrder>12</BuildOrder>
         </CppCompile>
-        <FormResources Include="SettingsFormU.dfm"/>
-        <FormResources Include="MainFormU.dfm"/>
-        <FormResources Include="SpectrumFrameU.dfm"/>
         <FormResources Include="ShiftingFormU.dfm"/>
+        <FormResources Include="SettingsFormU.dfm"/>
+        <FormResources Include="SpectrumFrameU.dfm"/>
+        <FormResources Include="MainFormU.dfm"/>
         <FormResources Include="BatchProcessingResultsFormU.dfm"/>
         <FormResources Include="AxisMinMaxFormU.dfm"/>
         <FormResources Include="AnalysisFormU.dfm"/>

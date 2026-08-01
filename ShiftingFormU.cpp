@@ -288,7 +288,7 @@ void TShiftingForm::Shift()
         Sample2.IsValid())
     {
         TSpectrum ShiftedSample2;
-        if (Sample2.Shift(SrcCh1, SrcCh2, SmpCh1, SmpCh2, En1, En2, ShiftedSample2))
+        if (Sample2.Shift2(SrcCh1, SrcCh2, SmpCh1, SmpCh2, En1, En2, ShiftedSample2))
         {
             this->ShiftedSample2 = ShiftedSample2;
             DrawSpectrum(this->ShiftedSample2, Spectrum2);
@@ -469,13 +469,11 @@ void __fastcall TShiftingForm::OpenDialogClose(TObject *Sender)
 void __fastcall TShiftingForm::AboutButtonClick(TObject *Sender)
 {
     String AboutStr = L"Dastur haqida";
-    String Copyright = L"Yadro Fizikasi Laboratoriyasi, Samarqand Davlat Universiteti";
-    String Developer = L"Dasturchi: Asqarali Azimov";
+    String Copyright = L"Asqarali Azimov";
     if (LangID == 1)
     {
         AboutStr = L"About";
-        Copyright = L"Nuclear Physics Laboratory, Samarkand State University";
-        Developer = L"Developer: Askarali Azimov";
+        Copyright = L"Askarali Azimov";
     }
 
     String Version = GetVersionString();
@@ -485,8 +483,7 @@ void __fastcall TShiftingForm::AboutButtonClick(TObject *Sender)
     }
     const String &Message =
         String(AppName + Version + L"\r\n") +
-        Char(169) + L" " + Copyright + L", 2021 - 2025.\r\n\r\n" +
-        Developer;
+        Char(169) + L" " + Copyright + L", 2022 - 2026.";
 
     Application->MessageBox(Message.c_str(), AboutStr.c_str(), MB_OK | MB_ICONINFORMATION);
 }

@@ -329,6 +329,7 @@ object ShiftingForm: TShiftingForm
     MarginRight = 1
     MarginTop = 1
     RightWall.Visible = True
+    Title.Font.Height = -13
     Title.Font.Style = [fsBold]
     Title.Text.Strings = (
       'Etalon va siljitiladigan spektrlar')

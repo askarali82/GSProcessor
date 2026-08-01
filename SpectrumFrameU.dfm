@@ -1,16 +1,16 @@
 object SpectrumFrame: TSpectrumFrame
   Left = 0
   Top = 0
-  Width = 1014
-  Height = 519
+  Width = 1144
+  Height = 626
   Align = alClient
   TabOrder = 0
   ExplicitWidth = 451
   ExplicitHeight = 305
   object Splitter: TSplitter
     Left = 0
-    Top = 311
-    Width = 1014
+    Top = 418
+    Width = 1144
     Height = 8
     Cursor = crVSplit
     Align = alBottom
@@ -20,6 +20,7 @@ object SpectrumFrame: TSpectrumFrame
     ParentColor = False
     ResizeStyle = rsUpdate
     ExplicitTop = 420
+    ExplicitWidth = 1014
   end
   object Label13: TLabel
     Left = 33
@@ -58,8 +59,8 @@ object SpectrumFrame: TSpectrumFrame
   end
   object PageControl: TPageControl
     Left = 0
-    Top = 319
-    Width = 1014
+    Top = 426
+    Width = 1144
     Height = 200
     ActivePage = ParametersTab
     Align = alBottom
@@ -86,7 +87,7 @@ object SpectrumFrame: TSpectrumFrame
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 1006
+        Width = 1136
         Height = 171
         Align = alClient
         BevelOuter = bvNone
@@ -499,10 +500,6 @@ object SpectrumFrame: TSpectrumFrame
       Font.Style = []
       ImageIndex = 1
       ParentFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object RawDataTable: TStringGrid
         Left = 0
         Top = 0
@@ -536,24 +533,25 @@ object SpectrumFrame: TSpectrumFrame
       OnShow = PeakInfoTabShow
       ExplicitLeft = 0
       ExplicitTop = 0
-      ExplicitWidth = 0
+      ExplicitWidth = 443
       ExplicitHeight = 0
       object ContentPanel: TPanel
         Left = 0
         Top = 0
-        Width = 1134
+        Width = 1119
         Height = 171
         Align = alClient
         BevelOuter = bvNone
         ParentBackground = False
         TabOrder = 0
+        ExplicitWidth = 443
         object EnergyLabel: TLabel
-          Left = 87
+          Left = 49
           Top = 6
-          Width = 50
+          Width = 88
           Height = 14
           Alignment = taRightJustify
-          Caption = 'Energiya:'
+          Caption = 'Energiya / O'#8216'rni:'
         end
         object EnergyValueLabel: TLabel
           Left = 141
@@ -658,8 +656,8 @@ object SpectrumFrame: TSpectrumFrame
   object SpectrumPanel: TPanel
     Left = 0
     Top = 0
-    Width = 1014
-    Height = 311
+    Width = 1144
+    Height = 418
     Align = alClient
     BevelOuter = bvNone
     Font.Charset = DEFAULT_CHARSET
@@ -676,8 +674,8 @@ object SpectrumFrame: TSpectrumFrame
       Tag = -1
       Left = 0
       Top = 0
-      Width = 1014
-      Height = 292
+      Width = 1144
+      Height = 399
       AllowPanning = pmNone
       Border.Visible = True
       BottomWall.Visible = False
@@ -765,8 +763,8 @@ object SpectrumFrame: TSpectrumFrame
     end
     object StatusBar: TStatusBar
       Left = 0
-      Top = 292
-      Width = 1014
+      Top = 399
+      Width = 1144
       Height = 19
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText

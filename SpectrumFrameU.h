@@ -139,8 +139,21 @@ public:
         return Spectrum.IsValid();
     }
     bool SwitchToLinLogScale();
-    bool FindPhotopeaks(const bool NeedsFound, const bool OpenningTab = false);
+    bool FindPhotopeaks(const bool NeedsFound, const bool PeakTabNeedsActivated = true);
     void ChangeUILanguage();
+    void Reset()
+    {
+        Modified = false;
+        LastValidTexts.clear();
+        Photopeaks.clear();
+        SpcChart->Repaint();
+        SetSpectrum(TSpectrum());
+        SpcChart->LeftAxis->Logarithmic = false;
+        SpcChart->LeftAxis->Increment = 100;
+        ClearPeakDetails();
+        CalibrateButton->Enabled = false;
+        PageControl->ActivePage = ParametersTab;
+    }
 };
 //---------------------------------------------------------------------------
 #endif

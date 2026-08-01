@@ -49,6 +49,14 @@ private:
     static String ShiftingEnergyValuesError;
     static String ShiftingChannelsCountError;
 
+    // Raw Data
+    // For GSP file, StringPart contains the whole file content.
+    // For ASW file, StringPart contains only alphanumeric lines.
+    std::unique_ptr<TStringList> StringPart;
+    // For GSP file, BinaryPart contains nothing.
+    // For ASW file, BinaryPart contains only binary data (data coming after [BEGIN]), i.e. histogram.
+    std::unique_ptr<TMemoryStream> BinaryPart;
+
     void ParseRawData();
     String ReadRawData(const String &Section, const String &Ident, const String &DefaultValue = L"") const;
     bool InvertMatrix3x3(const double Matrix[3][3], double Inverse[3][3]) const;
@@ -98,10 +106,6 @@ public:
     String ExtraStringData;
     double ExtraFloatData = 0;
 
-    // Raw Data
-    std::unique_ptr<TStringList> StringPart;
-    std::unique_ptr<TMemoryStream> BinaryPart;
-
 
     // ******************* Member functions *******************
     static double EnergyToChannel(const double e, const double a, const double b, const double c);
@@ -146,6 +150,8 @@ public:
 
     bool IsValid() const;
 
+    void SetSampleParams(const String &W, const String &V, const String &WU, const String &VU);
+
     bool LoadFromFile(const String &FileName, const bool ShowExceptionMsg = true);
 
     void ClearRawDataSection(const String &Section);
@@ -153,6 +159,8 @@ public:
     void WriteRawData(const String &Section, const String &Ident, const String &Value);
 
     bool SaveToFile(const String &FileName) const;
+
+    void CreateGSPContent();
 
     double CalculateCountByEnergyRange(const double Start, const double End) const;
 
@@ -411,6 +419,35 @@ void TSpectrum::ParseRawData()
     }
 }
 //---------------------------------------------------------------------------
+void TSpectrum::SetSampleParams(const String &W, const String &V, const String &WU, const String &VU)
+{
+    Weight = Sysutils::StrToFloatDef(W, 0.0);
+    CheckError(Weight > 0, SampleMassError);
+
+    Volume = Sysutils::StrToFloatDef(V, 0.0);
+    CheckError(Volume > 0, SampleVolumeError);
+
+    WeightUnit = WU;
+    CheckError(SameText(WeightUnit, L"g") || SameText(WeightUnit, L"kg"), SampleMassUnitError);
+
+    VolumeUnit = VU;
+    CheckError(
+        SameText(VolumeUnit, L"l") || SameText(VolumeUnit, L"ml") || SameText(VolumeUnit, L"m^3"),
+        SampleVolumeUnitError);
+
+    if (SameText(VolumeUnit, L"ml"))
+    {
+        Volume /= 1000.0;
+    }
+    else if (SameText(VolumeUnit, L"m^3"))
+    {
+        Volume *= 1000.0;
+    }
+
+    DensityInGramPerLitre = SameText(WeightUnit, L"kg") ? ((Weight * 1000) / Volume) : (Weight / Volume);
+    CheckError(DensityInGramPerLitre > 0, SampleDensityError);
+}
+//---------------------------------------------------------------------------
 bool TSpectrum::LoadFromFile(const String &FileName, const bool ShowExceptionMsg)
 {
     try
@@ -441,31 +478,11 @@ bool TSpectrum::LoadFromFile(const String &FileName, const bool ShowExceptionMsg
             DurationReal = Duration;
         }
 
-        Weight = wcstod(ReadRawData(L"Sample", L"Weight", L"0").c_str(), nullptr);
-        CheckError(Weight > 0, SampleMassError);
-
-        Volume = wcstod(ReadRawData(L"Sample", L"Volume", L"0").c_str(), nullptr);
-        CheckError(Volume > 0, SampleVolumeError);
-
-        WeightUnit = ReadRawData(L"Sample", L"Unit_weight", L"");
-        CheckError(SameText(WeightUnit, L"g") || SameText(WeightUnit, L"kg"), SampleMassUnitError);
-
-        VolumeUnit = ReadRawData(L"Sample", L"Unit_volume", L"");
-        CheckError(
-            SameText(VolumeUnit, L"l") || SameText(VolumeUnit, L"ml") || SameText(VolumeUnit, L"m^3"),
-            SampleVolumeUnitError);
-
-        if (SameText(VolumeUnit, L"ml"))
-        {
-            Volume /= 1000.0;
-        }
-        else if (SameText(VolumeUnit, L"m^3"))
-        {
-            Volume *= 1000.0;
-        }
-
-        DensityInGramPerLitre = SameText(WeightUnit, L"kg") ? ((Weight * 1000) / Volume) : (Weight / Volume);
-        CheckError(DensityInGramPerLitre > 0, SampleDensityError);
+        SetSampleParams(
+            ReadRawData(L"Sample", L"Weight", L"0"),
+            ReadRawData(L"Sample", L"Volume", L"0"),
+            ReadRawData(L"Sample", L"Unit_weight", L""),
+            ReadRawData(L"Sample", L"Unit_volume", L""));
 
         ChannelCount = ReadRawData(L"Channel_count", L"N", L"0").ToIntDef(0);
         CheckError(ChannelCount == 1024 || ChannelCount == 4096, ChannelCountError);
@@ -580,6 +597,42 @@ bool TSpectrum::SaveToFile(const String &FileName) const
         ErrorMessage = E.Message;
     }
     return false;
+}
+//---------------------------------------------------------------------------
+void TSpectrum::CreateGSPContent()
+{
+    StringPart->Clear();
+    StringPart->Add(L"[Exposition]");
+    StringPart->Add(L"Live=" + Sysutils::FloatToStrF(Duration, ffFixed, 15, 2));
+    StringPart->Add(L"Real=" +
+        Sysutils::FloatToStrF((DurationReal >= Duration ? DurationReal : Duration), ffFixed, 15, 2));
+    StringPart->Add(L"");
+
+    StringPart->Add(L"[Sample]");
+    StringPart->Add(L"Weight=" + Sysutils::FloatToStrF(Weight, ffFixed, 15, 2));
+    StringPart->Add(L"Volume=" + Sysutils::FloatToStrF(Volume, ffFixed, 15, 2));
+    StringPart->Add(L"Unit_weight=" + WeightUnit);
+    StringPart->Add(L"Unit_volume=" + VolumeUnit);
+    StringPart->Add(L"");
+
+    StringPart->Add(L"[Channel_count]");
+    StringPart->Add(L"N=" + IntToStr(ChannelCount));
+    StringPart->Add(L"");
+
+    StringPart->Add(L"[Energy_calibration]");
+    StringPart->Add(L"Channel1=" + Sysutils::FloatToStrF(Channel1, ffFixed, 15, 2));
+    StringPart->Add(L"Channel2=" + Sysutils::FloatToStrF(Channel2, ffFixed, 15, 2));
+    StringPart->Add(L"Energy1=" + Sysutils::FloatToStrF(Energy1, ffFixed, 15, 2));
+    StringPart->Add(L"Energy2=" + Sysutils::FloatToStrF(Energy2, ffFixed, 15, 2));
+    StringPart->Add(L"");
+
+    StringPart->Add(L"[SPECTRUM]");
+    for (const auto Count : Counts)
+    {
+        StringPart->Add(String(Math::Ceil(Count)));
+    }
+    BinaryPart.reset();
+    FileType = gsp;
 }
 //---------------------------------------------------------------------------
 bool TSpectrum::IsValid() const

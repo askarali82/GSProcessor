@@ -62,7 +62,7 @@ object MainForm: TMainForm
       ImageIndex = 4
       Style = tbsSeparator
     end
-    object ScaleButton: TToolButton
+    object LinLogButton: TToolButton
       Left = 78
       Top = 0
       Action = LinLogAction
@@ -91,6 +91,12 @@ object MainForm: TMainForm
         Visible = False
       end
       object N1: TMenuItem
+        Caption = '-'
+      end
+      object CloseMI: TMenuItem
+        Action = CloseAction
+      end
+      object N3: TMenuItem
         Caption = '-'
       end
       object SaveMI: TMenuItem
@@ -181,7 +187,6 @@ object MainForm: TMainForm
     object DecompositionMethodAction: TAction
       Caption = 'Tarkibiy &qismlarga ajratish'
       OnExecute = DecompositionMethodActionExecute
-      OnUpdate = DecompositionMethodActionUpdate
     end
     object LinLogAction: TAction
       Caption = '&Chiziqli masshtab'
@@ -224,6 +229,12 @@ object MainForm: TMainForm
       ShortCut = 24659
       OnExecute = SaveAsActionExecute
       OnUpdate = SaveAsActionUpdate
+    end
+    object CloseAction: TAction
+      Caption = '&Yopish'
+      ShortCut = 16471
+      OnExecute = CloseActionExecute
+      OnUpdate = CloseActionUpdate
     end
   end
   object OpenDialog: TOpenDialog

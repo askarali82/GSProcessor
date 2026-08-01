@@ -39,36 +39,83 @@ void TSpectrumFrame::SetSpectrum(const TSpectrum &ASpectrum)
 {
     Spectrum = ASpectrum;
     SpectrumLine->Clear();
-    for (size_t i = 0; i < Spectrum.Counts.size(); i++)
+    for (int i = 0; i < StatusBar->Panels->Count; i++)
     {
-        SpectrumLine->AddXY(Spectrum.Energies[i], Spectrum.Counts[i]);
-    }
-    LiveTimeEdit->Text = Utils::RoundFloatValue(Spectrum.Duration) + L" s";
-    RealTimeEdit->Text = Utils::RoundFloatValue(Spectrum.DurationReal) + L" s";
-
-    SampleMassEdit->Text = Utils::RoundFloatValue(Spectrum.Weight);
-    SampleMassUnitBox->ItemIndex = SampleMassUnitBox->Items->IndexOf(Spectrum.WeightUnit.LowerCase());
-
-    SampleVolumeEdit->Text = Utils::RoundFloatValue(Spectrum.Volume);
-    SampleVolumeUnitBox->ItemIndex = SampleVolumeUnitBox->Items->IndexOf(Spectrum.VolumeUnit.LowerCase());
-
-    const auto Total = Spectrum.CalculateTotalCount();
-    TotalCountEdit->Text = Utils::RoundFloatValue(Total);
-    CPSEdit->Text = Utils::RoundFloatValue(Total / Spectrum.Duration);
-
-    PointsBox->ItemIndex = PointsBox->Items->IndexOf(Spectrum.CalibrationPoints);
-    PointsBoxChange(PointsBox);
-    TEdit *ChanEdits[] = {Channel1Edit, Channel2Edit, Channel3Edit, Channel4Edit, Channel5Edit};
-    TEdit *EnEdits[] = {Energy1Edit, Energy2Edit, Energy3Edit, Energy4Edit, Energy5Edit};
-    const auto &Chans = Spectrum.GetCalPointsChannels();
-    const auto &Ens = Spectrum.GetCalPointsEnergies();
-    for (int i = 0; i < 5; i++)
-    {
-        ChanEdits[i]->Text = ChanEdits[i]->Enabled ? Utils::RoundFloatValue(Chans[i]) : String();
-        EnEdits[i]->Text = EnEdits[i]->Enabled ? Utils::RoundFloatValue(Ens[i]) : String();
+        StatusBar->Panels->Items[i]->Text = L"";
     }
 
-    RawDataTable->RowCount = Spectrum.Counts.size() + 1;
+    if (Spectrum.IsValid())
+    {
+        for (size_t i = 0; i < Spectrum.Counts.size(); i++)
+        {
+            SpectrumLine->AddXY(Spectrum.Energies[i], Spectrum.Counts[i]);
+        }
+
+        LiveTimeEdit->Text = Utils::RoundFloatValue(Spectrum.Duration) + L" s";
+        RealTimeEdit->Text = Utils::RoundFloatValue(Spectrum.DurationReal) + L" s";
+
+        SampleMassEdit->Text = Utils::RoundFloatValue(Spectrum.Weight);
+        SampleMassUnitBox->ItemIndex = SampleMassUnitBox->Items->IndexOf(Spectrum.WeightUnit.LowerCase());
+
+        SampleVolumeEdit->Text = Utils::RoundFloatValue(Spectrum.Volume);
+        SampleVolumeUnitBox->ItemIndex = SampleVolumeUnitBox->Items->IndexOf(Spectrum.VolumeUnit.LowerCase());
+
+        const auto Total = Spectrum.CalculateTotalCount();
+        TotalCountEdit->Text = Utils::RoundFloatValue(Total);
+        CPSEdit->Text = Utils::RoundFloatValue(Total / Spectrum.Duration);
+
+        PointsBox->ItemIndex = PointsBox->Items->IndexOf(Spectrum.CalibrationPoints);
+        PointsBoxChange(PointsBox);
+        TEdit *ChanEdits[] = {Channel1Edit, Channel2Edit, Channel3Edit, Channel4Edit, Channel5Edit};
+        TEdit *EnEdits[] = {Energy1Edit, Energy2Edit, Energy3Edit, Energy4Edit, Energy5Edit};
+        const auto &Chans = Spectrum.GetCalPointsChannels();
+        const auto &Ens = Spectrum.GetCalPointsEnergies();
+        for (int i = 0; i < 5; i++)
+        {
+            ChanEdits[i]->Text = ChanEdits[i]->Enabled ? Utils::RoundFloatValue(Chans[i]) : String();
+            EnEdits[i]->Text = EnEdits[i]->Enabled ? Utils::RoundFloatValue(Ens[i]) : String();
+        }
+
+        RawDataTable->RowCount = Spectrum.Counts.size() + 1;
+        for (size_t i = 0; i < Spectrum.Counts.size(); i++)
+        {
+            const int I = i + 1;
+            RawDataTable->Cells[0][I] = i;
+            RawDataTable->Cells[1][I] = Utils::RoundFloatValue(Spectrum.Energies[i]);
+            RawDataTable->Cells[2][I] = Utils::RoundFloatValue(Spectrum.Counts[i]);
+        }
+    }
+    else
+    {
+        LiveTimeEdit->Text = L"";
+        RealTimeEdit->Text = L"";
+
+        SampleMassEdit->Text = L"";
+        SampleMassUnitBox->ItemIndex = SampleMassUnitBox->Items->IndexOf(L"g");
+
+        SampleVolumeEdit->Text = L"";
+        SampleVolumeUnitBox->ItemIndex = SampleVolumeUnitBox->Items->IndexOf(L"l");
+
+        TotalCountEdit->Text = L"";
+        CPSEdit->Text = L"";
+
+        PointsBox->ItemIndex = PointsBox->Items->IndexOf(2);
+        PointsBoxChange(PointsBox);
+        TEdit *ChanEdits[] = {Channel1Edit, Channel2Edit, Channel3Edit, Channel4Edit, Channel5Edit};
+        TEdit *EnEdits[] = {Energy1Edit, Energy2Edit, Energy3Edit, Energy4Edit, Energy5Edit};
+        for (int i = 0; i < 5; i++)
+        {
+            ChanEdits[i]->Text = L"";
+            EnEdits[i]->Text = L"";
+        }
+
+        RawDataTable->RowCount = 1025;
+        for (int i = 0; i < RawDataTable->ColCount; i++)
+        {
+            RawDataTable->Cols[i]->Clear();
+        }
+    }
+
     if (LangID == 0)
     {
         RawDataTable->Cells[0][0] = L"Kanal";
@@ -80,13 +127,6 @@ void TSpectrumFrame::SetSpectrum(const TSpectrum &ASpectrum)
         RawDataTable->Cells[0][0] = L"Channel";
         RawDataTable->Cells[1][0] = L"Energy";
         RawDataTable->Cells[2][0] = L"Counts";
-    }
-    for (size_t i = 0; i < Spectrum.Counts.size(); i++)
-    {
-        const int I = i + 1;
-        RawDataTable->Cells[0][I] = i;
-        RawDataTable->Cells[1][I] = Utils::RoundFloatValue(Spectrum.Energies[i]);
-        RawDataTable->Cells[2][I] = Utils::RoundFloatValue(Spectrum.Counts[i]);
     }
 }
 //---------------------------------------------------------------------------
@@ -305,6 +345,18 @@ bool TSpectrumFrame::SwitchToLinLogScale()
 //---------------------------------------------------------------------------
 void __fastcall TSpectrumFrame::CalibrateButtonClick(TObject *Sender)
 {
+    String Points_1_and_2_Error = L"1 yoki 2-nuqtalarning kanal yoki energiya qiymatlari noto‘g‘ri.";
+    String Point_3_Error = L"3-nuqtaning kanal yoki energiya qiymati noto‘g‘ri.";
+    String Points_3_and_4_Error = L"3 yoki 4-nuqtalarning kanal yoki energiya qiymatlari noto‘g‘ri.";
+    String Channel_Energy_Values_Error = L"Nuqtalarning kanal yoki energiya qiymatlari noto‘g‘ri.";
+    if (LangID == 1)
+    {
+        Points_1_and_2_Error = L"Channel or energy value in point 1 or 2 is not valid.";
+        Point_3_Error = L"Channel or energy value in point 3 is not valid.";
+        Points_3_and_4_Error = L"Channel or energy value in point 3 or 4 is not valid.";
+        Channel_Energy_Values_Error = L"Channel or energy values in points are not valid.";
+    }
+
     auto TMPSpc = Spectrum;
     TMPSpc.CalibrationPoints = PointsBox->Text.ToIntDef(2);
     TMPSpc.Channel1 = Sysutils::StrToFloatDef(Channel1Edit->Text, 0);
@@ -321,8 +373,8 @@ void __fastcall TSpectrumFrame::CalibrateButtonClick(TObject *Sender)
         TMPSpc.Channel1 > 0 && TMPSpc.Channel2 > 0 &&
         TMPSpc.Channel2 > TMPSpc.Channel1 &&
         TMPSpc.Energy1 > 0 && TMPSpc.Energy2 > 0 &&
-        TMPSpc.Energy2 > TMPSpc.Energy1 &&
-        L"1 yoki 2-nuqtalarning kanal yoki energiya qiymatlari noto‘g‘ri.");
+        TMPSpc.Energy2 > TMPSpc.Energy1,
+        Points_1_and_2_Error);
     if (TMPSpc.CalibrationPoints > 2)
     {
         if (TMPSpc.Channel3 > 0 || TMPSpc.Energy3 > 0)
@@ -330,7 +382,7 @@ void __fastcall TSpectrumFrame::CalibrateButtonClick(TObject *Sender)
             TMPSpc.CheckError(
                 TMPSpc.Channel3 > 0 && TMPSpc.Energy3 > 0 &&
                 TMPSpc.Channel3 > TMPSpc.Channel2 && TMPSpc.Energy3 > TMPSpc.Energy2,
-                L"3-nuqtaning kanal yoki energiya qiymati noto‘g‘ri.");
+                Point_3_Error);
         }
         if (TMPSpc.Channel4 > 0 || TMPSpc.Energy4 > 0)
         {
@@ -338,7 +390,7 @@ void __fastcall TSpectrumFrame::CalibrateButtonClick(TObject *Sender)
                 TMPSpc.Channel3 > 0 && TMPSpc.Energy3 > 0 &&
                 TMPSpc.Channel4 > 0 && TMPSpc.Energy4 > 0 &&
                 TMPSpc.Channel4 > TMPSpc.Channel3 && TMPSpc.Energy4 > TMPSpc.Energy3,
-                L"3 yoki 4-nuqtalarning kanal yoki energiya qiymatlari noto‘g‘ri.");
+                Points_3_and_4_Error);
         }
         if (TMPSpc.Channel5 > 0 || TMPSpc.Energy5 > 0)
         {
@@ -347,7 +399,7 @@ void __fastcall TSpectrumFrame::CalibrateButtonClick(TObject *Sender)
                 TMPSpc.Channel4 > 0 && TMPSpc.Energy4 > 0 &&
                 TMPSpc.Channel5 > 0 && TMPSpc.Energy5 > 0 &&
                 TMPSpc.Channel5 > TMPSpc.Channel4 && TMPSpc.Energy5 > TMPSpc.Energy4,
-                L"Nuqtalarning kanal yoki energiya qiymatlari noto‘g‘ri.");
+                Channel_Energy_Values_Error);
         }
         TMPSpc.CalibrationType = TSpectrum::TCalibrationType::Quadratic;
         TMPSpc.CalibrateWithQuadraticFunction();
@@ -371,6 +423,11 @@ void __fastcall TSpectrumFrame::CalibrateButtonClick(TObject *Sender)
         SpectrumLine->AddXY(Spectrum.Energies[i], Spectrum.Counts[i]);
         RawDataTable->Cells[1][i + 1] = Utils::RoundFloatValue(Spectrum.Energies[i]);
     }
+    CalibrateButton->Enabled = false;
+    if (!Photopeaks.empty())
+    {
+        FindPhotopeaks(true, false);
+    }
 }
 //---------------------------------------------------------------------------
 void __fastcall TSpectrumFrame::OnFValueEditKeyPress(TObject *Sender, System::WideChar &Key)
@@ -393,8 +450,8 @@ void __fastcall TSpectrumFrame::OnFValueEditKeyPress(TObject *Sender, System::Wi
 //---------------------------------------------------------------------------
 void TSpectrumFrame::OnEditBoxChange(TEdit *Edit)
 {
-    UnicodeString &LastValidText = LastValidTexts[Edit];
-    const UnicodeString &S = Edit->Text;
+    String &LastValidText = LastValidTexts[Edit];
+    const String &S = Edit->Text;
     if (S.IsEmpty())
     {
         LastValidText = S;
@@ -432,23 +489,40 @@ bool TSpectrumFrame::SaveSpectrumToFile(const String &FileName)
 {
     try
     {
+        if (CalibrateButton->Enabled)
+        {
+            CalibrateButton->Click();
+        }
         const auto &Ext = Sysutils::ExtractFileExt(FileName).LowerCase();
         if (Ext == L".gsp")
         {
-            Spectrum.FileType = TSpectrum::TFileType::gsp;
+            if (Spectrum.FileType == TSpectrum::TFileType::asw)
+            {
+                Spectrum.CreateGSPContent();
+            }
         }
         else if (Ext == L".asw")
         {
-            Spectrum.FileType = TSpectrum::TFileType::asw;
+            if (Spectrum.FileType == TSpectrum::TFileType::gsp)
+            {
+                throw Exception(L"Cannot convert .gsp file into .asw.");
+            }
         }
         else
         {
             throw Exception(L"Filetype is unknown.");
         }
-        Spectrum.WriteRawData(L"Sample", L"Weight", SampleMassEdit->Text);
+
+        Spectrum.SetSampleParams(
+            SampleMassEdit->Text.Trim(),
+            SampleVolumeEdit->Text.Trim(),
+            SampleMassUnitBox->Text,
+            SampleVolumeUnitBox->Text);
+        Spectrum.WriteRawData(L"Sample", L"Weight", SampleMassEdit->Text.Trim());
         Spectrum.WriteRawData(L"Sample", L"Unit_weight", SampleMassUnitBox->Text);
-        Spectrum.WriteRawData(L"Sample", L"Volume", SampleVolumeEdit->Text);
+        Spectrum.WriteRawData(L"Sample", L"Volume", SampleVolumeEdit->Text.Trim());
         Spectrum.WriteRawData(L"Sample", L"Unit_volume", SampleVolumeUnitBox->Text);
+
         TEdit *ChanEdits[] = {Channel1Edit, Channel2Edit, Channel3Edit, Channel4Edit, Channel5Edit};
         TEdit *EnEdits[] = {Energy1Edit, Energy2Edit, Energy3Edit, Energy4Edit, Energy5Edit};
         Spectrum.ClearRawDataSection(L"Energy_calibration");
@@ -560,7 +634,7 @@ void __fastcall TSpectrumFrame::RawDataTableKeyDown(TObject *Sender, WORD &Key, 
     }
 }
 //---------------------------------------------------------------------------
-bool TSpectrumFrame::FindPhotopeaks(const bool NeedsFound, const bool OpenningTab)
+bool TSpectrumFrame::FindPhotopeaks(const bool NeedsFound, const bool PeakTabNeedsActivated)
 {
     if (!NeedsFound)
     {
@@ -644,7 +718,7 @@ bool TSpectrumFrame::FindPhotopeaks(const bool NeedsFound, const bool OpenningTa
     SpcChart->Repaint();
     if (!Photopeaks.empty())
     {
-        if (!OpenningTab)
+        if (PeakTabNeedsActivated)
         {
             PageControl->ActivePage = PeakInfoTab;
         }
@@ -659,7 +733,8 @@ void TSpectrumFrame::ShowPeakDetails(const PhotopeakInfo &Peak)
     if (Peak.LineIndex < GammaLines.size())
     {
         const auto &Line = GammaLines[Peak.LineIndex];
-        EnergyValueLabel->Caption = Utils::RoundFloatValue(Line.Energy, 1, false) + L" keV";
+        EnergyValueLabel->Caption = Utils::RoundFloatValue(Line.Energy, 1, false) + L" keV / " +
+            Utils::RoundFloatValue(Peak.Position, 1);
         NucleusNameLabel->Caption = Line.HeadParent;
         EmitterNameLabel->Caption =
             Line.ImmediateParent + L"  →  " + Line.ImmediateParentDecayMode + L"  →  " + Line.GammaEmitter;
@@ -700,7 +775,7 @@ void __fastcall TSpectrumFrame::PeakInfoTabShow(TObject *Sender)
     ClearPeakDetails();
     if (SpectrumLine->Count() > 0 && !MainForm->PhotopeaksAction->Checked)
     {
-        if (FindPhotopeaks(true, true))
+        if (FindPhotopeaks(true, false))
         {
             MainForm->PhotopeaksAction->Checked = true;
         }
@@ -748,7 +823,7 @@ void TSpectrumFrame::ChangeUILanguage()
         CalibrateButton->Caption = L"Kalibrovka qilish";
 
         RawDataTab->Caption = L"  Spektr ma’lumotlari  ";
-        if (ValidSpectrumExists())
+        if (RawDataTable->RowCount > 0)
         {
             RawDataTable->Cells[0][0] = L"Kanal";
             RawDataTable->Cells[1][0] = L"Energiya";
@@ -756,7 +831,7 @@ void TSpectrumFrame::ChangeUILanguage()
         }
 
         PeakInfoTab->Caption = L"  Fotocho‘qqi  ";
-        EnergyLabel->Caption = L"Energiya:";
+        EnergyLabel->Caption = L"Energiyasi / O‘rni:";
         NucleusLabel->Caption = L"Bosh / Ona yadro:";
         EmitterLabel->Caption = L"γ-nurlanuvchi yadro:";
         GammaYieldLabel->Caption = L"γ-nurlanish ehtimoliyati:";
@@ -790,7 +865,7 @@ void TSpectrumFrame::ChangeUILanguage()
         CalibrateButton->Caption = L"Calibrate";
 
         RawDataTab->Caption = L"  Spectrum Data  ";
-        if (ValidSpectrumExists())
+        if (RawDataTable->RowCount > 0)
         {
             RawDataTable->Cells[0][0] = L"Channel";
             RawDataTable->Cells[1][0] = L"Energy";
@@ -798,7 +873,7 @@ void TSpectrumFrame::ChangeUILanguage()
         }
 
         PeakInfoTab->Caption = L"  Photopeak  ";
-        EnergyLabel->Caption = L"Energy:";
+        EnergyLabel->Caption = L"Energy / Position:";
         NucleusLabel->Caption = L"Parent nucleus:";
         EmitterLabel->Caption = L"γ-emitting nucleus:";
         GammaYieldLabel->Caption = L"γ-emission yield:";

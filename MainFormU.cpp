@@ -29,13 +29,12 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     FormatSettings.ShortDateFormat = L"dd.mm.yyyy";
     Caption = APP_NAME;
 
-    CreateSettingsFile();
-    IniFile = std::make_unique<TMemIniFile>(
-        Utils::GetAppFolder() + SETTINGS_FILE_NAME, TEncoding::Unicode);
-
     SpectrumFrame = new TSpectrumFrame(this);
     SpectrumFrame->Parent = this;
 
+    CreateSettingsFile();
+    IniFile = std::make_unique<TMemIniFile>(
+        Utils::GetAppFolder() + SETTINGS_FILE_NAME, TEncoding::Unicode);
     int LangID = IniFile->ReadString(L"UILanguage", L"LangID", L"0").ToIntDef(0);
     if (LangID < 0 || LangID > 1)
     {
@@ -56,26 +55,30 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
     {
         RecentFiles->Delete(RecentFiles->Count - 1);
     }
-    int NExistingFiles = 0;
-    for (int i = 0; i < RecentFiles->Count; i++)
+    for (int i = 0; i < RecentFiles->Count;)
     {
         const int P = RecentFiles->Strings[i].Pos(L"=");
         if (P > 0)
         {
             const String &FileName =
                 RecentFiles->Strings[i].SubString(P + 1, RecentFiles->Strings[i].Length()).Trim();
-            RecentFiles->Strings[i] = FileName;
             if (Sysutils::FileExists(FileName))
             {
+                RecentFiles->Strings[i] = FileName;
                 TMenuItem *MenuItem = new TMenuItem(ReopenMI);
                 MenuItem->OnClick = OpenRecentFile;
                 MenuItem->Caption = FileName;
                 ReopenMI->Add(MenuItem);
-                NExistingFiles++;
+            }
+            else
+            {
+                RecentFiles->Delete(i);
+                continue;
             }
         }
+        i++;
     }
-    ReopenMI->Visible = NExistingFiles > 0;
+    ReopenMI->Visible = ReopenMI->Count > 0;
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::OnAppException(TObject* Sender, Exception* E)
@@ -142,9 +145,9 @@ void TMainForm::CreateSettingsFile()
                 L"ShowResultsWithMDA=1\r\n";
             TextFile->SaveToFile(SettingsFileName);
         }
-        catch (Exception &)
+        catch (Exception &E)
         {
-
+            LOGEXCEPTION(E);
         }
     }
 }
@@ -162,6 +165,7 @@ void TMainForm::ChangeUILanguage()
         File->Caption = L"&Fayl";
         OpenAction->Caption = L"&Ochish";
         ReopenMI->Caption = L"&Qaytadan ochish";
+        CloseAction->Caption = L"&Yopish";
         SaveAction->Caption = L"&Saqlash";
         SaveAsAction->Caption = L"&Boshqa nomda/formatda saqlash";
         SaveInTextFormatMI->Caption = L"&Matnli formatda saqlash";
@@ -192,6 +196,7 @@ void TMainForm::ChangeUILanguage()
         File->Caption = L"&File";
         OpenAction->Caption = L"&Open";
         ReopenMI->Caption = L"&Reopen";
+        CloseAction->Caption = L"&Close";
         SaveAction->Caption = L"&Save";
         SaveAsAction->Caption = L"Save &As...";
         SaveInTextFormatMI->Caption = L"Save in &plain text file";
@@ -226,13 +231,34 @@ void TMainForm::ChangeUILanguage()
 //---------------------------------------------------------------------------
 void TMainForm::AddFileNameToRecentList(const String &FileName)
 {
-    if (RecentFiles->IndexOf(FileName) == -1)
+    int I = RecentFiles->IndexOf(FileName);
+    if (I == -1)
     {
         RecentFiles->Insert(0, FileName);
         if (RecentFiles->Count > 10)
         {
             RecentFiles->Delete(RecentFiles->Count - 1);
         }
+
+    }
+    else if (I > 0)
+    {
+        RecentFiles->Delete(I);
+        RecentFiles->Insert(0, FileName);
+    }
+
+    I = -1;
+    for (int i = 0; I == -1 && i < ReopenMI->Count; i++)
+    {
+        const String &ItemCaption =
+            Sysutils::StringReplace(ReopenMI->Items[i]->Caption, "&", "", TReplaceFlags() << rfReplaceAll).LowerCase();
+        if (FileName.LowerCase() == ItemCaption)
+        {
+            I = i;
+        }
+    }
+    if (I == -1)
+    {
         TMenuItem *MenuItem = new TMenuItem(ReopenMI);
         MenuItem->OnClick = OpenRecentFile;
         MenuItem->Caption = FileName;
@@ -241,12 +267,24 @@ void TMainForm::AddFileNameToRecentList(const String &FileName)
         {
             delete ReopenMI->Items[ReopenMI->Count - 1];
         }
-        ReopenMI->Visible = true;
     }
+    else if (I > 0)
+    {
+        delete ReopenMI->Items[I];
+        TMenuItem *MenuItem = new TMenuItem(ReopenMI);
+        MenuItem->OnClick = OpenRecentFile;
+        MenuItem->Caption = FileName;
+        ReopenMI->Insert(0, MenuItem);
+    }
+    ReopenMI->Visible = ReopenMI->Count > 0;
 }
 //---------------------------------------------------------------------------
 bool TMainForm::OpenSpectrum(const String &FileName)
 {
+    if (!SpectrumFileName.IsEmpty() && Sysutils::CompareText(SpectrumFileName, FileName) == 0)
+    {
+        return true;
+    }
     TSpectrum Spc;
     if (!Spc.LoadFromFile(FileName))
     {
@@ -275,7 +313,6 @@ void __fastcall TMainForm::OpenActionExecute(TObject *Sender)
     {
         PhotopeaksAction->Execute();
     }
-
     AddFileNameToRecentList(OpenDialog->FileName);
 }
 //---------------------------------------------------------------------------
@@ -284,38 +321,24 @@ void __fastcall TMainForm::OpenRecentFile(TObject *Sender)
     TMenuItem *MenuItem = dynamic_cast<TMenuItem *>(Sender);
     const String &FileName =
         Sysutils::StringReplace(MenuItem->Caption, "&", "", TReplaceFlags() << rfReplaceAll);
-    OpenSpectrum(FileName);
-    if (PhotopeaksAction->Checked)
+    if (OpenSpectrum(FileName))
     {
-        PhotopeaksAction->Execute();
-    }
-
-    int I = ReopenMI->IndexOf(MenuItem);
-    if (I > 0)
-    {
-        delete MenuItem;
-        MenuItem = new TMenuItem(ReopenMI);
-        MenuItem->OnClick = OpenRecentFile;
-        MenuItem->Caption = FileName;
-        ReopenMI->Insert(0, MenuItem);
-    }
-
-    I = RecentFiles->IndexOf(FileName);
-    if (I > 0)
-    {
-        RecentFiles->Delete(I);
-        RecentFiles->Insert(0, FileName);
+        if (PhotopeaksAction->Checked)
+        {
+            PhotopeaksAction->Execute();
+        }
+        AddFileNameToRecentList(FileName);
     }
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::SaveActionExecute(TObject *Sender)
 {
     const int NPoints = SpectrumFrame->PointsBox->Text.ToIntDef(2);
-    if (NPoints == 2)
+    if (NPoints == 2 || Sysutils::ExtractFileExt(SpectrumFileName).LowerCase() == L".gsp")
     {
         SpectrumFrame->SaveSpectrumToFile(SpectrumFileName);
     }
-    else if (NPoints > 2)
+    else
     {
         SaveDialog->Filter = L"GSP fayllar (*.gsp)|*.gsp";
         SaveDialog->DefaultExt = L"gsp";
@@ -341,13 +364,13 @@ void __fastcall TMainForm::SaveActionUpdate(TObject *Sender)
 void __fastcall TMainForm::SaveAsActionExecute(TObject *Sender)
 {
     SaveDialog->Filter = L"GSP fayllar (*.gsp)|*.gsp";
-    if (SpectrumFrame->PointsBox->Text.ToIntDef(2) == 2)
+    if (Sysutils::ExtractFileExt(SpectrumFileName).LowerCase() == L".asw")
     {
         SaveDialog->Filter = SaveDialog->Filter + L"|ASW fayllar (*.asw)|*.asw";
         SaveDialog->FilterIndex = 1;
     }
     SaveDialog->DefaultExt = L"gsp";
-    SaveDialog->FileName = L"";
+    SaveDialog->FileName = Sysutils::ChangeFileExt(SpectrumFileName, L"");
     if (!SaveDialog->Execute(Handle))
     {
         return;
@@ -491,12 +514,12 @@ void __fastcall TMainForm::PhotopeaksActionExecute(TObject *Sender)
 {
     if (PhotopeaksAction->Checked)
     {
-        if (SpectrumFrame->FindPhotopeaks(false))
+        if (SpectrumFrame->FindPhotopeaks(false, false))
         {
             PhotopeaksAction->Checked = false;
         }
     }
-    else if (SpectrumFrame->FindPhotopeaks(true))
+    else if (SpectrumFrame->FindPhotopeaks(true, true))
     {
         PhotopeaksAction->Checked = true;
     }
@@ -523,11 +546,6 @@ void __fastcall TMainForm::DecompositionMethodActionExecute(TObject *Sender)
     }
     AnalysisForm->Show();
     AnalysisForm->BringToFront();
-}
-//---------------------------------------------------------------------------
-void __fastcall TMainForm::DecompositionMethodActionUpdate(TObject *Sender)
-{
-     DecompositionMethodAction->Enabled = SpectrumFrame->ValidSpectrumExists();
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::BatchProcessing_FilesActionExecute(TObject *Sender)
@@ -577,6 +595,22 @@ void __fastcall TMainForm::SettingsActionExecute(TObject *Sender)
 void __fastcall TMainForm::ExitActionExecute(TObject *Sender)
 {
     Close();
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::CloseActionExecute(TObject *Sender)
+{
+    SpectrumFrame->Reset();
+    LinLogAction->Checked = true;
+    LinLogButton->Down = true;
+    PhotopeaksAction->Checked = false;
+    SpectrumFileName = L"";
+    Caption = APP_NAME;
+    SaveInTextFormatMI->Enabled = false;
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainForm::CloseActionUpdate(TObject *Sender)
+{
+    CloseAction->Enabled = SpectrumFrame->ValidSpectrumExists();
 }
 //---------------------------------------------------------------------------
 

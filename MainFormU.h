@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-
 #ifndef MainFormUH
 #define MainFormUH
 //---------------------------------------------------------------------------
@@ -63,7 +62,7 @@ __published:	// IDE-managed Components
     TToolBar *ToolBar;
     TToolButton *OpenButton;
     TToolButton *SaveButton;
-    TToolButton *ScaleButton;
+    TToolButton *LinLogButton;
     TToolButton *ToolButton1;
     TToolButton *ToolButton2;
     TToolButton *ToolButton3;
@@ -78,6 +77,9 @@ __published:	// IDE-managed Components
     TAction *ExitAction;
     TMenuItem *SaveAsMI;
     TAction *SaveAsAction;
+    TAction *CloseAction;
+    TMenuItem *CloseMI;
+    TMenuItem *N3;
     void __fastcall OpenActionExecute(TObject *Sender);
     void __fastcall SaveActionExecute(TObject *Sender);
     void __fastcall SaveActionUpdate(TObject *Sender);
@@ -93,10 +95,11 @@ __published:	// IDE-managed Components
     void __fastcall BatchProcessing_FolderActionExecute(TObject *Sender);
     void __fastcall SettingsActionExecute(TObject *Sender);
     void __fastcall ExitActionExecute(TObject *Sender);
-    void __fastcall DecompositionMethodActionUpdate(TObject *Sender);
     void __fastcall SaveAsActionExecute(TObject *Sender);
     void __fastcall SaveAsActionUpdate(TObject *Sender);
     void __fastcall SaveDialogTypeChange(TObject *Sender);
+    void __fastcall CloseActionExecute(TObject *Sender);
+    void __fastcall CloseActionUpdate(TObject *Sender);
 
 
 private:

@@ -11,7 +11,6 @@
 #include <cmath>
 #include <vector>
 #include <windows.h>
-#include "Spectrum.hpp"
 //---------------------------------------------------------------------------
 #define LOG(Msg)                Utils::Log(__FUNC__, __LINE__, Msg)
 #define LOGEXCEPTION(E)         Utils::LogException(E, __FUNC__, __LINE__)
