@@ -153,7 +153,7 @@ double CPhotopeakSearcher::CalculateFWHMAtEnergy(double energy_keV) const
             // Estimate from FSigma (which is in channels)
             double sigma_keV_ref = FSigma * FCalibrationA1;  // Convert to keV at reference
             double fwhm_ref = sigma_keV_ref * 2.355;
-            return fwhm_ref * std::sqrt(energy_keV / 662.0);
+            return fwhm_ref * (energy_keV < 0.0 ? 0.0 : std::sqrt(energy_keV / 662.0));
         }
         else
         {
