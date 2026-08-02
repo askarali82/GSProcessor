@@ -833,7 +833,7 @@ copy /Y "$(PROJECTDIR)\bin\nuclide.dat" "$(PROJECTDIR)\bin\Deploy\nuclide.dat"]]
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent>copy /Y &quot;$(PROJECTDIR)\bin\GSProcessor.exe&quot; &quot;$(PROJECTDIR)\bin\Deploy\GSProcessor.exe&quot;&amp;&amp;copy /Y &quot;$(PROJECTDIR)\bin\peaks.dll&quot; &quot;$(PROJECTDIR)\bin\Deploy\peaks.dll&quot;&amp;&amp;copy /Y &quot;$(PROJECTDIR)\bin\nuclide.dat&quot; &quot;$(PROJECTDIR)\bin\Deploy\nuclide.dat&quot;</PostBuildEvent>
+        <PostBuildEvent><![CDATA[copy /Y "$(PROJECTDIR)\bin\GSProcessor.exe" "$(PROJECTDIR)\bin\Deploy\GSProcessor.exe"&&copy /Y "$(PROJECTDIR)\bin\peaks.dll" "$(PROJECTDIR)\bin\Deploy\peaks.dll"&&copy /Y "$(PROJECTDIR)\bin\nuclide.dat" "$(PROJECTDIR)\bin\Deploy\nuclide.dat"]]></PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>
