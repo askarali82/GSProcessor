@@ -2,14 +2,14 @@
 #define MainExeName     "GSProcessor.exe"
 
 [Setup]
-PrivilegesRequired       = admin
+PrivilegesRequired       = lowest
 SourceDir                = "{#SourcePath}\bin\Deploy"
 AppName                  = {#ProductName}
 AppVersion               = "4.1.0"      
 VersionInfoVersion       = "4.1.0.0"
 AppCopyright             = Samarkand State University, Askarali Azimov
 AppPublisher             = Askarali Azimov
-DefaultDirName           = "{commonpf32}\{#ProductName}"
+DefaultDirName           = "{localappdata}\Programs\{#ProductName}"
 DisableWelcomePage       = no
 DisableProgramGroupPage  = yes
 UninstallDisplayName     = "{#ProductName}"
@@ -23,8 +23,8 @@ WizardSmallImageFile     = "{#SourcePath}\Images\Logo-48x48.bmp"
 Source: "*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 
 [Icons]
-Name: "{commonprograms}\{#ProductName}\{#ProductName}";   Filename: "{app}\{#MainExeName}";    Tasks: startmenu;
-Name: "{commondesktop}\{#ProductName}";                   Filename: "{app}\{#MainExeName}";    Tasks: desktop;
+Name: "{userprograms}\{#ProductName}\{#ProductName}"; Filename: "{app}\{#MainExeName}"; Tasks: startmenu;
+Name: "{userdesktop}\{#ProductName}";                 Filename: "{app}\{#MainExeName}"; Tasks: desktop;
 
 [Tasks]
 Name: startmenu; Description: "Create shortcuts on Start Menu";
@@ -35,21 +35,20 @@ ConfirmUninstall=Are you sure you want to completely remove %1 and all of its co
 Please, CLOSE %1 first if it is running.
 
 [Registry]
-Root: HKLM; Subkey: "Software\Classes\.gsp"; ValueType: string; ValueName: ""; ValueData: "GSProcessor.SpectrumFile"; \
+Root: HKCU; Subkey: "Software\Classes\.gsp"; ValueType: string; ValueName: ""; ValueData: "GSProcessor.SpectrumFile"; \
     Flags: uninsdeletevalue
 
-Root: HKLM; Subkey: "Software\Classes\GSProcessor.SpectrumFile"; ValueType: string; ValueName: ""; ValueData: "GSProcessor Spectrum File"; \
+Root: HKCU; Subkey: "Software\Classes\GSProcessor.SpectrumFile"; ValueType: string; ValueName: ""; ValueData: "GSProcessor Spectrum File"; \
     Flags: uninsdeletekey
 
-Root: HKLM; Subkey: "Software\Classes\GSProcessor.SpectrumFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\GSProcessor.exe,0"; \
+Root: HKCU; Subkey: "Software\Classes\GSProcessor.SpectrumFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\GSProcessor.exe,0"; \
     Flags: uninsdeletevalue
 
-Root: HKLM; Subkey: "Software\Classes\GSProcessor.SpectrumFile\shell\open\command"; ValueType: string; ValueName: ""; \
+Root: HKCU; Subkey: "Software\Classes\GSProcessor.SpectrumFile\shell\open\command"; ValueType: string; ValueName: ""; \
     ValueData: """{app}\GSProcessor.exe"" ""%1"""; Flags: uninsdeletevalue
 
 [Code]
 const
-  SYS_ENV_KEY = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
   WM_SETTINGCHANGE = $001A;
   SMTO_ABORTIFHUNG = $0002;
   SHCNE_ASSOCCHANGED = $08000000;
@@ -73,7 +72,7 @@ var
   Path: String;
   ResultCode: DWORD;
 begin
-  if not RegQueryStringValue(HKLM, SYS_ENV_KEY, 'Path', Path) then
+  if not RegQueryStringValue(HKCU, 'Environment', 'Path', Path) then
   begin
     Path := '';
   end;
@@ -84,7 +83,7 @@ begin
   end;
 
   Path := Dir + ';' + Path;
-  RegWriteExpandStringValue(HKLM, SYS_ENV_KEY, 'Path', Path);
+  RegWriteExpandStringValue(HKCU, 'Environment', 'Path', Path);
 
   SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 'Environment', SMTO_ABORTIFHUNG, 5000, ResultCode);
 end;
@@ -95,7 +94,7 @@ var
   P: Integer;
   ResultCode: DWORD;
 begin
-  if not RegQueryStringValue(HKLM, SYS_ENV_KEY, 'Path', Path) then
+  if not RegQueryStringValue(HKCU, 'Environment', 'Path', Path) then
   begin
     Exit;
   end;
@@ -107,7 +106,7 @@ begin
   begin
     Delete(Path, P, Length(Dir) + 1);
     Path := Copy(Path, 2, Length(Path) - 2);
-    RegWriteExpandStringValue(HKLM, SYS_ENV_KEY, 'Path', Path);
+    RegWriteExpandStringValue(HKCU, 'Environment', 'Path', Path);
 
     SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 'Environment', SMTO_ABORTIFHUNG, 5000, ResultCode);
   end;
@@ -123,11 +122,23 @@ begin
 end;
 //--------------------------------------------------------------------------------------------------------------
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var
+  AppDataFolder: string;
 begin
   if CurUninstallStep = usPostUninstall then
   begin
     RemoveFromPath(ExpandConstant('{app}\root\bin'));
     RefreshShellIcons();
+
+    AppDataFolder := ExpandConstant('{userappdata}\{#ProductName}');
+    if DirExists(AppDataFolder) then
+    begin
+      if MsgBox('Do you also want to delete {#ProductName} configuration and log files?' + #13#10 +
+                AppDataFolder, mbConfirmation, MB_YESNO) = IDYES then
+      begin
+        DelTree(AppDataFolder, True, True, True);
+      end;
+    end;
   end;
 end;
 //--------------------------------------------------------------------------------------------------------------
