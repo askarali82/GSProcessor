@@ -588,28 +588,25 @@ bool TSettingsForm::VolumesAreValid(String &ErrorMessage) const
 //---------------------------------------------------------------------------
 void __fastcall TSettingsForm::SaveButtonClick(TObject *Sender)
 {
-    String ErrorMessage =
-        L"Iltimos etalon va fon namunalari maʼlumotlarini kiriting.";
-    String Title = L"Xato";
-    if (LangID == 1)
-    {
-        ErrorMessage = L"Please enter standard and background samples data.";
-        Title = L"Error";
-    }
-    const String &DetectorName = DetectorSelector->Text.Trim();
-    if (DetectorName.IsEmpty() ||
+    const String Title = LangID == 0 ? L"Xato" : L"Error";
+
+    String ErrorMessage;
+    if (DetectorSelector->Text.Trim().IsEmpty() ||
         (!Density_1_SamplesValid() &&
         !Density_2_SamplesValid() &&
         !Density_3_SamplesValid()))
     {
-        Application->MessageBox(ErrorMessage.c_str(), Title.c_str(), MB_OK | MB_ICONERROR);
-        return;
+        ErrorMessage = L"Iltimos etalon va fon namunalari maʼlumotlarini kiriting.";
+        if (LangID == 1)
+        {
+            ErrorMessage = L"Please enter standard and background samples data.";
+        }
     }
-    if (!VolumesAreValid(ErrorMessage))
+    if (ErrorMessage.IsEmpty())
     {
-        Application->MessageBox(ErrorMessage.c_str(), Title.c_str(), MB_OK | MB_ICONERROR);
-        return;
+        VolumesAreValid(ErrorMessage);
     }
+
     if (Density_1_SamplesValid())
     {
         SaveDensity_1_Data();
@@ -628,6 +625,13 @@ void __fastcall TSettingsForm::SaveButtonClick(TObject *Sender)
     IniFile->WriteInteger(L"UILanguage", L"LangID", LanguageBox->ItemIndex);
     LangID = LanguageBox->ItemIndex;
     IniFile->UpdateFile();
+
+    if (!ErrorMessage.IsEmpty())
+    {
+        Application->MessageBox(ErrorMessage.c_str(), Title.c_str(), MB_OK | MB_ICONERROR);
+        return;
+    }
+
     ModalResult = mrOk;
 }
 //---------------------------------------------------------------------------
