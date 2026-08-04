@@ -106,6 +106,7 @@ __published:	// IDE-managed Components
     void __fastcall CloseActionUpdate(TObject *Sender);
     void __fastcall FormShow(TObject *Sender);
     void __fastcall OnParameterFileOpeningTimer(TObject *Sender);
+    void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
 
 
 private:
@@ -124,6 +125,7 @@ private:
     void __fastcall OpenRecentFile(TObject* Sender);
     void AddFileNameToRecentList(const String &FileName);
     void ReadPeakSearchDetails();
+    bool RequestToClose();
 
 public:
     __fastcall TMainForm(TComponent* Owner);

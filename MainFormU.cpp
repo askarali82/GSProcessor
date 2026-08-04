@@ -482,6 +482,11 @@ void __fastcall TMainForm::LinLogActionUpdate(TObject *Sender)
     LinLogAction->Enabled = SpectrumFrame->SpectrumLine->Count() > 0;
 }
 //---------------------------------------------------------------------------
+void __fastcall TMainForm::FormCloseQuery(TObject *Sender, bool &CanClose)
+{
+    CanClose = RequestToClose();
+}
+//---------------------------------------------------------------------------
 void __fastcall TMainForm::FormClose(TObject *Sender, TCloseAction &Action)
 {
     try
@@ -657,6 +662,10 @@ void __fastcall TMainForm::ExitActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::CloseActionExecute(TObject *Sender)
 {
+    if (!RequestToClose())
+    {
+        return;
+    }
     SpectrumFrame->Reset();
     LinLogAction->Checked = true;
     LinLogButton->Down = true;
@@ -669,6 +678,31 @@ void __fastcall TMainForm::CloseActionExecute(TObject *Sender)
 void __fastcall TMainForm::CloseActionUpdate(TObject *Sender)
 {
     CloseAction->Enabled = SpectrumFrame->ValidSpectrumExists();
+}
+//---------------------------------------------------------------------------
+bool TMainForm::RequestToClose()
+{
+    if (SpectrumFrame->CanBeSaved())
+    {
+        String Prompt = L"O‘zgarishlarni saqlashni xohlaysizmi?";
+        String Title = L"DIQQAT!";
+        if (LangID == 1)
+        {
+            Prompt = L"Do you want to save changes?";
+            Title = L"WARNING!";
+        }
+        const int MsgBoxRes =
+            Application->MessageBox(Prompt.c_str(), Title.c_str(), MB_YESNOCANCEL | MB_ICONWARNING);
+        if (MsgBoxRes == IDCANCEL)
+        {
+            return false;
+        }
+        else if (MsgBoxRes == IDYES)
+        {
+            SaveAction->Execute();
+        }
+    }
+    return true;
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::FormShow(TObject *Sender)

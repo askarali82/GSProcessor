@@ -14,6 +14,7 @@ object MainForm: TMainForm
   OldCreateOrder = False
   Position = poDesigned
   OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
