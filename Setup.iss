@@ -19,6 +19,9 @@ SetupIconFile            = "{#SourcePath}\Images\Logo-36x36.ico"
 OutputBaseFilename       = "{#ProductName}Setup"
 WizardSmallImageFile     = "{#SourcePath}\Images\Logo-48x48.bmp"
 
+[Run]
+Filename: "{app}\{#MainExeName}"; Description: "{cm:LaunchProgram,{#ProductName}}"; Flags: nowait postinstall skipifsilent
+
 [Files]
 Source: "*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 
