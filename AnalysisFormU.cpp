@@ -216,9 +216,6 @@ TData TAnalysisForm::GetData() const
 
         BeSysError,
 
-        MinPeakWidth,
-        MaxEnergyError,
-
         {ThActivityErrors[0], ThActivityErrors[1], ThActivityErrors[2]},
         {RaActivityErrors[0], RaActivityErrors[1], RaActivityErrors[2]},
         {KActivityErrors[0],  KActivityErrors[1],  KActivityErrors[2]},
@@ -426,6 +423,22 @@ bool TAnalysisForm::Initialize()
         {
             Application->MessageBox(ErrorMessage.c_str(), ErrorTitle.c_str(), MB_OK | MB_ICONERROR);
         }
+        else
+        {
+            const String Title = LangID == 0 ? L"DIQQAT!" : L"WARNING!";
+            if (LangID == 0)
+            {
+                ErrorMessage =
+                    L"Iltimos, oldin etalon va fon namunalari spektrlari va ular haqidagi ma’lumotlarni kiriting.";
+            }
+            else
+            {
+                ErrorMessage =
+                    L"Please first enter the information about the reference and background samples spectra.";
+            }
+            Application->MessageBox(
+                ErrorMessage.c_str(), (LangID == 0 ? L"DIQQAT!" : L"WARNING!"), MB_OK | MB_ICONWARNING);
+        }
         if (Form->ShowModal() != mrOk)
         {
             Close();
@@ -483,9 +496,6 @@ void TAnalysisForm::SetEnergyRanges(TSettingsForm *Settings)
     BePhotopeakEff3 = Strs.size() > 2 ? (Sysutils::StrToFloatDef(Strs[2].Trim(), 0) / 100.0) : 0;
 
     BeSysError = Sysutils::StrToFloatDef(Settings->Be7SystematicErrorEdit->Text.Trim(), 0) / 100.0;
-
-    MinPeakWidth = Sysutils::StrToFloatDef(Settings->GetSetting(L"PeakSearch", L"MinPeakWidth"), 0);
-    MaxEnergyError = Sysutils::StrToFloatDef(Settings->GetSetting(L"PeakSearch", L"MaxEnergyError"), 0);
 }
 //---------------------------------------------------------------------------
 bool TAnalysisForm::ValidSpectra(const int Idx) const

@@ -368,10 +368,6 @@ private:
 
     double BeSysError;
 
-    //Search peaks
-    double MinPeakWidth;
-    double MaxEnergyError;
-
     // Coefficients
     double ThC = 0;
     double RaC = 0;
