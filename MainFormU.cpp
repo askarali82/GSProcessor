@@ -575,12 +575,12 @@ void __fastcall TMainForm::PhotopeaksActionExecute(TObject *Sender)
 {
     if (PhotopeaksAction->Checked)
     {
-        if (SpectrumFrame->FindPhotopeaks(false, false))
+        if (SpectrumFrame->FindPhotopeaks(false))
         {
             PhotopeaksAction->Checked = false;
         }
     }
-    else if (SpectrumFrame->FindPhotopeaks(true, true))
+    else if (SpectrumFrame->FindPhotopeaks(true))
     {
         PhotopeaksAction->Checked = true;
     }

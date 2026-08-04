@@ -33,6 +33,7 @@ __fastcall TSpectrumFrame::TSpectrumFrame(TComponent* Owner):
     SpcChart->LeftAxis->Title->Font->Size = 10;
     SpcChart->BottomAxis->Title->Font->Size = 10;
     PageControl->ActivePage = ParametersTab;
+    ClearPeakDetails();
 }
 //---------------------------------------------------------------------------
 void TSpectrumFrame::SetSpectrum(const TSpectrum &ASpectrum)
@@ -426,7 +427,7 @@ void __fastcall TSpectrumFrame::CalibrateButtonClick(TObject *Sender)
     CalibrateButton->Enabled = false;
     if (!Photopeaks.empty())
     {
-        FindPhotopeaks(true, false);
+        FindPhotopeaks(true);
     }
 }
 //---------------------------------------------------------------------------
@@ -634,12 +635,13 @@ void __fastcall TSpectrumFrame::RawDataTableKeyDown(TObject *Sender, WORD &Key, 
     }
 }
 //---------------------------------------------------------------------------
-bool TSpectrumFrame::FindPhotopeaks(const bool NeedsFound, const bool PeakTabNeedsActivated)
+bool TSpectrumFrame::FindPhotopeaks(const bool NeedsFound)
 {
     if (!NeedsFound || PeakSearchDetails.size() < 2)
     {
         Photopeaks.clear();
         SpcChart->Repaint();
+        ClearPeakDetails();
         return true;
     }
     if (!Spectrum.IsValid())
@@ -723,10 +725,6 @@ bool TSpectrumFrame::FindPhotopeaks(const bool NeedsFound, const bool PeakTabNee
     SpcChart->Repaint();
     if (!Photopeaks.empty())
     {
-        if (PeakTabNeedsActivated)
-        {
-            PageControl->ActivePage = PeakInfoTab;
-        }
         ClearPeakDetails();
     }
     return !Photopeaks.empty();
@@ -773,18 +771,6 @@ void __fastcall TSpectrumFrame::PageControlDrawTab(TCustomTabControl *Control, i
     C->Font->Color = TextColor;
     const String &Caption = PageControl->Pages[TabIndex]->Caption;
     C->TextOut(Rect.Left + 6, Rect.Top + 4, Caption);
-}
-//---------------------------------------------------------------------------
-void __fastcall TSpectrumFrame::PeakInfoTabShow(TObject *Sender)
-{
-    ClearPeakDetails();
-    if (SpectrumLine->Count() > 0 && !MainForm->PhotopeaksAction->Checked)
-    {
-        if (FindPhotopeaks(true, false))
-        {
-            MainForm->PhotopeaksAction->Checked = true;
-        }
-    }
 }
 //---------------------------------------------------------------------------
 void __fastcall TSpectrumFrame::CopyMIClick(TObject *Sender)
@@ -835,7 +821,7 @@ void TSpectrumFrame::ChangeUILanguage()
             RawDataTable->Cells[2][0] = L"Impulslar soni";
         }
 
-        PeakInfoTab->Caption = L"  Fotocho‘qqi  ";
+        PhotopeakGroupBox->Caption = L"  Fotocho‘qqi  ";
         EnergyLabel->Caption = L"Energiyasi / O‘rni:";
         NucleusLabel->Caption = L"Bosh / Ona yadro:";
         EmitterLabel->Caption = L"γ-nurlanuvchi yadro:";
@@ -877,7 +863,7 @@ void TSpectrumFrame::ChangeUILanguage()
             RawDataTable->Cells[2][0] = L"Counts";
         }
 
-        PeakInfoTab->Caption = L"  Photopeak  ";
+        PhotopeakGroupBox->Caption = L"  Photopeak  ";
         EnergyLabel->Caption = L"Energy / Position:";
         NucleusLabel->Caption = L"Parent nucleus:";
         EmitterLabel->Caption = L"γ-emitting nucleus:";
@@ -888,3 +874,10 @@ void TSpectrumFrame::ChangeUILanguage()
 
     PointsBox->Left = PointsLabel->Left + PointsLabel->Width + 5;
 }
+//---------------------------------------------------------------------------
+void __fastcall TSpectrumFrame::ParametersPanelResize(TObject *Sender)
+{
+    PhotopeakGroupBox->Width = ParametersPanel->Width - PhotopeakGroupBox->Left - 2;
+}
+//---------------------------------------------------------------------------
+

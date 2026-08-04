@@ -78,22 +78,21 @@ __published:
     TLabel *Energy3Label;
     TLabel *Energy4Label;
     TLabel *Energy5Label;
-    TPanel *Panel1;
-    TButton *CalibrateButton;
-    TTabSheet *PeakInfoTab;
-    TPanel *ContentPanel;
-    TLabel *EnergyLabel;
-    TLabel *EnergyValueLabel;
-    TLabel *NucleusNameLabel;
-    TLabel *NucleusLabel;
-    TLabel *EmitterLabel;
-    TLabel *EmitterNameLabel;
-    TLabel *SeriesNameLabel;
-    TLabel *SeriesLabel;
-    TLabel *GammaYieldLabel;
-    TLabel *GammaYieldValueLabel;
+    TPanel *ParametersPanel;
     TPopupMenu *TablePopupMenu;
     TMenuItem *CopyMI;
+    TGroupBox *PhotopeakGroupBox;
+    TLabel *EnergyLabel;
+    TLabel *EnergyValueLabel;
+    TLabel *NucleusLabel;
+    TLabel *NucleusNameLabel;
+    TLabel *EmitterNameLabel;
+    TLabel *EmitterLabel;
+    TLabel *GammaYieldLabel;
+    TLabel *GammaYieldValueLabel;
+    TLabel *SeriesLabel;
+    TLabel *SeriesNameLabel;
+    TButton *CalibrateButton;
     void __fastcall SpcChartMouseMove(TObject *Sender, TShiftState Shift, int X,
           int Y);
     void __fastcall SpcChartAfterDraw(TObject *Sender);
@@ -106,10 +105,10 @@ __published:
     void __fastcall RawDataTableKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
     void __fastcall PageControlDrawTab(TCustomTabControl *Control, int TabIndex,
           const TRect &Rect, bool Active);
-    void __fastcall PeakInfoTabShow(TObject *Sender);
     void __fastcall CopyMIClick(TObject *Sender);
     void __fastcall RawDataTableMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
+    void __fastcall ParametersPanelResize(TObject *Sender);
 
 private:
     TSpectrum Spectrum;
@@ -138,7 +137,7 @@ public:
         return Spectrum.IsValid();
     }
     bool SwitchToLinLogScale();
-    bool FindPhotopeaks(const bool NeedsFound, const bool PeakTabNeedsActivated = true);
+    bool FindPhotopeaks(const bool NeedsFound);
     void ChangeUILanguage();
     void SetPeakSearchDetails(const std::vector<std::pair<double, double>> &APeakSearchDetails)
     {

@@ -3095,6 +3095,10 @@ void __fastcall TAnalysisForm::FinalSpcPopupMenuPopup(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TAnalysisForm::OnSpcPanelClick(TObject *Sender)
 {
+    if (IsRebinningEnabled)
+    {
+        return;
+    }
     if (SelectedSpcPanel != nullptr)
     {
         SelectedSpcPanel->Color = clBtnFace;
