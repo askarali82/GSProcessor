@@ -12,6 +12,7 @@
 #include <Vcl.Imaging.pngimage.hpp>
 #include <System.IniFiles.hpp>
 #include <Vcl.Buttons.hpp>
+#include <System.DateUtils.hpp>
 #include <memory>
 //---------------------------------------------------------------------------
 // Language ID
@@ -165,10 +166,6 @@ __published:
     TLabeledEdit *Be7PhotopeakEffEdit;
     TLabeledEdit *Be7SystematicErrorEdit;
     TSpeedButton *ShowBottomButton;
-    TLabeledEdit *Point1FWHMEdit;
-    TLabeledEdit *Point1EnergyEdit;
-    TLabeledEdit *Point2EnergyEdit;
-    TLabeledEdit *Point2FWHMEdit;
     TLabel *DetectorNameLabel;
     TComboBox *DetectorSelector;
     TBitBtn *AddDetectorButton;
@@ -176,6 +173,18 @@ __published:
     TEdit *DetectorEditor;
     TLabel *LanguageLabel;
     TComboBox *LanguageBox;
+    TEdit *RaEnergyEdit;
+    TEdit *BeEnergyEdit;
+    TEdit *CsEnergyEdit;
+    TEdit *KEnergyEdit;
+    TEdit *ThEnergyEdit;
+    TLabel *Label2;
+    TEdit *ThFWHMEdit;
+    TEdit *BeFWHMEdit;
+    TEdit *CsFWHMEdit;
+    TEdit *KFWHMEdit;
+    TEdit *RaFWHMEdit;
+    TLabel *Label15;
     void __fastcall SaveButtonClick(TObject *Sender);
     void __fastcall BrowseButtonClick(TObject *Sender);
     void __fastcall FileNameChange(TObject *Sender);
@@ -197,6 +206,7 @@ private:
     TMemIniFile *IniFile;
     std::unique_ptr<TControlCanvas> ScrollBoxCanvas;
     System::Classes::TWndMethod OldScrollBoxProc;
+    bool EnergyRangesValidated;
 
     void ReadDetectorNames();
     int FindDetectorIndex(String Name) const;
@@ -214,8 +224,8 @@ private:
     void SaveDensity_3_Data();
 
     void ChangeUILanguage();
-
     void __fastcall NewScrollBoxProc(Winapi::Messages::TMessage &Message);
+    void InitDateSelectors();
 
 public:
     __fastcall TSettingsForm(TComponent* Owner, TMemIniFile *AIniFile);
@@ -239,24 +249,19 @@ public:
             (Sysutils::StrToFloatDef(CsEnergy2Edit->Text, 0) > Sysutils::StrToFloatDef(CsEnergy1Edit->Text, 0));
     }
 
-    bool Density_1_SamplesValid() const
+    bool Density_1_SamplesValid()
     {
         return
-            EnergyRangesValid() &&
+            (EnergyRangesValidated || (EnergyRangesValidated = EnergyRangesValid())) &&
             !(Sysutils::StrToFloatDef(Th1ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Th1ErrorEdit->Text, 0) <= 0 ||
             Sysutils::StrToFloatDef(Ra1ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Ra1ErrorEdit->Text, 0) <= 0 ||
             Sysutils::StrToFloatDef(K1ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(K1ErrorEdit->Text, 0) <= 0 ||
             Sysutils::StrToFloatDef(Cs1ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Cs1ErrorEdit->Text, 0) <= 0 ||
 
-            Th1Date->Date >= Now() ||
-            Ra1Date->Date >= Now() ||
-            K1Date->Date >= Now() ||
-            Cs1Date->Date >= Now() ||
-
-            Th1MesDate->Date < Th1Date->Date || Th1MesDate->Date >= Now() ||
-            Ra1MesDate->Date < Ra1Date->Date || Ra1MesDate->Date >= Now() ||
-            K1MesDate->Date < K1Date->Date || K1MesDate->Date >= Now() ||
-            Cs1MesDate->Date < Cs1Date->Date || Cs1MesDate->Date >= Now() ||
+            Th1MesDate->Date < Th1Date->Date ||
+            Ra1MesDate->Date < Ra1Date->Date ||
+            K1MesDate->Date < K1Date->Date ||
+            Cs1MesDate->Date < Cs1Date->Date ||
 
             !Sysutils::FileExists(Th1FileName->Text) ||
             !Sysutils::FileExists(Ra1FileName->Text) ||
@@ -265,24 +270,19 @@ public:
             !Sysutils::FileExists(Bkg1FileName->Text));
     }
 
-    bool Density_2_SamplesValid() const
+    bool Density_2_SamplesValid()
     {
         return
-            EnergyRangesValid() &&
+            (EnergyRangesValidated || (EnergyRangesValidated = EnergyRangesValid())) &&
             !(Sysutils::StrToFloatDef(Th2ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Th2ErrorEdit->Text, 0) <= 0 ||
             Sysutils::StrToFloatDef(Ra2ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Ra2ErrorEdit->Text, 0) <= 0 ||
             Sysutils::StrToFloatDef(K2ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(K2ErrorEdit->Text, 0) <= 0 ||
             Sysutils::StrToFloatDef(Cs2ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Cs2ErrorEdit->Text, 0) <= 0 ||
 
-            Th2Date->Date >= Now() ||
-            Ra2Date->Date >= Now() ||
-            K2Date->Date >= Now() ||
-            Cs2Date->Date >= Now() ||
-
-            Th2MesDate->Date < Th2Date->Date || Th2MesDate->Date >= Now() ||
-            Ra2MesDate->Date < Ra2Date->Date || Ra2MesDate->Date >= Now() ||
-            K2MesDate->Date < K2Date->Date || K2MesDate->Date >= Now() ||
-            Cs2MesDate->Date < Cs2Date->Date || Cs2MesDate->Date >= Now() ||
+            Th2MesDate->Date < Th2Date->Date ||
+            Ra2MesDate->Date < Ra2Date->Date ||
+            K2MesDate->Date < K2Date->Date ||
+            Cs2MesDate->Date < Cs2Date->Date ||
 
             !Sysutils::FileExists(Th2FileName->Text) ||
             !Sysutils::FileExists(Ra2FileName->Text) ||
@@ -291,24 +291,19 @@ public:
             !Sysutils::FileExists(Bkg2FileName->Text));
     }
 
-    bool Density_3_SamplesValid() const
+    bool Density_3_SamplesValid()
     {
         return
-            EnergyRangesValid() &&
+            (EnergyRangesValidated || (EnergyRangesValidated = EnergyRangesValid())) &&
             !(Sysutils::StrToFloatDef(Th3ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Th3ErrorEdit->Text, 0) <= 0 ||
             Sysutils::StrToFloatDef(Ra3ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Ra3ErrorEdit->Text, 0) <= 0 ||
             Sysutils::StrToFloatDef(K3ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(K3ErrorEdit->Text, 0) <= 0 ||
             Sysutils::StrToFloatDef(Cs3ActivityEdit->Text, 0) <= 0 || Sysutils::StrToFloatDef(Cs3ErrorEdit->Text, 0) <= 0 ||
 
-            Th3Date->Date >= Now() ||
-            Ra3Date->Date >= Now() ||
-            K3Date->Date >= Now() ||
-            Cs3Date->Date >= Now() ||
-
-            Th3MesDate->Date < Th3Date->Date || Th3MesDate->Date >= Now() ||
-            Ra3MesDate->Date < Ra3Date->Date || Ra3MesDate->Date >= Now() ||
-            K3MesDate->Date < K3Date->Date || K3MesDate->Date >= Now() ||
-            Cs3MesDate->Date < Cs3Date->Date || Cs3MesDate->Date >= Now() ||
+            Th3MesDate->Date < Th3Date->Date ||
+            Ra3MesDate->Date < Ra3Date->Date ||
+            K3MesDate->Date < K3Date->Date ||
+            Cs3MesDate->Date < Cs3Date->Date ||
 
             !Sysutils::FileExists(Th3FileName->Text) ||
             !Sysutils::FileExists(Ra3FileName->Text) ||
@@ -319,7 +314,7 @@ public:
 
     String GetSetting(const String &Section, const String &Name) const;
 
-    bool VolumesAreValid(String &ErrorMessage) const;
+    bool VolumesAreValid(String &ErrorMessage);
 };
 //---------------------------------------------------------------------------
 #endif

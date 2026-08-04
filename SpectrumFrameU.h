@@ -19,6 +19,8 @@
 #include <unordered_map>
 #include "peaks/PhotopeakSearcher.h"
 #include "NuclideLibU.h"
+#include <utility>
+#include <vector>
 //---------------------------------------------------------------------------
 extern std::atomic<int> LangID;
 //---------------------------------------------------------------------------
@@ -109,15 +111,12 @@ __published:
     void __fastcall RawDataTableMouseUp(TObject *Sender, TMouseButton Button, TShiftState Shift,
           int X, int Y);
 
-
-
-
-
 private:
     TSpectrum Spectrum;
     bool Modified;
     std::unordered_map<TEdit*, String> LastValidTexts;
     std::vector<PhotopeakInfo> Photopeaks;
+    std::vector<std::pair<double, double>> PeakSearchDetails;
 
     void CopySelectedCells();
     void OnEditBoxChange(TEdit *Edit);
@@ -141,6 +140,10 @@ public:
     bool SwitchToLinLogScale();
     bool FindPhotopeaks(const bool NeedsFound, const bool PeakTabNeedsActivated = true);
     void ChangeUILanguage();
+    void SetPeakSearchDetails(const std::vector<std::pair<double, double>> &APeakSearchDetails)
+    {
+        PeakSearchDetails = APeakSearchDetails;
+    }
     void Reset()
     {
         Modified = false;

@@ -42,10 +42,6 @@ struct TData
 
     double BeSysError;
 
-    //Search peaks
-    double MinPeakWidth;
-    double MaxEnergyError;
-
     // Std samples activity errors
     double ThActivityErrors[3];
     double RaActivityErrors[3];

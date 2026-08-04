@@ -15,11 +15,13 @@ __fastcall TSettingsForm::TSettingsForm(TComponent* Owner, TMemIniFile *AIniFile
     TForm(Owner),
     DefaultDetectorName(L"YangiDetektor"),
     IniFile(AIniFile),
-    ScrollBoxCanvas(new TControlCanvas())
+    ScrollBoxCanvas(new TControlCanvas()),
+    EnergyRangesValidated(false)
 {
     ScrollBoxCanvas->Control = ScrollBox;
     OldScrollBoxProc = ScrollBox->WindowProc;
     ScrollBox->WindowProc = NewScrollBoxProc;
+    InitDateSelectors();
     IniFile->CaseSensitive = false;
     ReadDetectorNames();
     Th1Button->Tag = reinterpret_cast<NativeInt>(Th1FileName);
@@ -64,6 +66,38 @@ __fastcall TSettingsForm::TSettingsForm(TComponent* Owner, TMemIniFile *AIniFile
         IniFile->ReadBool(L"Others", ShowResultsWithMDA->Name, ShowResultsWithMDA->Checked);
 
     ChangeUILanguage();
+}
+//---------------------------------------------------------------------------
+void TSettingsForm::InitDateSelectors()
+{
+    const TDate TODAY = Today();
+
+    Th1Date->Date = TODAY;
+    Ra1Date->Date = TODAY;
+    K1Date->Date = TODAY;
+    Cs1Date->Date = TODAY;
+    Th1MesDate->Date = TODAY;
+    Ra1MesDate->Date = TODAY;
+    K1MesDate->Date = TODAY;
+    Cs1MesDate->Date = TODAY;
+
+    Th2Date->Date = TODAY;
+    Ra2Date->Date = TODAY;
+    K2Date->Date = TODAY;
+    Cs2Date->Date = TODAY;
+    Th2MesDate->Date = TODAY;
+    Ra2MesDate->Date = TODAY;
+    K2MesDate->Date = TODAY;
+    Cs2MesDate->Date = TODAY;
+
+    Th3Date->Date = TODAY;
+    Ra3Date->Date = TODAY;
+    K3Date->Date = TODAY;
+    Cs3Date->Date = TODAY;
+    Th3MesDate->Date = TODAY;
+    Ra3MesDate->Date = TODAY;
+    K3MesDate->Date = TODAY;
+    Cs3MesDate->Date = TODAY;
 }
 //---------------------------------------------------------------------------
 void TSettingsForm::ReadDetectorNames()
@@ -238,16 +272,30 @@ void TSettingsForm::LoadEnergyRanges()
 {
     try
     {
-        ThEnergy1Edit->Text = IniFile->ReadFloat(L"EnergyRanges", ThEnergy1Edit->Name, 2500);
-        ThEnergy2Edit->Text = IniFile->ReadFloat(L"EnergyRanges", ThEnergy2Edit->Name, 2720);
-        RaEnergy1Edit->Text = IniFile->ReadFloat(L"EnergyRanges", RaEnergy1Edit->Name, 1677);
-        RaEnergy2Edit->Text = IniFile->ReadFloat(L"EnergyRanges", RaEnergy2Edit->Name, 1846);
-        KEnergy1Edit->Text = IniFile->ReadFloat(L"EnergyRanges", KEnergy1Edit->Name, 1385);
-        KEnergy2Edit->Text = IniFile->ReadFloat(L"EnergyRanges", KEnergy2Edit->Name, 1540);
-        CsEnergy1Edit->Text = IniFile->ReadFloat(L"EnergyRanges", CsEnergy1Edit->Name, 612);
-        CsEnergy2Edit->Text = IniFile->ReadFloat(L"EnergyRanges", CsEnergy2Edit->Name, 709);
-        BeEnergy1Edit->Text = IniFile->ReadFloat(L"EnergyRanges", BeEnergy1Edit->Name, 430);
-        BeEnergy2Edit->Text = IniFile->ReadFloat(L"EnergyRanges", BeEnergy2Edit->Name, 525);
+        ThEnergyEdit->Text = IniFile->ReadFloat(L"Photopeaks", ThEnergyEdit->Name, 2614.5);
+        ThEnergy1Edit->Text = IniFile->ReadFloat(L"Photopeaks", ThEnergy1Edit->Name, 2500);
+        ThEnergy2Edit->Text = IniFile->ReadFloat(L"Photopeaks", ThEnergy2Edit->Name, 2720);
+        ThFWHMEdit->Text = IniFile->ReadFloat(L"Photopeaks", ThFWHMEdit->Name, 0);
+
+        RaEnergyEdit->Text = IniFile->ReadFloat(L"Photopeaks", RaEnergyEdit->Name, 1764.5);
+        RaEnergy1Edit->Text = IniFile->ReadFloat(L"Photopeaks", RaEnergy1Edit->Name, 1677);
+        RaEnergy2Edit->Text = IniFile->ReadFloat(L"Photopeaks", RaEnergy2Edit->Name, 1846);
+        RaFWHMEdit->Text = IniFile->ReadFloat(L"Photopeaks", RaFWHMEdit->Name, 0);
+
+        KEnergyEdit->Text = IniFile->ReadFloat(L"Photopeaks", KEnergyEdit->Name, 1460.8);
+        KEnergy1Edit->Text = IniFile->ReadFloat(L"Photopeaks", KEnergy1Edit->Name, 1385);
+        KEnergy2Edit->Text = IniFile->ReadFloat(L"Photopeaks", KEnergy2Edit->Name, 1540);
+        KFWHMEdit->Text = IniFile->ReadFloat(L"Photopeaks", KFWHMEdit->Name, 72.0);
+
+        CsEnergyEdit->Text = IniFile->ReadFloat(L"Photopeaks", CsEnergyEdit->Name, 661.6);
+        CsEnergy1Edit->Text = IniFile->ReadFloat(L"Photopeaks", CsEnergy1Edit->Name, 612);
+        CsEnergy2Edit->Text = IniFile->ReadFloat(L"Photopeaks", CsEnergy2Edit->Name, 709);
+        CsFWHMEdit->Text = IniFile->ReadFloat(L"Photopeaks", CsFWHMEdit->Name, 45.8);
+
+        BeEnergyEdit->Text = IniFile->ReadFloat(L"Photopeaks", BeEnergyEdit->Name, 477.6);
+        BeEnergy1Edit->Text = IniFile->ReadFloat(L"Photopeaks", BeEnergy1Edit->Name, 430);
+        BeEnergy2Edit->Text = IniFile->ReadFloat(L"Photopeaks", BeEnergy2Edit->Name, 525);
+        BeFWHMEdit->Text = IniFile->ReadFloat(L"Photopeaks", BeFWHMEdit->Name, 0);
     }
     catch (Exception &)
     {
@@ -258,16 +306,30 @@ void TSettingsForm::SaveEnergyRanges()
 {
     try
     {
-        IniFile->WriteFloat(L"EnergyRanges", ThEnergy1Edit->Name, Sysutils::StrToFloatDef(ThEnergy1Edit->Text, 0));
-        IniFile->WriteFloat(L"EnergyRanges", ThEnergy2Edit->Name, Sysutils::StrToFloatDef(ThEnergy2Edit->Text, 0));
-        IniFile->WriteFloat(L"EnergyRanges", RaEnergy1Edit->Name, Sysutils::StrToFloatDef(RaEnergy1Edit->Text, 0));
-        IniFile->WriteFloat(L"EnergyRanges", RaEnergy2Edit->Name, Sysutils::StrToFloatDef(RaEnergy2Edit->Text, 0));
-        IniFile->WriteFloat(L"EnergyRanges", KEnergy1Edit->Name, Sysutils::StrToFloatDef(KEnergy1Edit->Text, 0));
-        IniFile->WriteFloat(L"EnergyRanges", KEnergy2Edit->Name, Sysutils::StrToFloatDef(KEnergy2Edit->Text, 0));
-        IniFile->WriteFloat(L"EnergyRanges", CsEnergy1Edit->Name, Sysutils::StrToFloatDef(CsEnergy1Edit->Text, 0));
-        IniFile->WriteFloat(L"EnergyRanges", CsEnergy2Edit->Name, Sysutils::StrToFloatDef(CsEnergy2Edit->Text, 0));
-        IniFile->WriteFloat(L"EnergyRanges", BeEnergy1Edit->Name, Sysutils::StrToFloatDef(BeEnergy1Edit->Text, 0));
-        IniFile->WriteFloat(L"EnergyRanges", BeEnergy2Edit->Name, Sysutils::StrToFloatDef(BeEnergy2Edit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", ThEnergyEdit->Name, Sysutils::StrToFloatDef(ThEnergyEdit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", ThEnergy1Edit->Name, Sysutils::StrToFloatDef(ThEnergy1Edit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", ThEnergy2Edit->Name, Sysutils::StrToFloatDef(ThEnergy2Edit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", ThFWHMEdit->Name, Sysutils::StrToFloatDef(ThFWHMEdit->Text, 0));
+
+        IniFile->WriteFloat(L"Photopeaks", RaEnergyEdit->Name, Sysutils::StrToFloatDef(RaEnergyEdit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", RaEnergy1Edit->Name, Sysutils::StrToFloatDef(RaEnergy1Edit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", RaEnergy2Edit->Name, Sysutils::StrToFloatDef(RaEnergy2Edit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", RaFWHMEdit->Name, Sysutils::StrToFloatDef(RaFWHMEdit->Text, 0));
+
+        IniFile->WriteFloat(L"Photopeaks", KEnergyEdit->Name, Sysutils::StrToFloatDef(KEnergyEdit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", KEnergy1Edit->Name, Sysutils::StrToFloatDef(KEnergy1Edit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", KEnergy2Edit->Name, Sysutils::StrToFloatDef(KEnergy2Edit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", KFWHMEdit->Name, Sysutils::StrToFloatDef(KFWHMEdit->Text, 0));
+
+        IniFile->WriteFloat(L"Photopeaks", CsEnergyEdit->Name, Sysutils::StrToFloatDef(CsEnergyEdit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", CsEnergy1Edit->Name, Sysutils::StrToFloatDef(CsEnergy1Edit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", CsEnergy2Edit->Name, Sysutils::StrToFloatDef(CsEnergy2Edit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", CsFWHMEdit->Name, Sysutils::StrToFloatDef(CsFWHMEdit->Text, 0));
+
+        IniFile->WriteFloat(L"Photopeaks", BeEnergyEdit->Name, Sysutils::StrToFloatDef(BeEnergyEdit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", BeEnergy1Edit->Name, Sysutils::StrToFloatDef(BeEnergy1Edit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", BeEnergy2Edit->Name, Sysutils::StrToFloatDef(BeEnergy2Edit->Text, 0));
+        IniFile->WriteFloat(L"Photopeaks", BeFWHMEdit->Name, Sysutils::StrToFloatDef(BeFWHMEdit->Text, 0));
     }
     catch (Exception &)
     {
@@ -524,7 +586,7 @@ void TSettingsForm::SaveDensity_3_Data()
     }
 }
 //---------------------------------------------------------------------------
-bool TSettingsForm::VolumesAreValid(String &ErrorMessage) const
+bool TSettingsForm::VolumesAreValid(String &ErrorMessage)
 {
     const int __LangID = LangID;
 
@@ -715,10 +777,12 @@ void TSettingsForm::ChangeUILanguage()
         Label21->Caption = Label34->Caption;
         Label31->Caption = Label29->Caption;
 
-        EnergiesTitleLabel->Caption = L"Foydalaniluvchi fotocho‘qqilar sohalari (chap va o‘ng nuqtalari)";
+        EnergiesTitleLabel->Caption = L"Foydalaniluvchi fotocho‘qqilar";
         Label33->Caption = Label40->Caption;
+        Label2->Caption = L"Markaz, keV";
         Label9->Caption = L"keV dan";
         Label32->Caption = L"keV gacha";
+        Label15->Caption = L"YBTK (FWHM), keV";
 
         OtherSettingsTitleLabel->Caption = L"Boshqa sozlamalar";
         Be7PhotopeakEffEdit->EditLabel->Caption = L"Be-7 uchun fotocho‘qqi effektivligi, %:";
@@ -732,22 +796,6 @@ void TSettingsForm::ChangeUILanguage()
             Be7SystematicErrorEdit->Left - Be7SystematicErrorEdit->EditLabel->Width - Label33->Left;
         LanguageLabel->Caption = L"Interfeys tili (Interface language):";
         ShowResultsWithMDA->Caption = L"Natijalarni <AMA ko‘rinishida yoz";
-
-        Point1EnergyEdit->EditLabel->Caption = L"1-nuqtadagi Energiya (keV):";
-        Point1EnergyEdit->Left =
-            Label33->Left + Point1EnergyEdit->EditLabel->Width + Point1EnergyEdit->LabelSpacing;
-        Point1FWHMEdit->EditLabel->Caption = L"1-nuqtadagi YBTK (keV):";
-        Point1FWHMEdit->Left = Point1EnergyEdit->Left;
-        Point1FWHMEdit->LabelSpacing =
-            Point1FWHMEdit->Left - Point1FWHMEdit->EditLabel->Width - Label33->Left;
-
-        Point2EnergyEdit->EditLabel->Caption = L"2-nuqtadagi Energiya (keV):";
-        Point2EnergyEdit->Left =
-            Label33->Left + Point2EnergyEdit->EditLabel->Width + Point2EnergyEdit->LabelSpacing;
-        Point2FWHMEdit->EditLabel->Caption = L"2-nuqtadagi YBTK (keV):";
-        Point2FWHMEdit->Left = Point2EnergyEdit->Left;
-        Point2FWHMEdit->LabelSpacing =
-            Point2FWHMEdit->Left - Point2FWHMEdit->EditLabel->Width - Label33->Left;
 
         SaveButton->Caption = L"&Saqlash";
         CloseButton->Caption = L"&Yopish";
@@ -781,10 +829,12 @@ void TSettingsForm::ChangeUILanguage()
         Label21->Caption = Label34->Caption;
         Label31->Caption = Label29->Caption;
 
-        EnergiesTitleLabel->Caption = L"Areas of photopeaks used (left and right points)";
+        EnergiesTitleLabel->Caption = L"Photopeaks used";
         Label33->Caption = Label40->Caption;
+        Label2->Caption = L"Center, keV";
         Label9->Caption = L"From keV";
         Label32->Caption = L"To keV";
+        Label15->Caption = L"FWHM, keV";
 
         OtherSettingsTitleLabel->Caption = L"Other settings";
         Be7PhotopeakEffEdit->EditLabel->Caption = L"Photopeak efficiency for Be-7, %:";
@@ -798,22 +848,6 @@ void TSettingsForm::ChangeUILanguage()
             Be7SystematicErrorEdit->Left - Be7SystematicErrorEdit->EditLabel->Width - Label33->Left;
         LanguageLabel->Caption = L"Interface language:";
         ShowResultsWithMDA->Caption = L"Write results in <MDA format";
-
-        Point1EnergyEdit->EditLabel->Caption = L"Energy at point 1 (keV):";
-        Point1EnergyEdit->Left =
-            Label33->Left + Point1EnergyEdit->EditLabel->Width + Point1EnergyEdit->LabelSpacing;
-        Point1FWHMEdit->EditLabel->Caption = L"FWHM at point 1 (keV):";
-        Point1FWHMEdit->Left = Point1EnergyEdit->Left;
-        Point1FWHMEdit->LabelSpacing =
-            Point1FWHMEdit->Left - Point1FWHMEdit->EditLabel->Width - Label33->Left;
-
-        Point2EnergyEdit->EditLabel->Caption = L"Energy at point 2 (keV):";
-        Point2EnergyEdit->Left =
-            Label33->Left + Point2EnergyEdit->EditLabel->Width + Point2EnergyEdit->LabelSpacing;
-        Point2FWHMEdit->EditLabel->Caption = L"FWHM at point 2 (keV):";
-        Point2FWHMEdit->Left = Point2EnergyEdit->Left;
-        Point2FWHMEdit->LabelSpacing =
-            Point2FWHMEdit->Left - Point2FWHMEdit->EditLabel->Width - Label33->Left;
 
         SaveButton->Caption = L"&Save";
         CloseButton->Caption = L"&Close";

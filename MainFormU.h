@@ -18,6 +18,8 @@
 #include <Vcl.ToolWin.hpp>
 #include <Vcl.AppEvnts.hpp>
 #include <Vcl.ExtCtrls.hpp>
+#include <utility>
+#include <vector>
 //---------------------------------------------------------------------------
 // Language ID
 // 0 => Uzbek
@@ -112,6 +114,7 @@ private:
     TSpectrumFrame *SpectrumFrame;
     std::unique_ptr<TMemIniFile> IniFile;
     std::unique_ptr<TStringList> RecentFiles;
+    std::vector<std::pair<double, double>> PeakSearchDetails;
 
     void __fastcall OnAppException(TObject* Sender, Exception* E);
     void CreateSettingsFile();
@@ -120,6 +123,7 @@ private:
     bool OpenSpectrum(const String &FileName);
     void __fastcall OpenRecentFile(TObject* Sender);
     void AddFileNameToRecentList(const String &FileName);
+    void ReadPeakSearchDetails();
 
 public:
     __fastcall TMainForm(TComponent* Owner);

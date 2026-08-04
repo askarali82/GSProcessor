@@ -636,7 +636,7 @@ void __fastcall TSpectrumFrame::RawDataTableKeyDown(TObject *Sender, WORD &Key, 
 //---------------------------------------------------------------------------
 bool TSpectrumFrame::FindPhotopeaks(const bool NeedsFound, const bool PeakTabNeedsActivated)
 {
-    if (!NeedsFound)
+    if (!NeedsFound || PeakSearchDetails.size() < 2)
     {
         Photopeaks.clear();
         SpcChart->Repaint();
@@ -658,7 +658,12 @@ bool TSpectrumFrame::FindPhotopeaks(const bool NeedsFound, const bool PeakTabNee
             return false;
         }
         SetCalibration(Handle, Spectrum.A, Spectrum.B, Spectrum.C);
-        SetResolutionFromMeasurements(Handle, 45.8, 661, 72, 1460);
+        SetResolutionFromMeasurements(
+            Handle,
+            PeakSearchDetails[0].second,
+            PeakSearchDetails[0].first,
+            PeakSearchDetails[1].second,
+            PeakSearchDetails[1].first);
         SetSearchSigma(Handle, 6.5);
         SetSearchThreshold(Handle, 0.005);
         SetSearchMaxPeaks(Handle, 200);

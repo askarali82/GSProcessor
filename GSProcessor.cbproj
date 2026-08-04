@@ -150,7 +150,10 @@
         <IntermediateOutputDir>.\GSPTemp</IntermediateOutputDir>
         <PostBuildEvent><![CDATA[copy /Y "$(PROJECTDIR)\bin\GSProcessor.exe" "$(PROJECTDIR)\bin\Deploy\GSProcessor.exe"
 copy /Y "$(PROJECTDIR)\bin\peaks.dll" "$(PROJECTDIR)\bin\Deploy\peaks.dll"
-copy /Y "$(PROJECTDIR)\bin\nuclide.dat" "$(PROJECTDIR)\bin\Deploy\nuclide.dat"]]></PostBuildEvent>
+copy /Y "$(PROJECTDIR)\bin\nuclide.dat" "$(PROJECTDIR)\bin\Deploy\nuclide.dat"
+copy /Y "$(PROJECTDIR)\bin\GSProcessor.exe" "C:\Users\azimo\AppData\Local\Programs\GSProcessor\GSProcessor.exe"
+copy /Y "$(PROJECTDIR)\bin\peaks.dll" "C:\Users\azimo\AppData\Local\Programs\GSProcessor\peaks.dll"
+copy /Y "$(PROJECTDIR)\bin\nuclide.dat" "C:\Users\azimo\AppData\Local\Programs\GSProcessor\nuclide.dat"]]></PostBuildEvent>
         <Icon_MainIcon>Images\Logo-36x36.ico</Icon_MainIcon>
         <VerInfo_MinorVer>1</VerInfo_MinorVer>
     </PropertyGroup>
@@ -265,7 +268,6 @@ copy /Y "$(PROJECTDIR)\bin\nuclide.dat" "$(PROJECTDIR)\bin\Deploy\nuclide.dat"]]
                     <Source Name="MainSource">GSProcessor.cpp</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\DataExplorerDBXPluginEnt260.bpl">DBExpress Enterprise Data Explorer Integration</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k260.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcbofficexp260.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                 </Excluded_Packages>
@@ -833,7 +835,7 @@ copy /Y "$(PROJECTDIR)\bin\nuclide.dat" "$(PROJECTDIR)\bin\Deploy\nuclide.dat"]]
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent><![CDATA[copy /Y "$(PROJECTDIR)\bin\GSProcessor.exe" "$(PROJECTDIR)\bin\Deploy\GSProcessor.exe"&&copy /Y "$(PROJECTDIR)\bin\peaks.dll" "$(PROJECTDIR)\bin\Deploy\peaks.dll"&&copy /Y "$(PROJECTDIR)\bin\nuclide.dat" "$(PROJECTDIR)\bin\Deploy\nuclide.dat"]]></PostBuildEvent>
+        <PostBuildEvent>copy /Y &quot;$(PROJECTDIR)\bin\GSProcessor.exe&quot; &quot;$(PROJECTDIR)\bin\Deploy\GSProcessor.exe&quot;&amp;&amp;copy /Y &quot;$(PROJECTDIR)\bin\peaks.dll&quot; &quot;$(PROJECTDIR)\bin\Deploy\peaks.dll&quot;&amp;&amp;copy /Y &quot;$(PROJECTDIR)\bin\nuclide.dat&quot; &quot;$(PROJECTDIR)\bin\Deploy\nuclide.dat&quot;&amp;&amp;copy /Y &quot;$(PROJECTDIR)\bin\GSProcessor.exe&quot; &quot;C:\Users\azimo\AppData\Local\Programs\GSProcessor\GSProcessor.exe&quot;&amp;&amp;copy /Y &quot;$(PROJECTDIR)\bin\peaks.dll&quot; &quot;C:\Users\azimo\AppData\Local\Programs\GSProcessor\peaks.dll&quot;&amp;&amp;copy /Y &quot;$(PROJECTDIR)\bin\nuclide.dat&quot; &quot;C:\Users\azimo\AppData\Local\Programs\GSProcessor\nuclide.dat&quot;</PostBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>

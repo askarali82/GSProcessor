@@ -461,7 +461,7 @@ object SettingsForm: TSettingsForm
       ParentFont = False
     end
     object Label32: TLabel
-      Left = 216
+      Left = 277
       Top = 717
       Width = 49
       Height = 13
@@ -569,7 +569,7 @@ object SettingsForm: TSettingsForm
       ParentFont = False
     end
     object Label9: TLabel
-      Left = 135
+      Left = 196
       Top = 717
       Width = 38
       Height = 13
@@ -617,9 +617,9 @@ object SettingsForm: TSettingsForm
     object EnergiesTitleLabel: TLabel
       Left = 12
       Top = 684
-      Width = 511
+      Width = 242
       Height = 19
-      Caption = 'Foydalaniluvchi fotocho'#8216'qqilar sohalari (chap va o'#8216'ng nuqtalari)'
+      Caption = 'Foydalaniluvchi fotocho'#8216'qqilar'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
@@ -667,20 +667,34 @@ object SettingsForm: TSettingsForm
       Height = 13
       Caption = 'Interfeys tili (Interface language):'
     end
+    object Label2: TLabel
+      Left = 115
+      Top = 717
+      Width = 58
+      Height = 13
+      Caption = 'Markaz, keV'
+    end
+    object Label15: TLabel
+      Left = 359
+      Top = 717
+      Width = 90
+      Height = 13
+      Caption = 'YBTK (FWHM), keV'
+    end
     object BeEnergy1Edit: TEdit
-      Left = 135
+      Left = 196
       Top = 832
       Width = 58
       Height = 21
-      TabOrder = 92
+      TabOrder = 101
       Text = '430'
     end
     object BeEnergy2Edit: TEdit
-      Left = 216
+      Left = 277
       Top = 832
       Width = 58
       Height = 21
-      TabOrder = 93
+      TabOrder = 102
       Text = '525'
     end
     object Bkg1Button: TButton
@@ -882,19 +896,19 @@ object SettingsForm: TSettingsForm
       TabOrder = 77
     end
     object CsEnergy1Edit: TEdit
-      Left = 135
+      Left = 196
       Top = 808
       Width = 58
       Height = 21
-      TabOrder = 90
+      TabOrder = 97
       Text = '612'
     end
     object CsEnergy2Edit: TEdit
-      Left = 216
-      Top = 784
+      Left = 277
+      Top = 808
       Width = 58
       Height = 21
-      TabOrder = 89
+      TabOrder = 98
       Text = '709'
     end
     object K1ActivityEdit: TEdit
@@ -1045,19 +1059,19 @@ object SettingsForm: TSettingsForm
       TabOrder = 71
     end
     object KEnergy1Edit: TEdit
-      Left = 135
+      Left = 196
       Top = 784
       Width = 58
       Height = 21
-      TabOrder = 88
+      TabOrder = 93
       Text = '1385'
     end
     object KEnergy2Edit: TEdit
-      Left = 216
-      Top = 808
+      Left = 277
+      Top = 784
       Width = 58
       Height = 21
-      TabOrder = 91
+      TabOrder = 94
       Text = '1540'
     end
     object Ra1ActivityEdit: TEdit
@@ -1208,19 +1222,19 @@ object SettingsForm: TSettingsForm
       TabOrder = 65
     end
     object RaEnergy1Edit: TEdit
-      Left = 135
+      Left = 196
       Top = 760
       Width = 58
       Height = 21
-      TabOrder = 86
+      TabOrder = 89
       Text = '1677'
     end
     object RaEnergy2Edit: TEdit
-      Left = 216
+      Left = 277
       Top = 760
       Width = 58
       Height = 21
-      TabOrder = 87
+      TabOrder = 90
       Text = '1846'
     end
     object Th1ActivityEdit: TEdit
@@ -1371,19 +1385,19 @@ object SettingsForm: TSettingsForm
       TabOrder = 59
     end
     object ThEnergy1Edit: TEdit
-      Left = 135
-      Top = 736
-      Width = 58
-      Height = 21
-      TabOrder = 84
-      Text = '2500'
-    end
-    object ThEnergy2Edit: TEdit
-      Left = 216
+      Left = 196
       Top = 736
       Width = 58
       Height = 21
       TabOrder = 85
+      Text = '2500'
+    end
+    object ThEnergy2Edit: TEdit
+      Left = 277
+      Top = 736
+      Width = 58
+      Height = 21
+      TabOrder = 86
       Text = '2720'
     end
     object ShowResultsWithMDA: TCheckBox
@@ -1394,7 +1408,7 @@ object SettingsForm: TSettingsForm
       Caption = 'Natijalarni <AMA ko'#8216'rinishida yoz'
       Checked = True
       State = cbChecked
-      TabOrder = 95
+      TabOrder = 105
     end
     object Be7PhotopeakEffEdit: TLabeledEdit
       Left = 225
@@ -1425,62 +1439,6 @@ object SettingsForm: TSettingsForm
       ParentShowHint = False
       ShowHint = True
       TabOrder = 83
-    end
-    object Point1FWHMEdit: TLabeledEdit
-      Left = 174
-      Top = 1011
-      Width = 50
-      Height = 21
-      EditLabel.Width = 117
-      EditLabel.Height = 13
-      EditLabel.Caption = '1-nuqtadagi YBTK (keV):'
-      LabelPosition = lpLeft
-      LabelSpacing = 23
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 97
-    end
-    object Point1EnergyEdit: TLabeledEdit
-      Left = 174
-      Top = 984
-      Width = 50
-      Height = 21
-      EditLabel.Width = 135
-      EditLabel.Height = 13
-      EditLabel.Caption = '1-nuqtadagi Energiya (keV):'
-      LabelPosition = lpLeft
-      LabelSpacing = 5
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 96
-    end
-    object Point2EnergyEdit: TLabeledEdit
-      Left = 174
-      Top = 1049
-      Width = 50
-      Height = 21
-      EditLabel.Width = 135
-      EditLabel.Height = 13
-      EditLabel.Caption = '2-nuqtadagi Energiya (keV):'
-      LabelPosition = lpLeft
-      LabelSpacing = 5
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 98
-    end
-    object Point2FWHMEdit: TLabeledEdit
-      Left = 174
-      Top = 1076
-      Width = 50
-      Height = 21
-      EditLabel.Width = 117
-      EditLabel.Height = 13
-      EditLabel.Caption = '2-nuqtadagi YBTK (keV):'
-      LabelPosition = lpLeft
-      LabelSpacing = 23
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 99
     end
     object DetectorSelector: TComboBox
       Left = 153
@@ -1539,11 +1497,88 @@ object SettingsForm: TSettingsForm
       Height = 21
       Style = csDropDownList
       ItemIndex = 0
-      TabOrder = 94
+      TabOrder = 104
       Text = 'O'#8216'zbekcha (Uzbek)'
       Items.Strings = (
         'O'#8216'zbekcha (Uzbek)'
         'English')
+    end
+    object RaEnergyEdit: TEdit
+      Left = 115
+      Top = 760
+      Width = 58
+      Height = 21
+      TabOrder = 88
+      Text = '1764.5'
+    end
+    object BeEnergyEdit: TEdit
+      Left = 115
+      Top = 832
+      Width = 58
+      Height = 21
+      TabOrder = 100
+      Text = '477.6'
+    end
+    object CsEnergyEdit: TEdit
+      Left = 115
+      Top = 808
+      Width = 58
+      Height = 21
+      TabOrder = 96
+      Text = '661.6'
+    end
+    object KEnergyEdit: TEdit
+      Left = 115
+      Top = 784
+      Width = 58
+      Height = 21
+      TabOrder = 92
+      Text = '1460.8'
+    end
+    object ThEnergyEdit: TEdit
+      Left = 115
+      Top = 736
+      Width = 58
+      Height = 21
+      TabOrder = 84
+      Text = '2614.5'
+    end
+    object ThFWHMEdit: TEdit
+      Left = 359
+      Top = 736
+      Width = 58
+      Height = 21
+      TabOrder = 87
+    end
+    object BeFWHMEdit: TEdit
+      Left = 359
+      Top = 832
+      Width = 58
+      Height = 21
+      TabOrder = 103
+    end
+    object CsFWHMEdit: TEdit
+      Left = 359
+      Top = 808
+      Width = 58
+      Height = 21
+      TabOrder = 99
+      Text = '45.8'
+    end
+    object KFWHMEdit: TEdit
+      Left = 359
+      Top = 784
+      Width = 58
+      Height = 21
+      TabOrder = 95
+      Text = '72.0'
+    end
+    object RaFWHMEdit: TEdit
+      Left = 359
+      Top = 760
+      Width = 58
+      Height = 21
+      TabOrder = 91
     end
   end
   object OpenDialog: TOpenDialog

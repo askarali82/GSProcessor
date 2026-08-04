@@ -79,6 +79,8 @@ __fastcall TMainForm::TMainForm(TComponent* Owner)
         i++;
     }
     ReopenMI->Visible = ReopenMI->Count > 0;
+
+    ReadPeakSearchDetails();
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::OnAppException(TObject* Sender, Exception* E)
@@ -122,21 +124,27 @@ void TMainForm::CreateSettingsFile()
             std::unique_ptr<TStringList> TextFile(new TStringList());
             TextFile->DefaultEncoding = TEncoding::Unicode;
             TextFile->Text =
-                L"[EnergyRanges]\r\n"
+                L"[Photopeaks]\r\n"
+                L"ThEnergyEdit=2614.5\r\n"
                 L"ThEnergy1Edit=2500\r\n"
                 L"ThEnergy2Edit=2720\r\n"
+                L"ThFWHMEdit=\r\n"
+                L"RaEnergyEdit=1764.5\r\n"
                 L"RaEnergy1Edit=1677\r\n"
                 L"RaEnergy2Edit=1846\r\n"
+                L"RaFWHMEdit=\r\n"
+                L"KEnergyEdit=1460.8\r\n"
                 L"KEnergy1Edit=1385\r\n"
                 L"KEnergy2Edit=1540\r\n"
+                L"KFWHMEdit=72.0\r\n"
+                L"CsEnergyEdit=661.6\r\n"
                 L"CsEnergy1Edit=612\r\n"
                 L"CsEnergy2Edit=709\r\n"
+                L"CsFWHMEdit=45.8\r\n"
+                L"BeEnergyEdit=477.6\r\n"
                 L"BeEnergy1Edit=430\r\n"
                 L"BeEnergy2Edit=525\r\n\r\n"
-
-                L"[PeakSearch]\r\n"
-                L"MinPeakWidth=100\r\n"
-                L"MaxEnergyError=0.2\r\n\r\n"
+                L"BeFWHMEdit=\r\n"
 
                 L"[UILanguage]\r\n"
                 L"LangID=1\r\n\r\n"
@@ -227,6 +235,54 @@ void TMainForm::ChangeUILanguage()
     {
         AnalysisForm->ChangeUILanguage();
     }
+}
+//---------------------------------------------------------------------------
+void TMainForm::ReadPeakSearchDetails()
+{
+    PeakSearchDetails.clear();
+
+    double Energy = Sysutils::StrToFloatDef(IniFile->ReadString(L"Photopeaks", L"ThEnergyEdit", L"0"), 0);
+    double FWHM = Sysutils::StrToFloatDef(IniFile->ReadString(L"Photopeaks", L"ThFWHMEdit", L"0"), 0);
+    if (Energy > 0.0 && FWHM > 0.0)
+    {
+        PeakSearchDetails.push_back({Energy, FWHM});
+    }
+
+    Energy = Sysutils::StrToFloatDef(IniFile->ReadString(L"Photopeaks", L"RaEnergyEdit", L"0"), 0);
+    FWHM = Sysutils::StrToFloatDef(IniFile->ReadString(L"Photopeaks", L"RaFWHMEdit", L"0"), 0);
+    if (Energy > 0.0 && FWHM > 0.0)
+    {
+        PeakSearchDetails.push_back({Energy, FWHM});
+    }
+
+    Energy = Sysutils::StrToFloatDef(IniFile->ReadString(L"Photopeaks", L"KEnergyEdit", L"0"), 0);
+    FWHM = Sysutils::StrToFloatDef(IniFile->ReadString(L"Photopeaks", L"KFWHMEdit", L"0"), 0);
+    if (Energy > 0.0 && FWHM > 0.0)
+    {
+        PeakSearchDetails.push_back({Energy, FWHM});
+    }
+
+    Energy = Sysutils::StrToFloatDef(IniFile->ReadString(L"Photopeaks", L"CsEnergyEdit", L"0"), 0);
+    FWHM = Sysutils::StrToFloatDef(IniFile->ReadString(L"Photopeaks", L"CsFWHMEdit", L"0"), 0);
+    if (Energy > 0.0 && FWHM > 0.0)
+    {
+        PeakSearchDetails.push_back({Energy, FWHM});
+    }
+
+    Energy = Sysutils::StrToFloatDef(IniFile->ReadString(L"Photopeaks", L"BeEnergyEdit", L"0"), 0);
+    FWHM = Sysutils::StrToFloatDef(IniFile->ReadString(L"Photopeaks", L"BeFWHMEdit", L"0"), 0);
+    if (Energy > 0.0 && FWHM > 0.0)
+    {
+        PeakSearchDetails.push_back({Energy, FWHM});
+    }
+
+    std::sort(PeakSearchDetails.begin(), PeakSearchDetails.end(),
+        [](const std::pair<double, double> &Pair1, const std::pair<double, double> &Pair2)
+        {
+            return Pair1.first < Pair2.first;
+        });
+
+    SpectrumFrame->SetPeakSearchDetails(PeakSearchDetails);
 }
 //---------------------------------------------------------------------------
 void TMainForm::AddFileNameToRecentList(const String &FileName)
@@ -527,7 +583,8 @@ void __fastcall TMainForm::PhotopeaksActionExecute(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::PhotopeaksActionUpdate(TObject *Sender)
 {
-    PhotopeaksAction->Enabled = SpectrumFrame->SpectrumLine->Count() > 0;
+    PhotopeaksAction->Enabled =
+        SpectrumFrame->SpectrumLine->Count() > 0 && PeakSearchDetails.size() >= 2;
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::DecompositionMethodActionExecute(TObject *Sender)
@@ -590,6 +647,7 @@ void __fastcall TMainForm::SettingsActionExecute(TObject *Sender)
     {
         ChangeUILanguage();
     }
+    ReadPeakSearchDetails();
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainForm::ExitActionExecute(TObject *Sender)
