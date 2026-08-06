@@ -229,6 +229,11 @@ void TMainForm::ChangeUILanguage()
         AboutProgramMI->Caption = L"&About " + APP_NAME + L"...";
     }
 
+    OpenAction->Hint = Strutils::ReplaceStr(OpenAction->Caption, L"&", L"");
+    SaveAction->Hint = Strutils::ReplaceStr(SaveAction->Caption, L"&", L"");
+    LinLogAction->Hint = Strutils::ReplaceStr(LinLogAction->Caption, L"&", L"");
+    PhotopeaksAction->Hint = Strutils::ReplaceStr(PhotopeaksAction->Caption, L"&", L"");
+
     SpectrumFrame->ChangeUILanguage();
 
     if (AnalysisForm != nullptr)
@@ -365,9 +370,9 @@ void __fastcall TMainForm::OpenActionExecute(TObject *Sender)
     {
         return;
     }
-    if (PhotopeaksAction->Checked)
+    if (PhotopeaksAction->Checked && !SpectrumFrame->FindPhotopeaks(true))
     {
-        PhotopeaksAction->Execute();
+        PhotopeaksAction->Checked = false;
     }
     AddFileNameToRecentList(OpenDialog->FileName);
 }
@@ -379,9 +384,9 @@ void __fastcall TMainForm::OpenRecentFile(TObject *Sender)
         Sysutils::StringReplace(MenuItem->Caption, "&", "", TReplaceFlags() << rfReplaceAll);
     if (OpenSpectrum(FileName))
     {
-        if (PhotopeaksAction->Checked)
+        if (PhotopeaksAction->Checked && !SpectrumFrame->FindPhotopeaks(true))
         {
-            PhotopeaksAction->Execute();
+            PhotopeaksAction->Checked = false;
         }
         AddFileNameToRecentList(FileName);
     }
@@ -670,6 +675,7 @@ void __fastcall TMainForm::CloseActionExecute(TObject *Sender)
     LinLogAction->Checked = true;
     LinLogButton->Down = true;
     PhotopeaksAction->Checked = false;
+    PhotopeaksButton->Down = false;
     SpectrumFileName = L"";
     Caption = APP_NAME;
     SaveInTextFormatMI->Enabled = false;

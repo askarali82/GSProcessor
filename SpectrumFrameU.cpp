@@ -129,6 +129,8 @@ void TSpectrumFrame::SetSpectrum(const TSpectrum &ASpectrum)
         RawDataTable->Cells[1][0] = L"Energy";
         RawDataTable->Cells[2][0] = L"Counts";
     }
+
+    Modified = false;
 }
 //---------------------------------------------------------------------------
 void __fastcall TSpectrumFrame::SpcChartMouseMove(TObject *Sender, TShiftState Shift,
@@ -360,6 +362,15 @@ void __fastcall TSpectrumFrame::CalibrateButtonClick(TObject *Sender)
 
     auto TMPSpc = Spectrum;
     TMPSpc.CalibrationPoints = PointsBox->Text.ToIntDef(2);
+    const int N = 5;
+    TEdit *ChanEdits[N] = {Channel1Edit, Channel2Edit, Channel3Edit, Channel4Edit, Channel5Edit};
+    TEdit *EnEdits[N] = {Energy1Edit, Energy2Edit, Energy3Edit, Energy4Edit, Energy5Edit};
+    for (int i = TMPSpc.CalibrationPoints; i < N; i++)
+    {
+        ChanEdits[i]->Text = L"";
+        EnEdits[i]->Text = L"";
+    }
+
     TMPSpc.Channel1 = Sysutils::StrToFloatDef(Channel1Edit->Text, 0);
     TMPSpc.Channel2 = Sysutils::StrToFloatDef(Channel2Edit->Text, 0);
     TMPSpc.Channel3 = Channel3Edit->Enabled ? Sysutils::StrToFloatDef(Channel3Edit->Text, 0) : 0;

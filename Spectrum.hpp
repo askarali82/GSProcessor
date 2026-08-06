@@ -487,11 +487,12 @@ bool TSpectrum::LoadFromFile(const String &FileName, const bool ShowExceptionMsg
         ChannelCount = ReadRawData(L"Channel_count", L"N", L"0").ToIntDef(0);
         CheckError(ChannelCount == 1024 || ChannelCount == 4096, ChannelCountError);
 
-        Channel1 = wcstod(ReadRawData(L"Energy_calibration", L"Channel1", L"0").c_str(), nullptr) - 1;
-        Channel2 = wcstod(ReadRawData(L"Energy_calibration", L"Channel2", L"0").c_str(), nullptr) - 1;
-        Channel3 = wcstod(ReadRawData(L"Energy_calibration", L"Channel3", L"0").c_str(), nullptr) - 1;
-        Channel4 = wcstod(ReadRawData(L"Energy_calibration", L"Channel4", L"0").c_str(), nullptr) - 1;
-        Channel5 = wcstod(ReadRawData(L"Energy_calibration", L"Channel5", L"0").c_str(), nullptr) - 1;
+        const double n = FileType == asw ? 1.0 : 0.0;
+        Channel1 = wcstod(ReadRawData(L"Energy_calibration", L"Channel1", L"0").c_str(), nullptr) - n;
+        Channel2 = wcstod(ReadRawData(L"Energy_calibration", L"Channel2", L"0").c_str(), nullptr) - n;
+        Channel3 = wcstod(ReadRawData(L"Energy_calibration", L"Channel3", L"0").c_str(), nullptr) - n;
+        Channel4 = wcstod(ReadRawData(L"Energy_calibration", L"Channel4", L"0").c_str(), nullptr) - n;
+        Channel5 = wcstod(ReadRawData(L"Energy_calibration", L"Channel5", L"0").c_str(), nullptr) - n;
         Energy1 = wcstod(ReadRawData(L"Energy_calibration", L"Energy1", L"0").c_str(), nullptr);
         Energy2 = wcstod(ReadRawData(L"Energy_calibration", L"Energy2", L"0").c_str(), nullptr);
         Energy3 = wcstod(ReadRawData(L"Energy_calibration", L"Energy3", L"0").c_str(), nullptr);

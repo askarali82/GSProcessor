@@ -84,6 +84,8 @@ __published:	// IDE-managed Components
     TMenuItem *CloseMI;
     TMenuItem *N3;
     TTimer *ParameterFileOpeningTimer;
+    TToolButton *PhotopeaksButton;
+    TToolButton *ToolButton4;
     void __fastcall OpenActionExecute(TObject *Sender);
     void __fastcall SaveActionExecute(TObject *Sender);
     void __fastcall SaveActionUpdate(TObject *Sender);
